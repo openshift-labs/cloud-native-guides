@@ -1,0 +1,18 @@
+id: "roadshow"
+name: "Container and Cloud-Native Roadshow"
+
+vars:
+  OPENSHIFT_URL: "https://192.168.99.100:8443"
+  OPENSHIFT_APPS_HOSTNAME: "192.168.99.100.nip.io"
+  OPENSHIFT_USER: "developer"
+  OPENSHIFT_PASSWORD: "developer"
+  OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.5"
+  GIT_SERVER_URL: "http://gogs-lab-infra.192.168.99.100.nip.io"
+  GIT_SERVER_INTERNAL_URL: http://gogs.lab-infra.svc.cluster.local:3000
+  GIT_SERVER_TYPE: "gogs"
+  GIT_USER: "developer"
+  GIT_PASSWORD: "developer"
+  
+modules:
+  activate:
+  - spring-boot
