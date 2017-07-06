@@ -1,0 +1,23 @@
+## Enterprise Microservices with WildFly Swarm
+
+In this section we will give an overview of MicroProfile and how you can build microservices using WildFly Swarm.
+
+#### What is WildFly Swarm?
+
+#### Outline
+* Go to launch.openshift.io
+* Click on "Build and run locally"
+* Choose "Relational Database Backend Mission" for Mission
+* Choose "WildFly Swarm" for Runtime
+* Enter the following project info
+  ** Group Id: com.redhat.cloudnative
+  ** Artifact Id: catalog-wildfly-swarm
+  ** Version: [leave the default value]
+* Click on Next, and then "Download as a ZIP File"
+* Unzip the project
+* Import Maven Project in JBDS
+* Create a new class called Product in com.redhat.cloudnative.catalog.model package with the following fields
+  ** id
+  ** name
+  ** description
+  ** price

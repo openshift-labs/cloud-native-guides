@@ -1,0 +1,18 @@
+## Reactive Microservices with Eclipse Vert.x
+
+In this section we will give an overview of Eclipse Vert.x and how you can build microservices using reactive principles.
+
+#### What is Eclipse Vert.x?
+
+#### Outline
+* Go to launch.openshift.io
+* Click on "Build and run locally"
+* Choose "Circuit Breaker Mission" for Mission
+* Choose "Vert.x" for Runtime
+* Enter the following project info
+  ** Group Id: com.redhat.cloudnative
+  ** Artifact Id: gateway-vertx
+  ** Version: [leave the default value]
+* Click on Next, and then "Download as a ZIP File"
+* Unzip the project
+* Import into JBDS

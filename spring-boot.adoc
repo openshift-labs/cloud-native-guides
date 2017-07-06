@@ -1,7 +1,0 @@
-## Building services with Spring Boot
-
-In this section we will give an overview of Spring Boot and how you can build microservices using Spring Boot and JBoss technologies.
-
-#### What is Spring Boot?
-
-TBD

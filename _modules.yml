@@ -1,3 +1,7 @@
 modules:
-  spring-boot:
-    name: Building services with Spring Boot
+  microservices-spring-boot:
+    name: Microservices with Spring Boot
+  microservices-wildfly-swarm:
+    name: Enterprise Microservices with WildFly Swarm
+  microservices-vertx:
+    name: Reactive Microservices with Eclipse Vert.x

@@ -1,0 +1,22 @@
+## Microservices with Spring Boot
+
+In this section we will give an overview of Spring Boot and how you can build microservices using Spring Boot and JBoss technologies.
+
+#### What is Spring Boot?
+
+
+#### Outline
+* Go to launch.openshift.io
+* Click on "Build and run locally"
+* Choose "REST API Level 0" for Mission
+* Choose "Spring Boot" for Runtime
+* Enter the following project info
+  ** Group Id: com.redhat.cloudnative
+  ** Artifact Id: cart-spring-boot
+  ** Version: [leave the default value]
+* Click on Next, and then "Download as a ZIP File"
+* Unzip the project
+* Import Maven Project in JBDS
+* Create a new model class called Cart
+
+

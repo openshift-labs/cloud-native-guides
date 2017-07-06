@@ -15,4 +15,6 @@ vars:
   
 modules:
   activate:
-  - spring-boot
+  - microservices-wildfly-swarm
+  - microservices-vertx
+  - microservices-spring-boot
