@@ -2,7 +2,11 @@
 
 In this section we will give an overview of MicroProfile and how you can build microservices using WildFly Swarm.
 
+#### Lab Goals
+TBD
+
 #### What is WildFly Swarm?
+TBD
 
 #### Outline
 * Go to launch.openshift.io
@@ -16,8 +20,187 @@ In this section we will give an overview of MicroProfile and how you can build m
 * Click on Next, and then "Download as a ZIP File"
 * Unzip the project
 * Import Maven Project in JBDS
-* Create a new class called Product in com.redhat.cloudnative.catalog.model package with the following fields
-  ** id
-  ** name
-  ** description
-  ** price
+* Add the domain model by creating a new class called `Product` in `com.redhat.cloudnative.catalog` package with the following fields: _Id_, _Name_, _Description_ and _Price_.
+  
+  ```
+  package com.redhat.cloudnative.catalog;
+
+  import java.io.Serializable;
+
+  @Entity
+  public class Product implements Serializable {
+
+      private static final long serialVersionUID = -7304814269819778382 L;
+
+      @Id
+      @GeneratedValue
+      private long id;
+
+      @Column
+      private String name;
+
+      @Column
+      private String desc;
+
+      @Column
+      private double price;
+
+      public Product() {
+
+      }
+
+      public Product(long id, String name, String desc, double price) {
+          super();
+          this.id = id;
+          this.name = name;
+          this.desc = desc;
+          this.price = price;
+      }
+      public long getId() {
+          return id;
+      }
+      public void setId(long id) {
+          this.id = id;
+      }
+      public String getName() {
+          return name;
+      }
+      public void setName(String name) {
+          this.name = name;
+      }
+      public String getDesc() {
+          return desc;
+      }
+      public void setDesc(String desc) {
+          this.desc = desc;
+      }
+      public double getPrice() {
+          return price;
+      }
+      public void setPrice(double price) {
+          this.price = price;
+      }
+
+      @Override
+      public String toString() {
+          return "Product [itemId=" + itemId + ", name=" + name + ", desc=" + desc + ", price=" + price + "]";
+      }
+  }
+  ```
+
+* Create a REST endpint for catalog by creating a new class called `CatalogResource` in `com.redhat.cloudnative.catalog` package
+
+  ```
+  com.redhat.cloudnative.catalog;
+
+  import javax.enterprise.context.ApplicationScoped;
+  import javax.json.Json;
+  import javax.persistence.EntityManager;
+  import javax.persistence.PersistenceContext;
+  import javax.ws.rs.Consumes;
+  import javax.ws.rs.GET;
+  import javax.ws.rs.Path;;
+  import java.util.Collection;
+  import javax.persistence.EntityManager;
+  import javax.persistence.Query;
+
+
+  @ApplicationScoped
+  @Path("/products")
+  @Produces(MediaType.APPLICATION_JSON)
+  public class CatalogResource {
+      @PersistenceContext(unitName = "MyPU")
+      private EntityManager em;
+
+      @GET
+      @Path("/")
+      public Collection<Product> findAll() {
+          Query query = em.createQuery("SELECT p FROM Product p");
+          return (Collection<Product>) query.getResultList();
+      }
+  }
+  ```
+* TOOD: explain load.sql
+
+* Add some test data by replacing the content of 'src/main/resources/META-INF/load.sql' with the following:
+
+```
+INSERT INTO Product(id, name, desc, price) VALUES (329299, 'Red Fedora', 'Official Red Hat Fedora', 34.55);
+INSERT INTO Product(id, name, desc, price) VALUES (444434, 'Pebble Smart Watch', 'View notifications from email, SMS, Caller ID, calendar and your favorite apps on your wrist. Includes Pebble timeline, a chronological display of calendar and notifications', 24.99);
+INSERT INTO Product(id, name, desc, price) VALUES (444435, 'Oculus Rift', 'Whether you're stepping into your favorite game, watching an immersive VR movie, jumping to a destination on the other side of the world, or spending time with friends in VR — with Rift and a compatible desktop PC, you'll feel like you're really there.', 106.00);
+INSERT INTO Product(id, name, desc, price) VALUES (444436, 'Lytro Camera', 'Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to take photos with infinite focus, so you can decide later exactly where you want the focus of each image to be.', 44.30);
+```
+
+* Run the application 
+
+  ```
+  $ mvn wildfly-swarm:run -P local
+  ```
+
+* Test the catalog endpoint
+
+  ```
+  curl http://localhost:8080/api/products
+  ```
+
+* Let's add a database now
+* Create a new PostgreSQL database on OpenShift
+
+```
+$ oc new-project coolstore
+$ oc new-app postgresql-ephemeral --name=catalog-postgresql
+
+--> Deploying template "openshift/postgresql-ephemeral" to project demo
+
+     PostgreSQL (Ephemeral)
+     ---------
+     PostgreSQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/blob/master/9.5.
+
+     WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
+
+     The following service(s) have been created in your project: postgresql.
+
+            Username: userO75
+            Password: 55d2Khaho4ewTp66
+       Database Name: sampledb
+      Connection URL: postgresql://postgresql:5432/
+
+     For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/blob/master/9.5.
+
+
+     * With parameters:
+        * Memory Limit=512Mi
+        * Namespace=openshift
+        * Database Service Name=postgresql
+        * PostgreSQL Connection Username=userO75 # generated
+        * PostgreSQL Connection Password=55d2Khaho4ewTp66 # generated
+        * PostgreSQL Database Name=sampledb
+        * Version of PostgreSQL Image=9.5
+
+--> Creating resources ...
+    secret "postgresql" created
+    service "postgresql" created
+    deploymentconfig "postgresql" created
+--> Success
+    Run 'oc status' to view your app.
+```
+
+* Deploy on OpenShift and configure database
+ConfigMap for project-stages?
+Secrets for project-stages?
+Env Vars?
+
+* Take note of the username and passwords that are generated
+
+* Create `src/main/resources/project-default.yml` and add the database credentials
+
+```
+swarm:
+  datasources:
+    data-sources:
+      MyDS:
+        driver-name: postgresql
+        connection-url: jdbc:postgresql://catalog-postgresql:5432/sampledb
+        user-name: sa
+        password: sa
+```

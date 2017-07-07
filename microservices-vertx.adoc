@@ -2,7 +2,11 @@
 
 In this section we will give an overview of Eclipse Vert.x and how you can build microservices using reactive principles.
 
+#### Lab Goals
+TBD
+
 #### What is Eclipse Vert.x?
+TBD
 
 #### Outline
 * Go to launch.openshift.io
