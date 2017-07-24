@@ -2,19 +2,17 @@ id: "roadshow"
 name: "Container and Cloud-Native Roadshow"
 
 vars:
-  OPENSHIFT_URL: "https://192.168.99.100:8443"
-  OPENSHIFT_APPS_HOSTNAME: "192.168.99.100.nip.io"
-  OPENSHIFT_USER: "developer"
-  OPENSHIFT_PASSWORD: "developer"
+  OPENSHIFT_ADDRESS: "https://console.starter-us-east-2.openshift.com/"
   OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.5"
-  GIT_SERVER_URL: "http://gogs-lab-infra.192.168.99.100.nip.io"
-  GIT_SERVER_INTERNAL_URL: http://gogs.lab-infra.svc.cluster.local:3000
-  GIT_SERVER_TYPE: "gogs"
-  GIT_USER: "developer"
-  GIT_PASSWORD: "developer"
+  COOLSTORE_PROJECT: "coolstore"
+  DOWNLOAD_CLIENT_WINDOWS: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-windows.zip
+  DOWNLOAD_CLIENT_MAC: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-mac.zip
+  DOWNLOAD_CLIENT_LIN64: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz
   
 modules:
   activate:
+  - explore-openshift
+  - microservices-lab-setup
   - microservices-wildfly-swarm
   - microservices-vertx
   - microservices-spring-boot

@@ -22,7 +22,7 @@ components of the WildFly Swarm project are laid out in different subdirectories
  * `pom.xml` - The Maven project file
 
 TIP: WildFly Swarm projects can also be managed using other tools besides Maven, such as 
-Gradle, JBoss Forge, or Swarmtool. Consult the https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/v/2017.7.0/getting-started/tooling/forge-addon.html[docs] for more detail.
+Gradle, JBoss Forge, or Swarmtool. Consult the https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/getting-started/tooling/forge-addon.html[docs] for more detail.
 
 * This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
 to a database. This project currently contains no code other than the main class for exposeing a single 
@@ -129,13 +129,11 @@ public class Inventory implements Serializable {
 the required dependencies configurations to make sure it can get out of the way and developers can be productive with their code rather 
 than Googling for configuration snippets. As an example, configuration database access with JPA is composed of the following 
 steps:
- * Add a single `jpa` dependency to `pom.xml`
- * Define datasources in `META/persistent.xml`
- * Add database connection details in `src/main/resources/project-local.yml`
+ * Add the `org.wildfly.swarm:jpa` dependency to `pom.xml` 
+ * Add the database driver (e.g. `org.postgresql:postgresql`) to `pom.xml`
+ * Add database connection details in `src/main/resources/project-defaults.yml`
 
-* WildFly Swarm uses JPA for accessing databases which is alrady enabled in this project via adding the `jpa` dependency to 
-`pom.xml`. WildFly Swarm then automatically configures JPA, Hibernate and other required dependencies to be ready to use 
-withing the project:
+* Example `pom.xml` and note the `org.wildfly.swarm:jpa` that is already added to enable JPA:
 
 [source,xml]
 ----
@@ -147,6 +145,9 @@ withing the project:
 
 * Examine `src/main/resources/META-INF/persistence.xml` to see the JPA datasource configuration for this project. Also note 
 that the configurations uses `META-INF/load.sql` to import initial data into the database.
+
+* Examine `src/main/resources/project-defaults.yml` to see the database connection details. You are using an H2 database as 
+the default database in this project.
 
 ### Create the REST Service
 
@@ -194,7 +195,14 @@ $ mvn package
 $ mvn wildfly-swarm:run
 ----
 
-* Use `curl` to verify the REST endpoint works
+* Alternatively, you can run the application using the uber-jar produced during the Maven build
+
+[source,bash]
+----
+$ java -jar target/inventory-1.0-SNAPSHOT-swarm.jar
+----
+
+* At this point, you can access the RESTful endpoint. Let’s test it out using `curl`:
 
 [source,bash]
 ----
@@ -203,6 +211,38 @@ $ curl http://localhost:8080/api/inventory/329299
 {"itemId":"329299","quantity":736}
 ----
 
+* The RESTful endpoint returned a JSON object representing the inventory count for this product. Congratulations!
+
+* Stop the service by pressing CTRL-C in the terminal window.
+
+### Deploy Inventory Service on OpenShift
+
+* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
+
+[source,bash]
+----
+$ oc project {{COOLSTORE_PROJECT}}
+----
+
+* To build and deploy the Inventory service run the following Maven command:
+
+[source,bash]
+----
+$ mvn clean package fabric8:build fabric8:deploy
+----
+
+This will cause the following to happen:
+ * `clean` - files generated at build-time in a project's directory are removed to reset to a clean state
+ * `package` -  the Inventory service uberjar is built using WildFly Swarm
+ * `fabric8:build` - a docker image is built using OpenShift containing the Inventory service uberjar and the Java runtime 
+ * `fabric8:deploy` - necessary objects are created within your OpenShift project to deploy the Inventory service on OpenShift
+
+The `fabric8` maven plugin provides a tight integration into Maven, Kubernetes and OpenShift for Java projects in 
+order to simply building container images from Java projects and deploying them to Kubernetes and OpenShift.
+
+* Once this completes, your project should be up and running. OpenShift runs the different components of 
+the project in one or more pods which are the unit of runtime deployment and consists of the running 
+containers for the project. 
 
 TODO:
 * Let's add a database now
@@ -211,3 +251,6 @@ TODO:
 ConfigMap for project-stages?
 Secrets for project-stages?
 Env Vars?
+
+
+* Well done! You are ready to move on to the next lab.

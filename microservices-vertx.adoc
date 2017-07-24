@@ -20,3 +20,5 @@ TBD
 * Click on Next, and then "Download as a ZIP File"
 * Unzip the project
 * Import into JBDS
+
+* Well done! You are ready to move on to the next lab.

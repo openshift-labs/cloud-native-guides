@@ -1,8 +1,8 @@
-## Lab Setup
+## Local Project Setup
 
 In this lab you will download the required files for the following labs from GitHub.
 
-#### Project Setup
+#### Local Project Setup
 * To get started, use Git to copy the lab skeleton projects to your local environment:
 
 TODO: update git url
@@ -23,3 +23,5 @@ $ cd $HOME/cloud-native-labs
 $ ls
 catalog-spring-boot	inventory-wildfly-swarm
 ----
+
+* Well done! You are ready to move on to the next lab.
