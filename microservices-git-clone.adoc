@@ -1,0 +1,25 @@
+## Lab Setup
+
+In this lab you will download the required files for the following labs from GitHub.
+
+#### Project Setup
+* To get started, use Git to copy the lab skeleton projects to your local environment:
+
+TODO: update git url
+
+[source,bash]
+----
+$ cd $HOME
+$ git clone git@gitlab.com:siamaksade/cloud-native-labs
+----
+
+TIP: You can choose any directory, these instructions use $HOME as an example.
+
+This will create a copy of the lab materials in the cloud-native-labs subdirectory.
+
+[source,bash]
+----
+$ cd $HOME/cloud-native-labs
+$ ls
+catalog-spring-boot	inventory-wildfly-swarm
+----
