@@ -1,206 +1,213 @@
 ## Enterprise Microservices with WildFly Swarm
 
-In this section we will give an overview of MicroProfile and how you can build microservices using WildFly Swarm.
+In this section we will give an overview of MicroProfile and how you can build microservices 
+using WildFly Swarm.
 
 #### Lab Goals
-TBD
+In this lab you will create a REST API for the Inventory service in order to query the inventory status
+for each product.
 
 #### What is WildFly Swarm?
 TBD
 
-#### Outline
-* Go to launch.openshift.io
-* Click on "Build and run locally"
-* Choose "Relational Database Backend Mission" for Mission
-* Choose "WildFly Swarm" for Runtime
-* Enter the following project info
-  ** Group Id: com.redhat.cloudnative
-  ** Artifact Id: catalog-wildfly-swarm
-  ** Version: [leave the default value]
-* Click on Next, and then "Download as a ZIP File"
-* Unzip the project
-* Import Maven Project in JBDS
-* Add the domain model by creating a new class called `Product` in `com.redhat.cloudnative.catalog` package with the following fields: _Id_, _Name_, _Description_ and _Price_.
-  
-  ```
-  package com.redhat.cloudnative.catalog;
+#### WildFly Swarm Maven Project 
+* Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
+the `inventory-wildfly-swarm` lab into the IDE by clicking on *File &rarr; Open* and choosing the
+`inventory-wildfly-swarm` folder.
 
-  import java.io.Serializable;
+* Once loaded, you should see the following files and be able to navigate amongst the files. The 
+components of the WildFly Swarm project are laid out in different subdirectories according to Maven best practices:
+ * `src/main/java` - The source code to the project
+ * `src/main/resources` - The static resource files and configurations
+ * `pom.xml` - The Maven project file
 
-  @Entity
-  public class Product implements Serializable {
+TIP: WildFly Swarm projects can also be managed using other tools besides Maven, such as 
+Gradle, JBoss Forge, or Swarmtool. Consult the https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/v/2017.7.0/getting-started/tooling/forge-addon.html[docs] for more detail.
 
-      private static final long serialVersionUID = -7304814269819778382 L;
+* This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
+to a database. This project currently contains no code other than the main class for exposeing a single 
+RESTful application defined in `InventoryApplication.java`. Examine `InventoryApplication.java` in your IDE:
 
-      @Id
-      @GeneratedValue
-      private long id;
+[source,java]
+----
+package com.redhat.cloudnative.inventory;
 
-      @Column
-      private String name;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 
-      @Column
-      private String desc;
+@ApplicationPath("/")
+public class InventoryApplication extends Application {
+}
+----
 
-      @Column
-      private double price;
+* You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+in the logs, otherwise the build has failed.
 
-      public Product() {
+[source,bash]
+----
+$ cd $HOME/cloud-native-labs
+$ mvn package
 
-      }
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 10.757 s
+[INFO] Finished at: 2017-07-24T10:49:54+07:00
+[INFO] Final Memory: 44M/481M
+[INFO] ------------------------------------------------------------------------
+----
 
-      public Product(long id, String name, String desc, double price) {
-          super();
-          this.id = id;
-          this.name = name;
-          this.desc = desc;
-          this.price = price;
-      }
-      public long getId() {
-          return id;
-      }
-      public void setId(long id) {
-          this.id = id;
-      }
-      public String getName() {
-          return name;
-      }
-      public void setName(String name) {
-          this.name = name;
-      }
-      public String getDesc() {
-          return desc;
-      }
-      public void setDesc(String desc) {
-          this.desc = desc;
-      }
-      public double getPrice() {
-          return price;
-      }
-      public void setPrice(double price) {
-          this.price = price;
-      }
+* Once built, the resulting _war_ is located in the `target/` directory:
 
-      @Override
-      public String toString() {
-          return "Product [itemId=" + itemId + ", name=" + name + ", desc=" + desc + ", price=" + price + "]";
-      }
-  }
-  ```
+[source,bash]
+----
+$ ls target/*.jar
+target/inventory-1.0-SNAPSHOT-swarm.war
+----
 
-* Create a REST endpint for catalog by creating a new class called `CatalogResource` in `com.redhat.cloudnative.catalog` package
+* This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+application with `java -jar`. WildFly Swarm also creates a _war_ packaiging as a standard Java EE web app 
+that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project).
 
-  ```
-  com.redhat.cloudnative.catalog;
+* Now let's write some code!
 
-  import javax.enterprise.context.ApplicationScoped;
-  import javax.json.Json;
-  import javax.persistence.EntityManager;
-  import javax.persistence.PersistenceContext;
-  import javax.ws.rs.Consumes;
-  import javax.ws.rs.GET;
-  import javax.ws.rs.Path;;
-  import java.util.Collection;
-  import javax.persistence.EntityManager;
-  import javax.persistence.Query;
+### Create the Domain Model
+* Create a new Java class named `Inventory` in `com.redhat.cloudnative.inventory` package with the below code and 
+following fields: `itemId` and `quantity`
+
+[source,java]
+----
+package com.redhat.cloudnative.inventory;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "INVENTORY", uniqueConstraints = @UniqueConstraint(columnNames = "itemId"))
+public class Inventory implements Serializable {
+	@Id
+    private String itemId;
+
+    private int quantity;
+
+    public Inventory() {
+    }
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "Inventory [itemId='" + itemId + '\'' + ", quantity=" + quantity + ']';
+    }
+}
+----
+
+* Review the `Inventory` domain model and note the JPA annotations on this class
+ * `@Entity` - marks this class as a JPA entity
+ * `@Table` - customizes the table creation process by defining a table name and database constraint
+ * `@Id` - marks the primary key for the table
+
+* WildFly Swarm configuration is done to a large extend through detecting the intent of the developer and automatically adding 
+the required dependencies configurations to make sure it can get out of the way and developers can be productive with their code rather 
+than Googling for configuration snippets. As an example, configuration database access with JPA is composed of the following 
+steps:
+ * Add a single `jpa` dependency to `pom.xml`
+ * Define datasources in `META/persistent.xml`
+ * Add database connection details in `src/main/resources/project-local.yml`
+
+* WildFly Swarm uses JPA for accessing databases which is alrady enabled in this project via adding the `jpa` dependency to 
+`pom.xml`. WildFly Swarm then automatically configures JPA, Hibernate and other required dependencies to be ready to use 
+withing the project:
+
+[source,xml]
+----
+    <dependency>
+      <groupId>org.wildfly.swarm</groupId>
+      <artifactId>jpa</artifactId>
+    </dependency>
+----
+
+* Examine `src/main/resources/META-INF/persistence.xml` to see the JPA datasource configuration for this project. Also note 
+that the configurations uses `META-INF/load.sql` to import initial data into the database.
+
+### Create the REST Service
+
+* WildFly Swarm uses JAX-RS standard for building REST services. Create a new Java class named `InventoryResource`
+in `com.redhat.cloudnative.inventory` package with the following content:
+
+[source,java]
+----
+package com.redhat.cloudnative.inventory;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.*;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+
+@Path("/")
+@ApplicationScoped
+public class InventoryResource {
+    @PersistenceContext(unitName = "MyPU")
+    private EntityManager em;
+
+    @GET
+    @Path("/api/inventory/{itemId}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Inventory getAvailability(@PathParam("itemId") String itemId) {
+        return em.find(Inventory.class, itemId);
+    }
+}
+----
+
+* The above REST services defines an endpoint that is accessbile via `HTTP GET` at for example `/api/inventory/329299` with 
+the last path param being the product id which we want to check its iventory status.
+
+* Build and package the inventory service using Maven
+
+[source,bash]
+----
+$ mvn package
+----
+
+* Using WildFly Swarm plugin, you can conveniently run the application locally and test the endpoint.
+
+[source,bash]
+----
+$ mvn wildfly-swarm:run
+----
+
+* Use `curl` to verify the REST endpoint works
+
+[source,bash]
+----
+$ curl http://localhost:8080/api/inventory/329299
+
+{"itemId":"329299","quantity":736}
+----
 
 
-  @ApplicationScoped
-  @Path("/products")
-  @Produces(MediaType.APPLICATION_JSON)
-  public class CatalogResource {
-      @PersistenceContext(unitName = "MyPU")
-      private EntityManager em;
-
-      @GET
-      @Path("/")
-      public Collection<Product> findAll() {
-          Query query = em.createQuery("SELECT p FROM Product p");
-          return (Collection<Product>) query.getResultList();
-      }
-  }
-  ```
-* TOOD: explain load.sql
-
-* Add some test data by replacing the content of 'src/main/resources/META-INF/load.sql' with the following:
-
-```
-INSERT INTO Product(id, name, desc, price) VALUES (329299, 'Red Fedora', 'Official Red Hat Fedora', 34.55);
-INSERT INTO Product(id, name, desc, price) VALUES (444434, 'Pebble Smart Watch', 'View notifications from email, SMS, Caller ID, calendar and your favorite apps on your wrist. Includes Pebble timeline, a chronological display of calendar and notifications', 24.99);
-INSERT INTO Product(id, name, desc, price) VALUES (444435, 'Oculus Rift', 'Whether you're stepping into your favorite game, watching an immersive VR movie, jumping to a destination on the other side of the world, or spending time with friends in VR — with Rift and a compatible desktop PC, you'll feel like you're really there.', 106.00);
-INSERT INTO Product(id, name, desc, price) VALUES (444436, 'Lytro Camera', 'Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to take photos with infinite focus, so you can decide later exactly where you want the focus of each image to be.', 44.30);
-```
-
-* Run the application 
-
-  ```
-  $ mvn wildfly-swarm:run -P local
-  ```
-
-* Test the catalog endpoint
-
-  ```
-  curl http://localhost:8080/api/products
-  ```
-
+TODO:
 * Let's add a database now
-* Create a new PostgreSQL database on OpenShift
-
-```
-$ oc new-project coolstore
-$ oc new-app postgresql-ephemeral --name=catalog-postgresql
-
---> Deploying template "openshift/postgresql-ephemeral" to project demo
-
-     PostgreSQL (Ephemeral)
-     ---------
-     PostgreSQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/blob/master/9.5.
-
-     WARNING: Any data stored will be lost upon pod destruction. Only use this template for testing
-
-     The following service(s) have been created in your project: postgresql.
-
-            Username: userO75
-            Password: 55d2Khaho4ewTp66
-       Database Name: sampledb
-      Connection URL: postgresql://postgresql:5432/
-
-     For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/postgresql-container/blob/master/9.5.
-
-
-     * With parameters:
-        * Memory Limit=512Mi
-        * Namespace=openshift
-        * Database Service Name=postgresql
-        * PostgreSQL Connection Username=userO75 # generated
-        * PostgreSQL Connection Password=55d2Khaho4ewTp66 # generated
-        * PostgreSQL Database Name=sampledb
-        * Version of PostgreSQL Image=9.5
-
---> Creating resources ...
-    secret "postgresql" created
-    service "postgresql" created
-    deploymentconfig "postgresql" created
---> Success
-    Run 'oc status' to view your app.
-```
-
+* Create a new PostgreSQL database on OpenShift via the Web Console. Take note of the username and password
 * Deploy on OpenShift and configure database
 ConfigMap for project-stages?
 Secrets for project-stages?
 Env Vars?
-
-* Take note of the username and passwords that are generated
-
-* Create `src/main/resources/project-default.yml` and add the database credentials
-
-```
-swarm:
-  datasources:
-    data-sources:
-      MyDS:
-        driver-name: postgresql
-        connection-url: jdbc:postgresql://catalog-postgresql:5432/sampledb
-        user-name: sa
-        password: sa
-```
