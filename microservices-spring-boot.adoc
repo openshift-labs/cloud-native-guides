@@ -1,26 +1,304 @@
 ## Microservices with Spring Boot
 
-In this section we will give an overview of Spring Boot and how you can build microservices using Spring Boot and JBoss technologies.
-
-#### Lab Goals
-TBD
+In this section we will give an overview of Spring Boot and how you can build microservices using Spring Boot
+and JBoss technologies. During this lab, you will create a REST API for the Catalog service in 
+order to provide a list of products for the retail store.
 
 #### What is Spring Boot?
-TBD
+TODO: Explain what Spring Boot is
 
-#### Outline
-* Go to launch.openshift.io
-* Click on "Build and run locally"
-* Choose "REST API Level 0" for Mission
-* Choose "Spring Boot" for Runtime
-* Enter the following project info
-  ** Group Id: com.redhat.cloudnative
-  ** Artifact Id: cart-spring-boot
-  ** Version: [leave the default value]
-* Click on Next, and then "Download as a ZIP File"
-* Unzip the project
-* Import Maven Project in JBDS
-* Create a new model class called Cart
+#### Spring Boot Maven Project 
+* Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
+the `catalog-spring-boot` lab into the IDE by clicking on *File &rarr; Open* and choosing the
+`catalog-spring-boot` folder.
 
+* Once loaded, you should see the following files and be able to navigate amongst the files. The 
+components of the Spring Boot project are laid out in different subdirectories according to Maven best practices:
+
+[source]
+----
+.
+├── pom.xml
+└── src
+    └── main
+        └── java
+        └── resources
+----
+
+ * `src/main/java` - The source code to the project
+ * `src/main/resources` - The static resource files and configurations
+ * `pom.xml` - The Maven project file
+
+* This is a minimal Spring Boot project with support for RESTful services and Spring Data with JPA for connecting
+to a database. This project currently contains no code other than the main class, `CatalogApplication.java`
+which is there to boostrap the Spring Boot application. Examine `CatalogApplication.java` in your IDE:
+
+[source,java]
+----
+package com.redhat.cloudnative.catalog;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class CatalogApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(CatalogApplication.class, args);
+    }
+}
+----
+
+* You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+in the logs, otherwise the build has failed.
+
+[source,bash]
+----
+$ cd projects/catalog-spring-boot
+$ mvn package
+
+...
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 2.282 s
+[INFO] Finished at: 2017-07-25T13:55:16+07:00
+[INFO] Final Memory: 35M/381M
+[INFO] ------------------------------------------------------------------------
+----
+
+* Once built, the resulting _jar_ is located in the `target/` directory:
+
+[source,bash]
+----
+$ ls target/*.jar
+target/catalog-1.0-SNAPSHOT.jar
+----
+
+* This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+application with `java -jar`.
+
+* Now that the project is ready, let's get coding!
+
+### Create the Domain Model
+
+* Create a new Java class named `Product` in `com.redhat.cloudnative.catalog` package with the below code and 
+following fields: `itemId`, `name`, `desc` and `price`
+
+[source,java]
+----
+package com.redhat.cloudnative.catalog;
+
+import java.io.Serializable;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+@Entity
+@Table(name = "PRODUCT", uniqueConstraints = @UniqueConstraint(columnNames = "itemId"))
+public class Product implements Serializable {
+	
+	@Id
+	private String itemId;
+	
+	private String name;
+	
+	private String desc;
+	
+	private double price;
+
+	public Product() {
+	}
+	
+	public String getItemId() {
+		return itemId;
+	}
+
+	public void setItemId(String itemId) {
+		this.itemId = itemId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public void setPrice(double price) {
+		this.price = price;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [itemId=" + itemId + ", name=" + name + ", price=" + price + "]";
+	}
+}
+----
+
+* Review the `Product` domain model and note the JPA annotations on this class
+** `@Entity` - marks this class as a JPA entity
+** `@Table` - customizes the table creation process by defining a table name and database constraint
+** `@Id` - marks the primary key for the table
+
+* Spring Data repository abstraction simplies dealing with data models in Spring applications by 
+reducing the amount of boilerplate code required to implement data access layers for various 
+persistence stores. https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts[Repository]
+and its sub-interfaces are the central concept in Spring Data which is a marker interface to provide 
+data manipulation functionality for the entity class that is being managed. When the application starts, 
+Spring finds all interfaces marked as repositories and for each interface found, the infrastructure 
+configures the required persistent technologies and provides an implementation for the repository interface.
+
+* Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative.catalog` package 
+and extend `CrudRepository` interface in order to indicate to Spring that you want to expose a 
+complete set of methods to manipulate the entity.
+
+[source,java]
+----
+package com.redhat.cloudnative.catalog;
+
+import org.springframework.data.repository.CrudRepository;
+
+public interface ProductRepository extends CrudRepository<Product, String> {
+}
+----
+
+* Build and package the Catalog service using Maven to make sure there are no compilation errors:
+
+[source,bash]
+----
+$ mvn clean package
+----
+
+* That's it! Now that you have a domain model and a repository to retrieve the domain mode, let's create a 
+RESTful service that returns the list of products.
+
+### Create a RESTful Service
+
+* Spring Boot uses Spring Web MVC as the default RESTful stack in Spring applications. Create 
+a new Java class named `CatalogController` in `com.redhat.cloudnative.catalog` package with 
+the following content:
+
+[source,java]
+----
+package com.redhat.cloudnative.catalog;
+
+import java.util.*;
+import java.util.stream.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping(value = "/api/catalog")
+public class CatalogController {
+
+	  @Autowired
+    private ProductRepository repository;
+
+    @ResponseBody
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Product> getAll() {
+        Spliterator<Product> products = repository.findAll().spliterator();
+        return StreamSupport.stream(products, false).collect(Collectors.toList());
+    }
+}
+---
+
+* The above REST services defines an endpoint that is accessbile via `HTTP GET` at `/api/catalog`. Notice 
+the `ProductRepository` field on the controller class which is used to retrieve the list of products. Spring Boot 
+automatically provides an implementation for `ProductRepository` at runtime and https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html[injects]
+it into the controller using the `@Autowire` annotation.
+
+* Build and package the Catalog service using Maven
+
+[source,bash]
+----
+$ mvn package
+----
+
+* Using Spring Boot maven plugin, you can conveniently run the application locally and test the endpoint.
+
+[source,bash]
+----
+$ mvn spring-boot:run
+----
+
+* At this point, you can access the RESTful endpoint. Let’s test it out using `curl` in a new terminal window:
+
+[source,bash]
+----
+$ curl http://localhost:9000/api/catalog
+
+[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},{"itemId":"329199","name":"Forge Laptop Sticker","desc":"JBoss Community Forge Project Sticker","price":8.5},{"itemId":"165613","name":"Solitem_id Performance Polo","desc":"Moisture-wicking, antimicrobial 100% polyester design wicks for life of garment. No-curl, rib-knit collar...","price":17.8},{"itemId":"165614","name":"Ogio Caliber Polo","desc":"Moisture-wicking 100% polyester. Rib-knit collar and cuffs; Ogio jacquard tape insitem_ide neck; bar-tacked three-button placket with...","price":28.75},{"itemId":"165954","name":"16 oz. Vortex Tumbler","desc":"Double-wall insulated, BPA-free, acrylic cup. Push-on litem_id with thumb-slitem_ide closure; for hot and cold beverages. Holds 16 oz. Hand wash only. Imprint. Clear.","price":6.0},{"itemId":"444434","name":"Pebble Smart Watch","desc":"Smart glasses and smart watches are perhaps two of the most exciting developments in recent years. ","price":24.0},{"itemId":"444435","name":"Oculus Rift","desc":"The world of gaming has also undergone some very unique and compelling tech advances in recent years. Virtual reality...","price":106.0},{"itemId":"444436","name":"Lytro Camera","desc":"Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to ...","price":44.3}]
+----
+
+* The RESTful endpoint returned a JSON object representing the product list. Congratulations!
+
+* Stop the service by pressing CTRL-C in the terminal window.
+
+### Deploy Spring Boot on OpenShift
+
+* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
+
+[source,bash]
+----
+$ oc project {{COOLSTORE_PROJECT}}
+----
+
+* OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+feature can be used to build a container image from your project. OpenShift 
+S2I uses the supported OpenJDK container image to build the final container image of Catalog service by uploading 
+the WildFly Swam uber-jar from the `target` folder to the openshift platform. 
+
+* Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
+able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
+allowing to build aproject, deploy it and finally launch a docker process as a pod.
+
+* To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following maven command:
+
+[source,bash]
+----
+$ mvn clean package fabric8:build fabric8:deploy
+----
+
+This will cause the following to happen:
+[horizontal]
+`clean`:: files generated at build-time in a project's directory are removed to reset to a clean state
+`package`:: the Catalog service uberjar is built using Spring Boot
+`fabric8:build`:: a docker image is built using OpenShift containing the Catalog service uberjar and the Java runtime 
+`fabric8:deploy`:: necessary objects are created within your OpenShift project to deploy the Catalog service on OpenShift
+
+* Once this completes, your project should be up and running. OpenShift runs the different components of 
+the project in one or more pods which are the unit of runtime deployment and consists of the running 
+containers for the project. 
+
+* TODO: explain the openshift concepts: route, service, pod, etc
+
+* Copy the route url and verify the Inventory service works using 'curl':
+
+[source,bash]
+----
+$ curl http://INVENTORY-ROUTE-URL/api/catalog
+
+[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},{"itemId":"329199","name":"Forge Laptop Sticker","desc":"JBoss Community Forge Project Sticker","price":8.5},{"itemId":"165613","name":"Solitem_id Performance Polo","desc":"Moisture-wicking, antimicrobial 100% polyester design wicks for life of garment. No-curl, rib-knit collar...","price":17.8},{"itemId":"165614","name":"Ogio Caliber Polo","desc":"Moisture-wicking 100% polyester. Rib-knit collar and cuffs; Ogio jacquard tape insitem_ide neck; bar-tacked three-button placket with...","price":28.75},{"itemId":"165954","name":"16 oz. Vortex Tumbler","desc":"Double-wall insulated, BPA-free, acrylic cup. Push-on litem_id with thumb-slitem_ide closure; for hot and cold beverages. Holds 16 oz. Hand wash only. Imprint. Clear.","price":6.0},{"itemId":"444434","name":"Pebble Smart Watch","desc":"Smart glasses and smart watches are perhaps two of the most exciting developments in recent years. ","price":24.0},{"itemId":"444435","name":"Oculus Rift","desc":"The world of gaming has also undergone some very unique and compelling tech advances in recent years. Virtual reality...","price":106.0},{"itemId":"444436","name":"Lytro Camera","desc":"Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to ...","price":44.3}]
+----
 
 * Well done! You are ready to move on to the next lab.
