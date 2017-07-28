@@ -16,3 +16,14 @@ Agenda
 * Service Discovery and Load Balancing
 * Continuous Delivery 
 * OpenShift.io (demo)
+
+
+Deploy Guides on OpenShift
+===
+```
+$ oc new-build . --name=guides
+$ oc start-build guides --from-dir=.
+$ oc new-app --name=guides --image-stream=guides
+$ oc expose svc/guides
+$ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
+```
