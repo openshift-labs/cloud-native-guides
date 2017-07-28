@@ -385,18 +385,72 @@ Note that the inventory info for each product is available within the same JSON 
 ### Deploy Spring Boot on OpenShift
 
 
+* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
 
-#### Outline
-* Go to launch.openshift.io
-* Click on "Build and run locally"
-* Choose "Circuit Breaker Mission" for Mission
-* Choose "Vert.x" for Runtime
-* Enter the following project info
-  ** Group Id: com.redhat.cloudnative
-  ** Artifact Id: gateway-vertx
-  ** Version: [leave the default value]
-* Click on Next, and then "Download as a ZIP File"
-* Unzip the project
-* Import into JBDS
+[source,bash]
+----
+$ oc project {{COOLSTORE_PROJECT}}
+----
+
+* OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+feature can be used to build a container image from your project. OpenShift 
+S2I uses the supported OpenJDK container image to build the final container 
+image of the API Gateway service by uploading the Vert.x uber-jar from 
+the `target` folder to the OpenShift platform. 
+
+* Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
+able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
+allowing to build aproject, deploy it and finally launch a docker process as a pod.
+
+* To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
+
+[source,bash]
+----
+$ mvn clean package fabric8:build fabric8:deploy
+----
+
+This will cause the following to happen:
+[horizontal]
+`clean`:: files generated at build-time in a project's directory are removed to reset to a clean state
+`package`:: the API Gateway service uberjar is built using Vert.x
+`fabric8:build`:: a docker image is built using OpenShift containing the API Gateway service uberjar and the Java runtime 
+`fabric8:deploy`:: necessary objects are created within your OpenShift project to deploy the API Gateway service on OpenShift
+
+* Once this completes, your project should be up and running. OpenShift runs the different components of 
+the project in one or more pods which are the unit of runtime deployment and consists of the running 
+containers for the project. 
+
+* Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
+
+[source,bash]
+----
+$ oc get routes
+
+NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
+catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog     8080                     None
+gateway     gateway-coolstore.roadshow.openshiftapps.com               gateway     8080                     None
+inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
+---
+
+* Copy the route url for API Gateway and verify the API Gateway service works using 'curl'. Note that 
+your route URLs would be different from the ones in this lab guide:
+
+[source,bash]
+----
+$ curl http://API-GATEWAY-ROUTE-URL/api/products
+
+[ {
+  "itemId" : "329299",
+  "name" : "Red Fedora",
+  "desc" : "Official Red Hat Fedora",
+  "price" : 34.99,
+  "availability" : {
+    "quantity" : 35
+  }
+},
+...
+]
+----
 
 * Well done! You are ready to move on to the next lab.

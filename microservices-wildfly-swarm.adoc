@@ -234,8 +234,9 @@ $ oc project {{COOLSTORE_PROJECT}}
 
 * OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
 feature can be used to build a container image from your project. OpenShift 
-S2I uses the supported OpenJDK container image to build the final container image of Catalog service by uploading 
-the WildFly Swam uber-jar from the `target` folder to the openshift platform. 
+S2I uses the supported OpenJDK container image to build the final container image of the 
+Inventory service by uploading the WildFly Swam uber-jar from the `target` folder to 
+the OpenShift platform. 
 
 * Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
@@ -262,7 +263,16 @@ containers for the project.
 
 * TODO: explain the openshift concepts: route, service, pod, etc
 
-* Copy the route url and verify the Inventory service works using 'curl':
+[source,bash]
+----
+$ oc get routes
+
+NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
+inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
+---
+
+* Copy the route url for the Inventory service and verify the API Gateway service works using 'curl'. Note that 
+your route URLs would be different from the ones in this lab guide:
 
 [source,bash]
 ----
