@@ -8,30 +8,26 @@ order to query the inventory status for each product.
 TODO: explain WildFly Swarm
 
 #### WildFly Swarm Maven Project 
-* Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
+Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
 the `inventory-wildfly-swarm` lab into the IDE by clicking on *File &rarr; Open* and choosing the
 `inventory-wildfly-swarm` folder.
 
-* Once loaded, you should see the following files and be able to navigate amongst the files. The 
+Once loaded, you should see the following files and be able to navigate amongst the files. The 
 components of the WildFly Swarm project are laid out in different subdirectories according to Maven best practices:
 
 [source]
 ----
 .
-├── pom.xml
+├── pom.xml              # The Maven project file
 └── src
     └── main
-        └── java
-        └── resources
+        └── java         # The source code to the project
+        └── resources    # The static resource files and configurations
 ----
-
- * `src/main/java` - The source code to the project
- * `src/main/resources` - The static resource files and configurations
- * `pom.xml` - The Maven project file
 
 TIP: WildFly Swarm projects can also be managed using other tools besides Maven, such as Gradle, JBoss Forge, or Swarmtool. Consult the https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/getting-started/tooling/forge-addon.html[docs] for more detail.
 
-* This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
+This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
 to a database. This project currently contains no code other than the main class for exposeing a single 
 RESTful application defined in `InventoryApplication.java`. Examine `InventoryApplication.java` in your IDE:
 
@@ -47,7 +43,7 @@ public class InventoryApplication extends Application {
 }
 ----
 
-* You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the logs, otherwise the build has failed.
 
 [source,bash]
@@ -65,7 +61,7 @@ $ mvn package
 [INFO] ------------------------------------------------------------------------
 ----
 
-* Once built, the resulting _jar_ is located in the `target/` directory:
+Once built, the resulting _jar_ is located in the `target/` directory:
 
 [source,bash]
 ----
@@ -73,14 +69,15 @@ $ ls target/*.jar
 target/inventory-1.0-SNAPSHOT-swarm.jar
 ----
 
-* This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
 application with `java -jar`. WildFly Swarm also creates a _war_ packaiging as a standard Java EE web app 
 that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project).
 
-* Now let's write some code!
+Now let's write some code!
 
-### Create the Domain Model
-* Create a new Java class named `Inventory` in `com.redhat.cloudnative.inventory` package with the below code and 
+#### Create the Domain Model
+
+Create a new Java class named `Inventory` in `com.redhat.cloudnative.inventory` package with the below code and 
 following fields: `itemId` and `quantity`
 
 [source,java]
@@ -127,21 +124,21 @@ public class Inventory implements Serializable {
 }
 ----
 
-* Review the `Inventory` domain model and note the JPA annotations on this class
-** `@Entity` - marks this class as a JPA entity
-** `@Table` - customizes the table creation process by defining a table name and database constraint
-** `@Id` - marks the primary key for the table
+Review the `Inventory` domain model and note the JPA annotations on this class. `@Entity` marks 
+the class as a JPA entity, `@Table` customizes the table creation process by defining a table 
+name and database constraint and `@Id` marks the primary key for the table.
 
-* WildFly Swarm configuration is done to a large extend through detecting the intent of the developer and automatically adding 
-the required dependencies configurations to make sure it can get out of the way and developers can be productive with their code rather 
-than Googling for configuration snippets. As an example, configuration database access with JPA is composed of the following 
-steps:
+WildFly Swarm configuration is done to a large extend through detecting the intent of the 
+developer and automatically adding the required dependencies configurations to make sure it can 
+get out of the way and developers can be productive with their code rather than Googling for 
+configuration snippets. As an example, configuration database access with JPA is composed of 
+the following steps:
 
- ** Add the `org.wildfly.swarm:jpa` dependency to `pom.xml` 
- ** Add the database driver (e.g. `org.postgresql:postgresql`) to `pom.xml`
- ** Add database connection details in `src/main/resources/project-defaults.yml`
+1. Add the `org.wildfly.swarm:jpa` dependency to `pom.xml` 
+2. Add the database driver (e.g. `org.postgresql:postgresql`) to `pom.xml`
+3. Add database connection details in `src/main/resources/project-defaults.yml`
 
-* Example `pom.xml` and note the `org.wildfly.swarm:jpa` that is already added to enable JPA:
+Examine `pom.xml` and note the `org.wildfly.swarm:jpa` that is already added to enable JPA:
 
 [source,xml]
 ----
@@ -151,15 +148,15 @@ steps:
     </dependency>
 ----
 
-* Examine `src/main/resources/META-INF/persistence.xml` to see the JPA datasource configuration for this project. Also note 
+Examine `src/main/resources/META-INF/persistence.xml` to see the JPA datasource configuration for this project. Also note 
 that the configurations uses `META-INF/load.sql` to import initial data into the database.
 
-* Examine `src/main/resources/project-defaults.yml` to see the database connection details. You are using an H2 database as 
+Examine `src/main/resources/project-defaults.yml` to see the database connection details. You are using an H2 database as 
 the default database in this project.
 
-### Create a RESTful Service
+#### Create a RESTful Service
 
-* WildFly Swarm uses JAX-RS standard for building REST services. Create a new Java class named `InventoryResource`
+WildFly Swarm uses JAX-RS standard for building REST services. Create a new Java class named `InventoryResource`
 in `com.redhat.cloudnative.inventory` package with the following content:
 
 [source,java]
@@ -186,31 +183,31 @@ public class InventoryResource {
 }
 ----
 
-* The above REST services defines an endpoint that is accessbile via `HTTP GET` at for example `/api/inventory/329299` with 
+The above REST services defines an endpoint that is accessbile via `HTTP GET` at for example `/api/inventory/329299` with 
 the last path param being the product id which we want to check its iventory status.
 
-* Build and package the Inventory service using Maven
+Build and package the Inventory service using Maven
 
 [source,bash]
 ----
 $ mvn package
 ----
 
-* Using WildFly Swarm maven plugin, you can conveniently run the application locally and test the endpoint.
+Using WildFly Swarm maven plugin, you can conveniently run the application locally and test the endpoint.
 
 [source,bash]
 ----
 $ mvn wildfly-swarm:run
 ----
 
-* Alternatively, you can run the application using the uber-jar produced during the Maven build
+Alternatively, you can run the application using the uber-jar produced during the Maven build
 
 [source,bash]
 ----
 $ java -jar target/inventory-1.0-SNAPSHOT-swarm.jar
 ----
 
-* At this point, you can access the RESTful endpoint. Let’s test it out using `curl` in a new terminal window:
+At this point, you can access the RESTful endpoint. Let’s test it out using `curl` in a new terminal window:
 
 [source,bash]
 ----
@@ -219,31 +216,31 @@ $ curl http://localhost:9001/api/inventory/329299
 {"itemId":"329299","quantity":736}
 ----
 
-* The RESTful endpoint returned a JSON object representing the inventory count for this product. Congratulations!
+The RESTful endpoint returned a JSON object representing the inventory count for this product. Congratulations!
 
-* Stop the service by pressing CTRL-C in the terminal window.
+Stop the service by pressing CTRL-C in the terminal window.
 
-### Deploy WildFly Swarm on OpenShift
+#### Deploy WildFly Swarm on OpenShift
 
-* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
+It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
 
 [source,bash]
 ----
 $ oc project {{COOLSTORE_PROJECT}}
 ----
 
-* OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the supported OpenJDK container image to build the final container image of the 
 Inventory service by uploading the WildFly Swam uber-jar from the `target` folder to 
 the OpenShift platform. 
 
-* Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build aproject, deploy it and finally launch a docker process as a pod.
 
-* To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
+To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
 
 [source,bash]
 ----
@@ -251,17 +248,17 @@ $ mvn clean package fabric8:build fabric8:deploy
 ----
 
 This will cause the following to happen:
-[horizontal]
-`clean`:: files generated at build-time in a project's directory are removed to reset to a clean state
-`package`:: the Inventory service uberjar is built using WildFly Swarm
-`fabric8:build`:: a docker image is built using OpenShift containing the Inventory service uberjar and the Java runtime 
-`fabric8:deploy`:: necessary objects are created within your OpenShift project to deploy the Inventory service on OpenShift
 
-* Once this completes, your project should be up and running. OpenShift runs the different components of 
+* `clean` - files generated at build-time in a project's directory are removed to reset to a clean state
+* `package` - the API Gateway service uberjar is built using Vert.x
+* `fabric8:build` - a container image is built on OpenShift containing the service uberjar and JDK
+* `fabric8:deploy` - necessary objects are created within the OpenShift project to deploy service
+
+Once this completes, your project should be up and running. OpenShift runs the different components of 
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-* TODO: explain the openshift concepts: route, service, pod, etc
+TODO: explain the openshift concepts: route, service, pod, etc
 
 [source,bash]
 ----
@@ -269,9 +266,9 @@ $ oc get routes
 
 NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
----
+----
 
-* Copy the route url for the Inventory service and verify the API Gateway service works using 'curl'. Note that 
+Copy the route url for the Inventory service and verify the API Gateway service works using 'curl'. Note that 
 your route URLs would be different from the ones in this lab guide:
 
 [source,bash]
@@ -281,4 +278,4 @@ $ curl http://INVENTORY-ROUTE-URL/api/inventory/329299
 {"itemId":"329299","quantity":736}
 ----
 
-* Well done! You are ready to move on to the next lab.
+Well done! You are ready to move on to the next lab.

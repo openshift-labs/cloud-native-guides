@@ -2,7 +2,7 @@
 
 In this lab you will get faimilar with the OpenShift CLI tool.
 
-### Command Line Interface
+#### Command Line Interface
 
 OpenShift ships with a feature rich web console as well as command line tools
 to provide users with a nice interface to work with applications deployed to the
@@ -15,9 +15,9 @@ programming language and is available for the following operating systems:
 
 #### Download and Install OpenShift CLI on Windows
 
-* Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_WINDOWS}}[Microsoft Windows]
+Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_WINDOWS}}[Microsoft Windows]
 
-* Once the file has been downloaded, you will need to extract the contents as it
+Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
 directories:
 
@@ -26,12 +26,12 @@ directories:
 C:\OpenShift
 ----
 
-* In order to extract a zip archive on windows, you will need a zip utility
+In order to extract a zip archive on windows, you will need a zip utility
 installed on your system.  With newer versions of windows (greater than XP),
 this is provided by the operating system.  Just right click on the downloaded
 file using file explorer and select to extract the contents.
 
-* * Now you can add the OpenShift CLI tools to your PATH. Because changing your PATH 
+Now you can add the OpenShift CLI tools to your PATH. Because changing your PATH 
 on windows varies by version of the operating system, we will not list each operating system here.  
 However, the general workflow is right click on your computer name inside of the file
  explorer. Select Advanced system settings. I guess changing your PATH is considered 
@@ -50,7 +50,7 @@ http://www.itechtics.com/customize-windows-environment-variables/[Windows 8]
 
 Windows 10 - Follow the directions above.
 
-* At this point, we should have the oc tool available for use.  Let's test this
+At this point, we should have the oc tool available for use.  Let's test this
 out by printing the version of the oc command:
 
 [source]
@@ -60,12 +60,11 @@ $ oc version
 
 You should see the OpenShift version.
 
-
 #### Download and Install OpenShift CLI on Linux
 
-* Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_LIN64}}[Linux 64]
+Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_LIN64}}[Linux 64]
 
-* Once the file has been downloaded, you will need to extract the contents as it
+Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
 directories:
 
@@ -74,23 +73,23 @@ directories:
 ~/OpenShift
 ----
 
-* Open up a terminal window and change to the directory where you downloaded the
+Open up a terminal window and change to the directory where you downloaded the
 file.  Once you are in the directory, enter in the following command:
 
-[source,role=copypaste]
+[source,bash]
 ----
 $ tar zxvf oc-linux.tar.gz
 ----
 The tar.gz file name needs to be replaced by the entire name that was downloaded in the previous step.
 
-* Now you can add the OpenShift CLI tools to your PATH.
+Now you can add the OpenShift CLI tools to your PATH.
 
 [source]
 ----
 $ export PATH=$PATH:~/OpenShift
 ----
 
-* At this point, we should have the oc tool available for use.  Let's test this
+At this point, we should have the oc tool available for use.  Let's test this
 out by printing the version of the oc command:
 
 [source]
@@ -102,33 +101,34 @@ You should see the OpenShift version.
 
 #### Download and Install OpenShift CLI on Mac
 
-* Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_MAC}}[Apple OS X]
+Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_MAC}}[Apple OS X]
 
-* Once the file has been downloaded, you will need to extract the contents as it
+Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
 directories:
+
 [source]
 ----
 ~/OpenShift
 ----
 
-* Open up a terminal window and change to the directory where you downloaded the
+Open up a terminal window and change to the directory where you downloaded the
 file. Once you are in the directory, enter in the following command:
 
-[source,role=copypaste]
+[source,bash]
 ----
 $ tar zxvf oc-macosx.tar.gz
 ----
 The tar.gz file name needs to be replaced by the entire name that was downloaded in the previous step.
 
-* Now you can add the OpenShift CLI tools to your PATH.
+Now you can add the OpenShift CLI tools to your PATH.
 
 [source]
 ----
 $ export PATH=$PATH:~/OpenShift
 ----
 
-* At this point, we should have the oc tool available for use.  Let's test this
+At this point, we should have the oc tool available for use.  Let's test this
 out by printing the version of the oc command:
 
 [source]
@@ -140,7 +140,7 @@ You should see the OpenShift version.
 
 #### Explore OpenShift with OpenShift CLI
 
-* In order to login, we will use the `oc` command and then specify the server that we
+In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.  Issue the following command:
 
 [source]
@@ -176,25 +176,25 @@ $ oc login {{OPENSHIFT_ADDRESS}} --insecure-skip-tls-verify=true
 ----
 ====
 
-* Enter the username and password provided to you by the instructor
+Enter the username and password provided to you by the instructor
 
-* Congratulations, you are now authenticated to the OpenShift server. The
+Congratulations, you are now authenticated to the OpenShift server. The
 OpenShift master includes a built-in OAuth server. Developers and administrators
 obtain OAuth access tokens to authenticate themselves to the API. By default
 your authorization token will last for 24 hours. There is more information about
 the login command and its configuration in the https://{{DOCS_URL}}/cli_reference/get_started_cli.html#basic-setup-and-login[OpenShift Documentation].
 
-* Projects are a top level concept to help you organize your deployments. An
+Projects are a top level concept to help you organize your deployments. An
 OpenShift project allows a community of users (or a user) to organize and manage
 their content in isolation from other communities. Each project has its own
 resources, policies (who can or cannot perform actions), and constraints (quotas
 and limits on resources, etc). Projects act as a "wrapper" around all the
 application services and endpoints you (or your teams) are using for your work.
 
-* For this lab, let's create a project that you will use in the following labs for 
+For this lab, let's create a project that you will use in the following labs for 
 deploying your applications. 
 
-[source,role=copypaste]
+[source,bash]
 ----
 $ oc new-project {{COOLSTORE_PROJECT}}
 
@@ -202,19 +202,18 @@ Now using project "{{COOLSTORE_PROJECT}}" on server "{{OPENSHIFT_ADDRESS}}".
 ...
 ----
 
-* OpenShift ships with a web-based console that will allow users to
+OpenShift ships with a web-based console that will allow users to
 perform various tasks via a browser.  To get a feel for how the web console
-works, open your browser and go to the following URL:
+works, open your browser and go to the following URL: {{OPENSHIFT_ADDRESS}}
 
-*link:https://{{OPENSHIFT_ADDRESS}}[]*
 
-* The first screen you will see is the authentication screen. Enter your username and password and 
+The first screen you will see is the authentication screen. Enter your username and password and 
 then log in. After you have authenticated to the web console, you will be presented with a
-list of projects that your user has permission to work with.
+list of projects that your user has permission to work with. 
 
-* Click on the *{{EXPLORE_PROJECT_NAME}}* project to be taken to the project overview page
+Click on the *{{COOLSTORE_PROJECT}}* project to be taken to the project overview page
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
 
-* Well done! You are ready to move on to the next lab.
+Well done! You are ready to move on to the next lab.

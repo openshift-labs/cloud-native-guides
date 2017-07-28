@@ -1,5 +1,5 @@
 id: "roadshow"
-name: "Container and Cloud-Native Roadshow"
+name: "Cloud-Native Roadshow"
 
 vars:
   OPENSHIFT_ADDRESS: "https://console.starter-us-east-2.openshift.com/"
@@ -8,11 +8,14 @@ vars:
   DOWNLOAD_CLIENT_WINDOWS: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-windows.zip
   DOWNLOAD_CLIENT_MAC: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-mac.zip
   DOWNLOAD_CLIENT_LIN64: https://github.com/openshift/origin/releases/download/v1.5.1/openshift-origin-client-tools-v1.5.1-7b451fc-linux-64bit.tar.gz
+  LABS_GIT_REPO: https://github.com/siamaksade/cloud-native-labs.git
+  WEB_NODEJS_GIT_REPO: https://github.com/siamaksade/cloud-native-labs/tree/master/projects/inventory-wildfly-swarm
   
 modules:
   activate:
   - explore-openshift
-  - microservices-lab-setup
-  - microservices-wildfly-swarm
-  - microservices-vertx
-  - microservices-spring-boot
+  - project-setup
+  - wildfly-swarm
+  - spring-boot
+  - vertx
+  - nodejs

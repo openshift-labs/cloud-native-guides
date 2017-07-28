@@ -12,40 +12,36 @@ in order to add reactive functionaly by just adding the Vert.x jar files to the 
 
 Vert.x enables building reactive systems as defined by http://www.reactivemanifesto.org/[The Reactive Manifesto] and build 
 services that are:
-* Responsive: to handle requests in a reasonable time
-* Resilient: to stay responsive in the face of failures
-* Elastic: to stay responsive under various loads and be able to scale up and down
-* Message driven: components interact using asynchronous message-passing
+
+* *Responsive*: to handle requests in a reasonable time
+* *Resilient*: to stay responsive in the face of failures
+* *Elastic*: to stay responsive under various loads and be able to scale up and down
+* *Message driven*: components interact using asynchronous message-passing
 
 Vert.x is designed to be event-driven and non-blocking. Events are delivered in an event loop that must never be blocked. Unlike traditional applications, Vert.x uses a very small number of threads responsible for dispatching the events to event handlers. If the event loop is blocked, the events won’t be delivered anymore and therefore the code needs to be mindful of this execution model.
 
 #### Vert.x Maven Project 
 
-* Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
+Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
 the `gateway-vertx` lab into the IDE by clicking on *File &rarr; Open* and choosing the
 `gateway-vertx` folder.
 
-* Once loaded, you should see the following files and be able to navigate amongst the files. The 
+Once loaded, you should see the following files and be able to navigate amongst the files. The 
 components of the Vert.x project are laid out in different subdirectories according to Maven best practices:
 
 [source]
 ----
 .
-├── pom.xml
+├── pom.xml               # The Maven project file
 └── src
     ├── main
-    │   └── java
-    │   └── resources
+    │   └── java          # The source code to the project
+    │   └── resources     # The static resource files and configurations
     └── test
-        └── resources
+        └── resources     # The static resource files and configurations for testing
 ----
 
- * `src/main/java` - The source code to the project
- * `src/main/resources` - The static resource files and configurations
- * `src/test/resources` - The static resource files and configurations for testing
- * `pom.xml` - The Maven project file
-
-* This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
+This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
 other than the main class, `GatewayVerticle.java` which is there to boostrap the Vert.x application. Verticles
 are encapsulated parts of the application that can run completely independently and communicate with each other
 via the built-in event bus in Vert.x. Verticles get deployed and run by Vert.x in an event loop and therefore it 
@@ -53,7 +49,7 @@ is important that the code in a Verticle does not block. This asynchronous archi
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
 
-image::vertx-event-loop.jpg[Vert.x Event Loop,align=center]
+image::vertx-event-loop.jpg[Vert.x Event Loop,width=440,align=center]
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. Examine 
 `GatewayVerticle.java` in your IDE which:
@@ -79,12 +75,13 @@ public class GatewayVerticle extends AbstractVerticle {
 ----
 
 Here is what happens in the above code:
-* A Verticle is created by extending from `AbstractVerticle` class
-* A `Router` is retrieved to mapping REST endpoints
-* A REST endpoint is created for `/*` path and is mapped to the static JSON response `{"message": "Hello World"}`
-* An HTTP Server is created which listens on port 8080
 
-* You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+1. A Verticle is created by extending from `AbstractVerticle` class
+2. `Router` is retrieved for mapping the REST endpoints
+3. A REST endpoint is created for `/*` to return a static JSON response `{"message": "Hello World"}`
+3. An HTTP Server is created which listens on port 8080
+
+You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the logs, otherwise the build has failed.
 
 [source,bash]
@@ -102,7 +99,7 @@ $ mvn package
 [INFO] ----------------------------------------------------------------------------
 ----
 
-* Once built, the resulting _jar_ is located in the `target/` directory:
+Once built, the resulting _jar_ is located in the `target/` directory:
 
 [source,bash]
 ----
@@ -111,10 +108,10 @@ $ ls target/*.jar
 target/gateway-1.0-SNAPSHOT.jar
 ----
 
-* This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
 application with `java -jar`.
 
-* You can run the Vert.x application using `java -jar` or conveniently using `vertx:run` goal from 
+You can run the Vert.x application using `java -jar` or conveniently using `vertx:run` goal from 
 the `vertx-maven-plugin`:
 
 [source,bash]
@@ -126,7 +123,7 @@ $ mvn vertx:run
 ...
 ----
 
-* Verify the application is working using `curl` in a new terminal window:
+Verify the application is working using `curl` in a new terminal window:
 
 [source,bash]
 ----
@@ -135,23 +132,23 @@ $ curl http://localhost:8080
 {"message": "Hello Vert.x"}
 ----
 
-* Note that while the appliation is running using `mvn vertx:run`, you can make changes in the code
+Note that while the appliation is running using `mvn vertx:run`, you can make changes in the code
 and they would immediately be compiled and updated in the running application to provide the fast
 feedback to the developer.
 
-* Now that the project is ready, let's get coding!
+Now that the project is ready, let's get coding!
 
-### Create the API Gateway
+#### Create the API Gateway
 
-* In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
+In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
 web front contacting each of these backend services, you can create an API Gateway which is an entry 
 point for for the web front to access all backend services from a single place. This pattern is expectecly 
 called http://microservices.io/patterns/apigateway.html[API Gateway] and is a common practise in Microservices 
 architecture.
 
-image::vertx-gateway-arch.png[API Gateway Pattern,align=center]
+image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
 
-* Replace the content of `GatewayVerticle` class with the following:
+Replace the content of `GatewayVerticle` class with the following:
 
 [source,java]
 ----
@@ -189,7 +186,8 @@ public class GatewayVerticle extends AbstractVerticle {
     }
 
     private void products(RoutingContext rc) {
-        client.getAbs(config().getString("inventory.url", "http://inventory:8080") + "/api/catalog", resp -> {
+        client.getAbs(config().getString("inventory.url", "http://inventory:8080") + 
+                "/api/catalog", resp -> {
             if (resp.statusCode() == 200) {
                 resp.bodyHandler(productBuff -> {
                     JsonArray products = new JsonArray(productBuff);
@@ -202,7 +200,8 @@ public class GatewayVerticle extends AbstractVerticle {
                     });
                 });
             } else {
-                rc.response().end(new JsonObject().put("error", "catalog: " + resp.statusMessage()).toString());
+                rc.response().end(new JsonObject().put("error", "catalog: " + 
+                        resp.statusMessage()).toString());
             }
         }).end();
     }
@@ -215,7 +214,8 @@ public class GatewayVerticle extends AbstractVerticle {
             if (resp.statusCode() == 200) {
                 resp.bodyHandler(buff -> {
                     product.put("availability", 
-                        new JsonObject().put("quantity", new JsonObject(buff).getInteger("quantity")));
+                        new JsonObject().put("quantity", new JsonObject(buff)
+                                .getInteger("quantity")));
                     future.complete();
                 });
             } else {
@@ -228,41 +228,44 @@ public class GatewayVerticle extends AbstractVerticle {
 }
 ----
 
-Let's break down what happens in the above code. The `start` method starts the Verticle, creates an HTTP server and a REST mapping to map `/api/products` to the `products` Java method
+Let's break down what happens in the above code. The `start` method starts the Verticle, 
+creates an HTTP server and a REST mapping to map `/api/products` to the `products` Java method:
 
 [source,java]
 ----
-    @Override
-    public void start(Future<Void> future) {
-        client = vertx.createHttpClient();
+@Override
+public void start(Future<Void> future) {
+    client = vertx.createHttpClient();
 
-        Router router = Router.router(vertx);
-        router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/api/products").handler(this::products);
+    Router router = Router.router(vertx);
+    router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
+    router.get("/api/products").handler(this::products);
 
-        vertx.createHttpServer()
-                .requestHandler(router::accept)
-                .listen(config().getInteger("http.port", 8080), result -> {
-                    ...
-                });
-    }
+    vertx.createHttpServer()
+            .requestHandler(router::accept)
+            .listen(config().getInteger("http.port", 8080), result -> {
+                ...
+            });
+}
 ----
 
 The `products` method invokes the Catalog REST endpoint and retrieves the products:
 
 [source,java]
 ----
-    private void products(RoutingContext rc) {
-        client.getAbs(config().getString("inventory.url", "http://inventory:8080") + "/api/catalog", resp -> {
-            if (resp.statusCode() == 200) {
-                resp.bodyHandler(productBuff -> {
-                    ....
-                });
-            } else {
-                rc.response().end(new JsonObject().put("error", "catalog: " + resp.statusMessage()).toString());
-            }
-        }).end();
-    }
+private void products(RoutingContext rc) {
+    client.getAbs(config().getString("inventory.url", "http://inventory:8080") + 
+            "/api/catalog", resp -> {
+        if (resp.statusCode() == 200) {
+            resp.bodyHandler(productBuff -> {
+                ....
+            });
+        } else {
+            rc.response().end(new JsonObject().put("error", "catalog: " + 
+                    resp.statusMessage()).toString());
+        }
+    }).end();
+}
 ----
 
 The `products` method iterates over the retrieve products and for each product invokes the 
@@ -280,20 +283,20 @@ will act upon them and update the response which is then sent back to the client
 
 [source,java]
 ----
-    private void products(RoutingContext rc) {
-        ...
-                resp.bodyHandler(productBuff -> {
-                    JsonArray products = new JsonArray(productBuff);
-                    List<Future> inventory = products.stream()
-                            .map(product -> inventory((JsonObject)product))
-                            .collect(Collectors.toList());
+private void products(RoutingContext rc) {
+    ...
+            resp.bodyHandler(productBuff -> {
+                JsonArray products = new JsonArray(productBuff);
+                List<Future> inventory = products.stream()
+                        .map(product -> inventory((JsonObject)product))
+                        .collect(Collectors.toList());
 
-                    CompositeFuture.join(inventory).setHandler(ar -> {
-                        rc.response().end(Json.encodePrettily(products));
-                    });
+                CompositeFuture.join(inventory).setHandler(ar -> {
+                    rc.response().end(Json.encodePrettily(products));
                 });
-        ...
-    }
+            });
+    ...
+}
 ----
 
 The `inventory` method invokes the Inventory REST endpoint, retrieves the product inventory and 
@@ -301,45 +304,46 @@ enriches the product with the availability info:
 
 [source,java]
 ----
-    private Future<Void> inventory(JsonObject product) {
-        Future future = Future.future();
+private Future<Void> inventory(JsonObject product) {
+    Future future = Future.future();
 
-        client.getAbs(config().getString("catalog.url", "http://catalog:8080")
-                + "/api/inventory/" + product.getString("itemId"), resp -> {
-            if (resp.statusCode() == 200) {
-                resp.bodyHandler(buff -> {
-                    product.put("availability", 
-                        new JsonObject().put("quantity", new JsonObject(buff).getInteger("quantity")));
-                    future.complete();
-                });
-            } else {
-                future.fail(resp.statusMessage());
-            }
-        }).end();
+    client.getAbs(config().getString("catalog.url", "http://catalog:8080")
+            + "/api/inventory/" + product.getString("itemId"), resp -> {
+        if (resp.statusCode() == 200) {
+            resp.bodyHandler(buff -> {
+                product.put("availability", 
+                    new JsonObject().put("quantity", new JsonObject(buff)
+                            .getInteger("quantity")));
+                future.complete();
+            });
+        } else {
+            future.fail(resp.statusMessage());
+        }
+    }).end();
 
-        return future;
-    }
+    return future;
 }
 ----
 
-* Run the maven build to make sure the code compiles successfully.
+Run the maven build to make sure the code compiles successfully.
 
 [source,bash]
 ----
 $ mvn package
 ----
 
-* Since the API Gateway requires the Catalog and Inventory services to be running, let's run all three 
+Since the API Gateway requires the Catalog and Inventory services to be running, let's run all three 
 services simultaneously and verify that the API Gateway works as expected. 
 
-* Open a new terminal window and start the Catalog service:
+Open a new terminal window and start the Catalog service:
+
 [source,bash]
 ----
 $ cd projects/catalog-spring-boot
 $ mvn spring-boot:run
 ----
 
-* Open a new terminal window and start the Inventory service:
+Open a new terminal window and start the Inventory service:
 
 [source,bash]
 ----
@@ -347,7 +351,7 @@ $ cd projects/inventory-wildfly-swarm
 $ mvn wildfly-swarm:run
 ----
 
-* Now that Catalog and Inventory services are up and running, start the API Gateway service in a new terminal window:
+Now that Catalog and Inventory services are up and running, start the API Gateway service in a new terminal window:
 
 [source,bash]
 ----
@@ -359,7 +363,7 @@ Note that a config file is provided to the Vert.x application to specify where t
 Inventory service endpoints. In production, you will provide a different config file that provides
 the production service coordinates.
 
-* Now you can test the API Gatway by hitting the `/api/products` endpoint using `/curl`:
+Now you can test the API Gatway by hitting the `/api/products` endpoint using `/curl`:
 
 [source,bash]
 ----
@@ -380,30 +384,30 @@ $ curl http://localhost:8080/api/products
 
 Note that the inventory info for each product is available within the same JSON object.
 
-* Stop all services by pressing CTRL-C in the terminal windows.
+Stop all services by pressing CTRL-C in the terminal windows.
 
-### Deploy Spring Boot on OpenShift
+#### Deploy Spring Boot on OpenShift
 
 
-* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
+It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
 
 [source,bash]
 ----
 $ oc project {{COOLSTORE_PROJECT}}
 ----
 
-* OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the supported OpenJDK container image to build the final container 
 image of the API Gateway service by uploading the Vert.x uber-jar from 
 the `target` folder to the OpenShift platform. 
 
-* Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build aproject, deploy it and finally launch a docker process as a pod.
 
-* To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
+To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
 
 [source,bash]
 ----
@@ -411,17 +415,17 @@ $ mvn clean package fabric8:build fabric8:deploy
 ----
 
 This will cause the following to happen:
-[horizontal]
-`clean`:: files generated at build-time in a project's directory are removed to reset to a clean state
-`package`:: the API Gateway service uberjar is built using Vert.x
-`fabric8:build`:: a docker image is built using OpenShift containing the API Gateway service uberjar and the Java runtime 
-`fabric8:deploy`:: necessary objects are created within your OpenShift project to deploy the API Gateway service on OpenShift
 
-* Once this completes, your project should be up and running. OpenShift runs the different components of 
+* `clean` - files generated at build-time in a project's directory are removed to reset to a clean state
+* `package` - the API Gateway service uberjar is built using Vert.x
+* `fabric8:build` - a container image is built on OpenShift containing the service uberjar and JDK
+* `fabric8:deploy` - necessary objects are created within the OpenShift project to deploy service
+
+Once this completes, your project should be up and running. OpenShift runs the different components of 
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-* Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
+Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
 
 [source,bash]
 ----
@@ -431,10 +435,11 @@ NAME        HOST/PORT                                                  PATH     
 catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog     8080                     None
 gateway     gateway-coolstore.roadshow.openshiftapps.com               gateway     8080                     None
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
----
+----
 
-* Copy the route url for API Gateway and verify the API Gateway service works using 'curl'. Note that 
-your route URLs would be different from the ones in this lab guide:
+Copy the route url for API Gateway and verify the API Gateway service works using 'curl'. 
+
+CAUTION: Your route URLs would be different from the ones in this lab guide!
 
 [source,bash]
 ----
@@ -453,4 +458,4 @@ $ curl http://API-GATEWAY-ROUTE-URL/api/products
 ]
 ----
 
-* Well done! You are ready to move on to the next lab.
+Well done! You are ready to move on to the next lab.

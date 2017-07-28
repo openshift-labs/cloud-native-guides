@@ -1,18 +1,19 @@
 modules:
   explore-openshift:
     name: Explore OpenShift
-  microservices-lab-setup:
-    name: Local Project Setup
-  microservices-spring-boot:
+  project-setup:
+    name: Setup Projects
+  spring-boot:
     name: Microservices with Spring Boot
     requires:
-      - microservices-lab-setup
-  microservices-wildfly-swarm:
+      - project-setup
+  wildfly-swarm:
     name: Enterprise Microservices with WildFly Swarm
     requires:
-      - microservices-lab-setup
-  microservices-vertx:
+      - project-setup
+  vertx:
     name: Reactive Microservices with Eclipse Vert.x
     requires:
-      - microservices-lab-setup
-  
+      - project-setup
+  nodejs:
+    name: Web UI with Node.js and AngularJS

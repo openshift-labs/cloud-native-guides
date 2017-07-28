@@ -1,9 +1,9 @@
-## Local Project Setup
+## Setup Projects
 
 In this lab you will download the required files for the following labs from GitHub.
 
 #### Local Project Setup
-* To get started, use Git to copy the lab skeleton projects to your local environment:
+To get started, use Git to copy the lab skeleton projects to your local environment:
 
 TODO: update git url
 
@@ -24,4 +24,4 @@ $ ls
 catalog-spring-boot	inventory-wildfly-swarm
 ----
 
-* Well done! You are ready to move on to the next lab.
+Well done! You are ready to move on to the next lab.

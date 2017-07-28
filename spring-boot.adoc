@@ -8,28 +8,24 @@ order to provide a list of products for the retail store.
 TODO: Explain what Spring Boot is
 
 #### Spring Boot Maven Project 
-* Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
+Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
 the `catalog-spring-boot` lab into the IDE by clicking on *File &rarr; Open* and choosing the
 `catalog-spring-boot` folder.
 
-* Once loaded, you should see the following files and be able to navigate amongst the files. The 
+Once loaded, you should see the following files and be able to navigate amongst the files. The 
 components of the Spring Boot project are laid out in different subdirectories according to Maven best practices:
 
 [source]
 ----
 .
-├── pom.xml
+├── pom.xml            # The Maven project file
 └── src
     └── main
-        └── java
-        └── resources
+        └── java       # The source code to the project
+        └── resources  # The static resource files and configurations
 ----
 
- * `src/main/java` - The source code to the project
- * `src/main/resources` - The static resource files and configurations
- * `pom.xml` - The Maven project file
-
-* This is a minimal Spring Boot project with support for RESTful services and Spring Data with JPA for connecting
+This is a minimal Spring Boot project with support for RESTful services and Spring Data with JPA for connecting
 to a database. This project currently contains no code other than the main class, `CatalogApplication.java`
 which is there to boostrap the Spring Boot application. Examine `CatalogApplication.java` in your IDE:
 
@@ -49,7 +45,7 @@ public class CatalogApplication {
 }
 ----
 
-* You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the logs, otherwise the build has failed.
 
 [source,bash]
@@ -67,7 +63,7 @@ $ mvn package
 [INFO] ------------------------------------------------------------------------
 ----
 
-* Once built, the resulting _jar_ is located in the `target/` directory:
+Once built, the resulting _jar_ is located in the `target/` directory:
 
 [source,bash]
 ----
@@ -75,14 +71,14 @@ $ ls target/*.jar
 target/catalog-1.0-SNAPSHOT.jar
 ----
 
-* This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
 application with `java -jar`.
 
-* Now that the project is ready, let's get coding!
+Now that the project is ready, let's get coding!
 
-### Create the Domain Model
+#### Create the Domain Model
 
-* Create a new Java class named `Product` in `com.redhat.cloudnative.catalog` package with the below code and 
+Create a new Java class named `Product` in `com.redhat.cloudnative.catalog` package with the below code and 
 following fields: `itemId`, `name`, `desc` and `price`
 
 [source,java]
@@ -151,12 +147,11 @@ public class Product implements Serializable {
 }
 ----
 
-* Review the `Product` domain model and note the JPA annotations on this class
-** `@Entity` - marks this class as a JPA entity
-** `@Table` - customizes the table creation process by defining a table name and database constraint
-** `@Id` - marks the primary key for the table
+Review the `Product` domain model and note the JPA annotations on this class. `@Entity` marks the 
+class as a JPA entity, `@Table` customizes the table creation process by defining a table 
+name and database constraint and `@Id` marks the primary key for the table
 
-* Spring Data repository abstraction simplies dealing with data models in Spring applications by 
+Spring Data repository abstraction simplies dealing with data models in Spring applications by 
 reducing the amount of boilerplate code required to implement data access layers for various 
 persistence stores. https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts[Repository]
 and its sub-interfaces are the central concept in Spring Data which is a marker interface to provide 
@@ -164,7 +159,7 @@ data manipulation functionality for the entity class that is being managed. When
 Spring finds all interfaces marked as repositories and for each interface found, the infrastructure 
 configures the required persistent technologies and provides an implementation for the repository interface.
 
-* Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative.catalog` package 
+Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative.catalog` package 
 and extend `CrudRepository` interface in order to indicate to Spring that you want to expose a 
 complete set of methods to manipulate the entity.
 
@@ -178,19 +173,19 @@ public interface ProductRepository extends CrudRepository<Product, String> {
 }
 ----
 
-* Build and package the Catalog service using Maven to make sure there are no compilation errors:
+Build and package the Catalog service using Maven to make sure there are no compilation errors:
 
 [source,bash]
 ----
 $ mvn clean package
 ----
 
-* That's it! Now that you have a domain model and a repository to retrieve the domain mode, let's create a 
+That's it! Now that you have a domain model and a repository to retrieve the domain mode, let's create a 
 RESTful service that returns the list of products.
 
-### Create a RESTful Service
+#### Create a RESTful Service
 
-* Spring Boot uses Spring Web MVC as the default RESTful stack in Spring applications. Create 
+Spring Boot uses Spring Web MVC as the default RESTful stack in Spring applications. Create 
 a new Java class named `CatalogController` in `com.redhat.cloudnative.catalog` package with 
 the following content:
 
@@ -219,61 +214,61 @@ public class CatalogController {
         return StreamSupport.stream(products, false).collect(Collectors.toList());
     }
 }
----
+----
 
-* The above REST services defines an endpoint that is accessbile via `HTTP GET` at `/api/catalog`. Notice 
+The above REST services defines an endpoint that is accessbile via `HTTP GET` at `/api/catalog`. Notice 
 the `ProductRepository` field on the controller class which is used to retrieve the list of products. Spring Boot 
 automatically provides an implementation for `ProductRepository` at runtime and https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html[injects]
 it into the controller using the `@Autowire` annotation.
 
-* Build and package the Catalog service using Maven
+Build and package the Catalog service using Maven
 
 [source,bash]
 ----
 $ mvn package
 ----
 
-* Using Spring Boot maven plugin, you can conveniently run the application locally and test the endpoint.
+Using Spring Boot maven plugin, you can conveniently run the application locally and test the endpoint.
 
 [source,bash]
 ----
 $ mvn spring-boot:run
 ----
 
-* At this point, you can access the RESTful endpoint. Let’s test it out using `curl` in a new terminal window:
+At this point, you can access the RESTful endpoint. Let’s test it out using `curl` in a new terminal window:
 
 [source,bash]
 ----
 $ curl http://localhost:9000/api/catalog
 
-[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},{"itemId":"329199","name":"Forge Laptop Sticker","desc":"JBoss Community Forge Project Sticker","price":8.5},{"itemId":"165613","name":"Solitem_id Performance Polo","desc":"Moisture-wicking, antimicrobial 100% polyester design wicks for life of garment. No-curl, rib-knit collar...","price":17.8},{"itemId":"165614","name":"Ogio Caliber Polo","desc":"Moisture-wicking 100% polyester. Rib-knit collar and cuffs; Ogio jacquard tape insitem_ide neck; bar-tacked three-button placket with...","price":28.75},{"itemId":"165954","name":"16 oz. Vortex Tumbler","desc":"Double-wall insulated, BPA-free, acrylic cup. Push-on litem_id with thumb-slitem_ide closure; for hot and cold beverages. Holds 16 oz. Hand wash only. Imprint. Clear.","price":6.0},{"itemId":"444434","name":"Pebble Smart Watch","desc":"Smart glasses and smart watches are perhaps two of the most exciting developments in recent years. ","price":24.0},{"itemId":"444435","name":"Oculus Rift","desc":"The world of gaming has also undergone some very unique and compelling tech advances in recent years. Virtual reality...","price":106.0},{"itemId":"444436","name":"Lytro Camera","desc":"Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to ...","price":44.3}]
+[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ----
 
-* The RESTful endpoint returned a JSON object representing the product list. Congratulations!
+The RESTful endpoint returned a JSON object representing the product list. Congratulations!
 
-* Stop the service by pressing CTRL-C in the terminal window.
+Stop the service by pressing CTRL-C in the terminal window.
 
-### Deploy Spring Boot on OpenShift
+#### Deploy Spring Boot on OpenShift
 
-* It’s time to build and deploy our service on OpenShift. First, make sure you are on the {{COOLSTORE_PROJECT}}:
+It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
 
 [source,bash]
 ----
 $ oc project {{COOLSTORE_PROJECT}}
 ----
 
-* OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the supported OpenJDK container image to build the final container image 
 of the Catalog service by uploading the Spring Boot uber-jar from the `target` 
 folder to the OpenShift platform. 
 
-* Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build aproject, deploy it and finally launch a docker process as a pod.
 
-* To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following maven command:
+To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following maven command:
 
 [source,bash]
 ----
@@ -281,19 +276,19 @@ $ mvn clean package fabric8:build fabric8:deploy
 ----
 
 This will cause the following to happen:
-[horizontal]
-`clean`:: files generated at build-time in a project's directory are removed to reset to a clean state
-`package`:: the Catalog service uberjar is built using Spring Boot
-`fabric8:build`:: a docker image is built using OpenShift containing the Catalog service uberjar and the Java runtime 
-`fabric8:deploy`:: necessary objects are created within your OpenShift project to deploy the Catalog service on OpenShift
 
-* Once this completes, your project should be up and running. OpenShift runs the different components of 
+* `clean` - files generated at build-time in a project's directory are removed to reset to a clean state
+* `package` - the API Gateway service uberjar is built using Vert.x
+* `fabric8:build` - a container image is built on OpenShift containing the service uberjar and JDK
+* `fabric8:deploy` - necessary objects are created within the OpenShift project to deploy service
+
+Once this completes, your project should be up and running. OpenShift runs the different components of 
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-* TODO: explain the openshift concepts: route, service, pod, etc
+TODO: explain the openshift concepts: route, service, pod, etc. List pods, builds, etc
 
-* Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
+Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
 
 [source,bash]
 ----
@@ -302,16 +297,16 @@ $ oc get routes
 NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
 catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog     8080                     None
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
----
+----
 
-* Copy the route url for the Catalog service and verify the Catalog service works using 'curl'. Note that 
+Copy the route url for the Catalog service and verify the Catalog service works using 'curl'. Note that 
 your route URLs would be different from the ones in this lab guide:
 
 [source,bash]
 ----
 $ curl http://CATALOG-ROUTE-URL/api/catalog
 
-[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},{"itemId":"329199","name":"Forge Laptop Sticker","desc":"JBoss Community Forge Project Sticker","price":8.5},{"itemId":"165613","name":"Solitem_id Performance Polo","desc":"Moisture-wicking, antimicrobial 100% polyester design wicks for life of garment. No-curl, rib-knit collar...","price":17.8},{"itemId":"165614","name":"Ogio Caliber Polo","desc":"Moisture-wicking 100% polyester. Rib-knit collar and cuffs; Ogio jacquard tape insitem_ide neck; bar-tacked three-button placket with...","price":28.75},{"itemId":"165954","name":"16 oz. Vortex Tumbler","desc":"Double-wall insulated, BPA-free, acrylic cup. Push-on litem_id with thumb-slitem_ide closure; for hot and cold beverages. Holds 16 oz. Hand wash only. Imprint. Clear.","price":6.0},{"itemId":"444434","name":"Pebble Smart Watch","desc":"Smart glasses and smart watches are perhaps two of the most exciting developments in recent years. ","price":24.0},{"itemId":"444435","name":"Oculus Rift","desc":"The world of gaming has also undergone some very unique and compelling tech advances in recent years. Virtual reality...","price":106.0},{"itemId":"444436","name":"Lytro Camera","desc":"Consumers who want to up their photography game are looking at newfangled cameras like the Lytro Field camera, designed to ...","price":44.3}]
+[{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ----
 
-* Well done! You are ready to move on to the next lab.
+Well done! You are ready to move on to the next lab.
