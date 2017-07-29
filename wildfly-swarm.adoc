@@ -268,8 +268,9 @@ NAME        HOST/PORT                                                  PATH     
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
 ----
 
-Copy the route url for the Inventory service and verify the API Gateway service works using 'curl'. Note that 
-your route URLs would be different from the ones in this lab guide:
+Copy the route url for the Inventory service and verify the API Gateway service works using 'curl':
+
+CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
 
 [source,bash]
 ----

@@ -17,3 +17,10 @@ modules:
       - project-setup
   nodejs:
     name: Web UI with Node.js and AngularJS
+  health:
+    name: Monitoring Application Health 
+    requires:
+      - spring-boot
+      - wildfly-swarm
+      - vertx
+      - noejs

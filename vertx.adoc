@@ -172,6 +172,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
+        router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
         vertx.createHttpServer()
@@ -425,7 +426,7 @@ Once this completes, your project should be up and running. OpenShift runs the d
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
+Get the route url for the deployed API Gateway either using the OpenShift Web Console or the CLI:
 
 [source,bash]
 ----
@@ -437,9 +438,9 @@ gateway     gateway-coolstore.roadshow.openshiftapps.com               gateway  
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
 ----
 
-Copy the route url for API Gateway and verify the API Gateway service works using 'curl'. 
+Copy the route url for API Gateway and verify the API Gateway service works using 'curl':
 
-CAUTION: Your route URLs would be different from the ones in this lab guide!
+CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
 
 [source,bash]
 ----

@@ -60,7 +60,7 @@ $ oc expose svc/web
 route "web" exposed
 ----
 
-Get the route URL for Web UI:
+Get the route urls for Web UI:
 
 [source,bash]
 ----
@@ -73,7 +73,7 @@ inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory
 web         web-coolstore.roadshow.openshiftapps.com                   web         8080                     None
 ----
 
-CAUTION: Your route URLs would be different from the ones in this lab guide!
+CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the one from yor project.
 
 Now point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.

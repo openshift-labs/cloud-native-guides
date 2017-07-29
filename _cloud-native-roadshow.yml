@@ -19,3 +19,4 @@ modules:
   - spring-boot
   - vertx
   - nodejs
+  - health

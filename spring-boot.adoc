@@ -288,7 +288,7 @@ containers for the project.
 
 TODO: explain the openshift concepts: route, service, pod, etc. List pods, builds, etc
 
-Get the route URL for the deployed API Gateway either using the OpenShift Web Console or the CLI:
+Get the route url for the deployed API Gateway either using the OpenShift Web Console or the CLI:
 
 [source,bash]
 ----
@@ -299,8 +299,9 @@ catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog  
 inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
 ----
 
-Copy the route url for the Catalog service and verify the Catalog service works using 'curl'. Note that 
-your route URLs would be different from the ones in this lab guide:
+Copy the route url for the Catalog service and verify the Catalog service works using 'curl':
+
+CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
 
 [source,bash]
 ----
