@@ -2,7 +2,7 @@
 
 In this section we will learn how to monitor application health using Kubernetes health probes.
 
-### Health Probes
+####  Health Probes
 When building microservices, monitoring becomes of extreme importance to make sure all services 
 are running at all times, and when they don't there are automatic actions triggered to rectify 
 the issues. 
@@ -40,7 +40,7 @@ start listening until initialization is complete.
  
 Let's add health probes to the microservices deployed so far.
 
-### Review Health REST Endpoints
+####  Review Health REST Endpoints
 
 Spring Boot, WildFly Swarm and Vert.x all provide out-of-the-box support for creating RESTful endpoints that
 provide details on the health of the application. These endpoints by default provide basic data about the 
@@ -119,7 +119,7 @@ $ curl http://API-GATEWAY-ROUTE-URL/health
 Last but not least, although you can build more sophisticated health endpoints for the Web UI as well, you 
 can use the root context ("/") of the Web UI in this lab to verify it's up and running.
 
-### Monitoring Catalog Service Health
+####  Monitoring Catalog Service Health
 
 Health probes are defined on the deployment config for each pod and can be added using OpenShift Web 
 Console or OpenShift CLI. You will try both in this lab.
@@ -172,7 +172,7 @@ $ oc set probe dc/catalog --readiness --get-url=http://:8080/health
 Viola! OpenShift automatically {{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers[restarts] 
 the Catalog pod and as soon as the health probes succeed, it is ready to receive traffic. 
 
-### Monitoring Inventory Service Health
+####  Monitoring Inventory Service Health
 
 Adding liveness and readiness probes can be done at the same time if you want to define the same health endpoint 
 and parameters for both liveness and readiness probes. 
@@ -205,7 +205,7 @@ Namespace:	coolstore
 ...
 ----
 
-### Monitoring API Gateway Health
+####  Monitoring API Gateway Health
 
 You are an expert in health probes by now! Add liveness and readiness probes to the API Gateway service:
 
@@ -217,13 +217,13 @@ $ oc set probe dc/gateway --liveness --readiness --get-url=http://:8080/health
 OpenShift automatically restarts the Inventory pod and as soon as the health probes succeed, it is 
 ready to receive traffic. 
 
-### Monitoring Web UI Health
+####  Monitoring Web UI Health
 
 Although you can add the liveness and health probes to the Web UI using a single CLI command, let's 
 give the OpenShift Web Console a try this time.
 
 Go the OpenShift Web Console in your browser and in the {{COOLSTORE_PROJECT}} project. Click on 
-*Applications* &rarr; *Deployments* on the left-side bar. Click on `web` and then the *Configuration` 
+*Applications* &rarr; *Deployments* on the left-side bar. Click on `web` and then the *Configuration* 
 tab. You will see the warning about health checks, with a link to
 click in order to add them. Click *Add health checks* now. 
 
@@ -235,19 +235,40 @@ then fill them out as follows:
 
 _Readiness Probe_
 
-* Path: `/health/`
-* Initial Delay: `15`
+* Path: `/`
+* Initial Delay: `10`
 * Timeout: `1`
 
 _Liveness Probe_
 
-* Path: `/ws/healthz/`
-* Initial Delay: `15`
+* Path: `/`
+* Initial Delay: `180`
 * Timeout: `1`
+
+image::health-readiness.png[Readiness Probe,width=600,align=center]
+image::health-liveness.png[Readiness Probe,width=600,align=center]
 
 Click *Save* and then click the *Overview* button in the left navigation. You
 will notice that Web UI pod is getting restarted and it stays light blue
 for a while. This is a sign that the pod(s) have not yet passed their readiness
 checks and it turns blue when it's ready!
 
-### Monitoring Metrics
+image::health-web-redeploy.png[Web Redeploy,width=600,align=center]
+
+#### # Monitoring Metrics
+
+Metrics are another important aspect of monitoring applications which is required in order to 
+gain visiblity into how the application behaves and particularly in identifying issues.
+
+OpenShift provides container metrics out-of-the-box and displays how much memory, cpu and network 
+each container has been consuming over time. In the project overview, you can see three charts 
+near each pod that shows the resource consumption by that pod.
+
+image::health-metrics-brief.png[Container Metrics,width=400,align=center] 
+
+Click on any of the pods (blue circle) which takes you to the pod details. Click on the *Metrics* tab 
+to see a more detailed view of the metrics charts.
+
+image::health-metrics-detailed.png[Container Metrics,width=700,align=center] 
+
+Well done! You are ready to move on to the next lab.
