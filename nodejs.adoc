@@ -92,4 +92,7 @@ products and their inventory status.
 
 image::coolstore-web.png[CoolStore Shop,width=800,align=center]
 
+
+TODO: explain how web ui found the gateway. service discovery, internal dns, etc 
+
 Well done! You are ready to move on to the next lab.

@@ -1,6 +1,6 @@
 ## Explore OpenShift
 
-In this lab you will get faimilar with the OpenShift CLI tool.
+In this lab you will get faimilar with the OpenShift CLI and OpenShift Web Console.
 
 #### Command Line Interface
 

@@ -361,9 +361,9 @@ $ cd projects/gateway-vertx
 $ mvn vertx:run -Dvertx.config=src/test/resources/config.json
 ----
 
-Note that a config file is provided to the Vert.x application to specify where the Catalog and 
-Inventory service endpoints. In production, you will provide a different config file that provides
-the production service coordinates.
+Note that a config file is provided to the Vert.x application to specify the local Catalog and 
+Inventory service endpoints to be used by the API Gateway. In production, you will provide a 
+different config file that provides the production service coordinates.
 
 Now you can test the API Gatway by hitting the `/api/products` endpoint using `/curl`:
 
@@ -458,5 +458,7 @@ $ curl http://API-GATEWAY-ROUTE-URL/api/products
 ...
 ]
 ----
+
+TODO: explain how api gatway found the catalog and invnetory service. service discovery ,etc
 
 Well done! You are ready to move on to the next lab.

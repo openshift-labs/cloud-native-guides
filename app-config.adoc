@@ -5,26 +5,30 @@ specific configuration to the services.
 
 #### Application Configuration
 
-Most applications require configuration using environment variables,
+Applications require configuration in order to tweak the application behaviour 
+or adapt it to a certain environment without the need to write code and repackage 
+the application for every change. These configurations are sometimes specific to 
+the application itself such as the number of products to be displayed on a product 
+page and some other times they are dependent on the environment they are deployed in 
+such as the database coordinates for the application.
+
+The most common way to provide configurations to applications is using environment 
+variables and external configuration files such as properties, JSON or YAML files.
+
 configuration files and command line arguments. These configuration artifacts
 should be externalized form the application and the docker image content in
 order to keep the image portable across environments.
 
-In link:databases[previous labs], the `nationalparks` application was configured
-with database credentials using environment variables. While environment
-variables is a useful way to configure applications, it is difficult to manage
-hundreds of environment variables which are scattered across various containers
-in a project. Fortunately, there is a convenient and platform-independent
-mechanism in OpenShift to configure applications, which is called `ConfigMap`.
+OpenShift provides a mechanism called ConfigMaps in order to externalize configurations 
+from the applications deployed within containers and provide them to the containers 
+in a unified way as files and environment variables. OpenShift also offers a way to 
+provide sensitive configuration data such as certificates, credentials, etc to the 
+application containers in a secure and encrypted mechanism called Secrets.
 
-The `ConfigMap` object in OpenShift provides mechanisms to provide configuration
-data to the application container while keeping the application images both
-portable across environments and independent of OpenShift Container Platform. A
-`ConfigMap` can be used to store key-value properties, configuration files, JSON
-blobs and alike.
+This allows developers to build the container image for their application only once, 
+and reuse that image to deploy the application across various environemtns with 
+different configurations that are provided to the application at runtime.
 
-In this lab, you will replace the environment variables provided in the
-link:databases[previous labs] and use a `ConfigMap` instead to configure the
-`nationalparks` application.
+#### Do What?!
 
 Well done! You are ready to move on to the next lab.

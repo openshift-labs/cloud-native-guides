@@ -275,7 +275,7 @@ Once this completes, your project should be up and running. OpenShift runs the d
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-TODO: explain the openshift concepts: route, service, pod, etc
+TODO: explain resources created. oc get all? 
 
 [source,bash]
 ----
