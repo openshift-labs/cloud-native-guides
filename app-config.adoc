@@ -1,0 +1,30 @@
+##  Application Configuration
+
+In this lab you will learn how to manage application configuration and how to provide environment 
+specific configuration to the services.
+
+#### Application Configuration
+
+Most applications require configuration using environment variables,
+configuration files and command line arguments. These configuration artifacts
+should be externalized form the application and the docker image content in
+order to keep the image portable across environments.
+
+In link:databases[previous labs], the `nationalparks` application was configured
+with database credentials using environment variables. While environment
+variables is a useful way to configure applications, it is difficult to manage
+hundreds of environment variables which are scattered across various containers
+in a project. Fortunately, there is a convenient and platform-independent
+mechanism in OpenShift to configure applications, which is called `ConfigMap`.
+
+The `ConfigMap` object in OpenShift provides mechanisms to provide configuration
+data to the application container while keeping the application images both
+portable across environments and independent of OpenShift Container Platform. A
+`ConfigMap` can be used to store key-value properties, configuration files, JSON
+blobs and alike.
+
+In this lab, you will replace the environment variables provided in the
+link:databases[previous labs] and use a `ConfigMap` instead to configure the
+`nationalparks` application.
+
+Well done! You are ready to move on to the next lab.

@@ -3,6 +3,7 @@
 In this lab you will download the required files for the following labs from GitHub.
 
 #### Local Project Setup
+
 To get started, use Git to copy the lab skeleton projects to your local environment:
 
 TODO: update git url

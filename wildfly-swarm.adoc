@@ -5,9 +5,26 @@ using WildFly Swarm. During this lab, you will create a REST API for the Invento
 order to query the inventory status for each product.
 
 #### What is WildFly Swarm?
-TODO: explain WildFly Swarm
+
+Java EE applications are traditionally created as an `ear` or `war` archive including all 
+dependencies and deployed in an application server. Multiple Java EE applications can and 
+were typically deployed in the same application server. This model is well understood in 
+the development teams and has been used over the past several years.
+
+WildFly Swarm offers an innovative approach to packaging and running Java EE applications by 
+packaging them with just enough of the Java EE server runtime to be able to run them directly 
+on the JVM using `java -jar`. 
+
+WildFly Swarm is based on WildFly and it's compatible with 
+MicroProfile, which is a communnity effort to standardized the subset of Java EE standards 
+such as JAX-RS, CDI and JSON-P that are useful for building microservices applications.
+
+Since WildFly Swarm is based on Java EE standards, it significantly simplifies refactoring 
+existing Java EE application to microservices and allows much of existing code-base to be 
+reused in the new services.
 
 #### WildFly Swarm Maven Project 
+
 Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
 the `inventory-wildfly-swarm` lab into the IDE by clicking on *File &rarr; Open* and choosing the
 `inventory-wildfly-swarm` folder.

@@ -3,6 +3,7 @@
 In this section we will learn how to monitor application health using Kubernetes health probes.
 
 ####  Health Probes
+
 When building microservices, monitoring becomes of extreme importance to make sure all services 
 are running at all times, and when they don't there are automatic actions triggered to rectify 
 the issues. 
@@ -255,7 +256,7 @@ checks and it turns blue when it's ready!
 
 image::health-web-redeploy.png[Web Redeploy,width=600,align=center]
 
-#### # Monitoring Metrics
+#### Monitoring Metrics
 
 Metrics are another important aspect of monitoring applications which is required in order to 
 gain visiblity into how the application behaves and particularly in identifying issues.

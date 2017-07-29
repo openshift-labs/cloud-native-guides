@@ -6,6 +6,7 @@ In this section you will learn about building reactive microservies with Eclipse
 
 
 #### What is Eclipse Vert.x?
+
 http://vertx.io[Eclipse Vert.x] is a toolkit for building reactive applications on the Java Virtual Machine (JVM). Vert.x does not 
 impose a specific framework or packaging model and can be used within your existing applications and frameworks 
 in order to add reactive functionaly by just adding the Vert.x jar files to the application classpath.
@@ -388,7 +389,6 @@ Note that the inventory info for each product is available within the same JSON 
 Stop all services by pressing CTRL-C in the terminal windows.
 
 #### Deploy Spring Boot on OpenShift
-
 
 It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
 

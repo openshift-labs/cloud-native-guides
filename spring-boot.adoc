@@ -1,13 +1,21 @@
 ## Microservices with Spring Boot
 
-In this section we will give an overview of Spring Boot and how you can build microservices using Spring Boot
-and JBoss technologies. During this lab, you will create a REST API for the Catalog service in 
-order to provide a list of products for the retail store.
+In this section we will give an overview of Spring Boot and how you can build microservices 
+using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
+the Catalog service in order to provide a list of products for the retail store.
 
 #### What is Spring Boot?
-TODO: Explain what Spring Boot is
+
+Spring Boot is an opinionated framework that makes it easy to create stand-alone Spring based 
+applications with an embedded web containers such as Tomcat (or JBoss Web Server), Jetty and Undertowt 
+hat you can run directly on the JVM using `java -jar`. Spring Boot also allows producing a war 
+file that can be deployed on stand-alone web containers.
+
+The opinionated approach means many choices about Spring platform and third-party libraries 
+are already made by Spring Boot so that you can get started with minimum effort and configuration.
 
 #### Spring Boot Maven Project 
+
 Included in your lab environment is Visual Studio Code, a lightweight IDE for editing projects. Load 
 the `catalog-spring-boot` lab into the IDE by clicking on *File &rarr; Open* and choosing the
 `catalog-spring-boot` folder.
@@ -63,7 +71,7 @@ $ mvn package
 [INFO] ------------------------------------------------------------------------
 ----
 
-Once built, the resulting _jar_ is located in the `target/` directory:
+Once built, the resulting `jar` is located in the `target/` directory:
 
 [source,bash]
 ----
@@ -71,7 +79,7 @@ $ ls target/*.jar
 target/catalog-1.0-SNAPSHOT.jar
 ----
 
-This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the `jar` to enable runing the 
 application with `java -jar`.
 
 Now that the project is ready, let's get coding!

@@ -6,9 +6,21 @@ web UI for services deployed in the previous labs.
 image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
 
 #### What is Node.js?
-TODO: Explain what Node.js is
+
+Node.js is an open source, cross-platform runtime environment for developing server-side 
+applications using JavaScript. Node.js has an event-driven architecture capable of 
+non-blocking I/O. These design choices aim to optimize throughput and scalability in 
+Web applications with many input/output operations, as well as for real-time web applications.
+
+Node.js non-blocking architectures allows applications to process large number of 
+requests (tens of thousands) using a single thread which makes ia desirable choice for building 
+scalable web applications.
 
 #### Deploy Web UI on OpenShift
+
+The Web UI is built using Node.js for server-side JavaScript and AngularJS for client-side 
+JavaScript. Let's deploy it on OpenShift using the ceritifed Node.js container image available 
+in OpenShift. 
 
 In the previous labs, you used the OpenShift 
 {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 

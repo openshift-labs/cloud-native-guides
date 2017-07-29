@@ -17,10 +17,26 @@ modules:
       - project-setup
   nodejs:
     name: Web UI with Node.js and AngularJS
-  health:
-    name: Monitoring Application Health 
-    requires:
       - spring-boot
       - wildfly-swarm
       - vertx
+  health:
+    name: Monitoring Application Health 
+    requires:
+      - nodejs
+  fault-tolerance:
+    name: Service Resilience and Fault Tolerance
+    requires:
+      - nodejs
+  app-config:
+    name:  Application Configuration
+    requires:
+      - nodejs
+  continuous-delivery:
+    name:  Continuous Integration and Continuous Delivery
+    requires:
+      - nodejs
+  debug:
+    name:  Debugging Applications
+    requires:
       - nodejs
