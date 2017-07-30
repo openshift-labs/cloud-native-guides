@@ -17,6 +17,7 @@ modules:
       - project-setup
   nodejs:
     name: Web UI with Node.js and AngularJS
+    requires:
       - spring-boot
       - wildfly-swarm
       - vertx
@@ -28,6 +29,7 @@ modules:
     name: Service Resilience and Fault Tolerance
     requires:
       - nodejs
+      - health
   app-config:
     name:  Application Configuration
     requires:

@@ -1,5 +1,228 @@
 ## Service Resilience and Fault Tolerance
 
-TBD
+In this lab you will learn about how you can build fault-tolerant services using OpenShift capabilities as well as 
+using circuit breakers to prevent cascaing failures when when downstream dependencies fail.
+
+#### Running Multiple Instances of Applications
+
+Applications capacity for serving clients is bounded by the amount of computing power 
+allocated to them and although it's possible to increase the computing power per instance, 
+it's far easier to keep the application instances within reasonable sizes and 
+instead add more instances to increase serving capacity. Traditionally, due to 
+the stateful nature of most monolithic applications, increasing capacity had been achieved 
+via scaling up the application server and the underlying virtual or physical machine by adding 
+more cpu and memory (vertical scaling). Cloud-native apps however are stateless and can be 
+easily scaled up by spinning up more application instances and load-balancing requests 
+between those instances (horizontal scaling).
+
+image::fault-scale-up-vs-out.png[Scaling Up vs Scaling Out,width=500,align=center] 
+
+In previous labs, you learned how to build container images from your application code and 
+deploy them on OpenShift. Container images on OpenShift follow the 
+https://martinfowler.com/bliki/ImmutableServer.html[immutable server] pattern which guarantees 
+your application instances will always starts from a known well-configured state and makes 
+deploying instances a repeatable practise. Immutable server pattern simplifies scaling out 
+application instances to starting a new instance which is guaranteed to be identical to the 
+existing instances and addimg it to the load-balancer.
+
+Now, let's use the `oc scale` command to scale up the Web UI pod in the CoolStore retail 
+application to 2 instances. In OpenShift, deployment config is responsible for starting the 
+application pods and ensuring the specified number of instances for each application pod 
+is running. Therefore the number of pods you want to scale to should be defined on the 
+deployment controller.
+
+TIP: You can scale pods up and down via the OpenShift Web Console by clicking on the up and 
+down arrows on the right side of each pods blue circle.
+
+First, get list of deployment configs available in the project.
+
+[source,bash]
+----
+$ oc project {{COOLSTORE_PROJECT}}
+$ oc get dc 
+
+NAME        REVISION   DESIRED   CURRENT   TRIGGERED BY
+catalog     1          1         1         config,image(catalog:latest)
+gateway     1          1         1         config,image(gateway:latest)
+inventory   1          1         1         config,image(inventory:latest)
+web         1          1         1         config,image(web:latest)
+----
+
+And then, scale the `web` deployment config to 2 pods:
+
+[source,bash]
+----
+$ oc scale dc/web --replicas=2
+----
+
+The `--replicas` option specified the number of Web UI pods that should be running. If you look 
+at the OpenShift Web Console, you can see a new pod is being started for the Web UI and as soon 
+as the health probes pass, it will be automaticaly added to the load-balancer.
+
+image::fault-scale-up.png[Scaling Out Pods,width=400,align=center] 
+
+You can verify that the new pod is added to the load balancer by checking the details of the 
+Web UI service object:
+
+[source,bash]
+----
+$ oc describe svc/web
+
+...
+Endpoints:              10.129.0.146:8080,10.129.0.232:8080
+...
+----
+
+`Endpoints` shows the IPs of the 2 pods that the load-balancer is sending traffic to.
+
+TIP: The load-balancer by default, sends the client to the same pod on consequent requests. The 
+https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#load-balancing[load-balancing strategy] 
+can be specified using an annotation on the route object. Run the following to change the load-balancing 
+strategy to round robin: `oc annotate route/web haproxy.router.openshift.io/balance=roundrobin`
+
+#### Scaling Applications on Auto-pilot
+
+Although scaling up and scaling down pods are automated and easy using OpenShift, howerver it still 
+requires a person or a system to run a command or invoke an API call (to OpenShift REST API. Yup! there
+is a REST API for all OpenShift operations) to scale the applications. That in turn needs to be in response 
+to some sort of increase to the application load and therfore the person or the system needs to be aware of 
+how much load the application is handling at all times to make the scaling decision.
+
+OpenShift automates this aspect of scaling as well via automatically scaling the application pods up 
+and down within a specified min and max boundry based on the container metrics such as cpu and memory 
+consumption. In that case, if there is a surge of users visitng the CoolStore online shop due to 
+holiday season coming up or a good deal on a product, OpenShift would automatically add more pods to 
+handle the increase load on the application and after the load goes, the application is automatically 
+scaled down to free up compute resources.
+
+In order the define auto-scaling for a pod, we should first define how much cpu and memory a pod is 
+allowed to consume which will act as a guideline for OpenShift to know when to scale the pod up or 
+down. Since the deployment config starts the application pods, the application pod resource 
+(cpu and memory) containers should also be defined on the deployment config.
+
+When allocating compute resources to application pods, each container may specify a _request_ 
+and a _limit_ value each for CPU and memory. The 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests[_request_ constrains] 
+define how much resources should be dedicated to an application pod so that it can run. It's 
+the minimum resources needed in other words. The 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-limits[_limit_ constraint] 
+defines how much resources an application pod is allowed to consume, if there is more resources 
+on the node available than what the pod has request. This is to allow various quality of service 
+tiers with regards to compute resources. You can read more about these quality of service tiers 
+in {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#quality-of-service-tiers[OpenShift Docs].
+
+Set resource containers on the Web UI pod using `oc set resource` to the following:
+
+* Memory Request: 256 MB
+* Memory Limit: 512 MB
+* CPU Request: 200 millicore
+* CPU Limit: 300 millicore
+
+NOTE: CPU is measured in units called millicores; 1 core is 1000 millicores. Memory is measured in 
+bytes and is sepcified with {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-compute-resources[SI suffices] 
+(E, P, T, G, M, K) or their power-of-two-equivalents (Ei, Pi, Ti, Gi, Mi, Ki).
+
+[source,bash]
+----
+$ oc set resources dc/web --limits=cpu=400m,memory=512Mi --requests=cpu=200m,memory=256Mi
+
+deploymentconfig "web" resource requirements updated
+----
+
+TIP: You can also use the OpenShift Web Console by clicking on *Applications* -> *Deployments* within 
+the {{coolstore}} project. Click then on 'web' and from the *Actions* menu on the top-right, choose 
+*Edit Resource Limits*.
+
+The pods get restarted automatically setting the new resource limits in effect. Now you can define an 
+autoscaler using `oc autoscale` command to scale the Web UI pods up to 5 instances whenever 
+the CPU consumption passes 50% utilization:
+
+[source,bash]
+----
+$ oc autoscale dc/web --min 1 --max 5 --cpu-percent=50
+
+deploymentconfig "web" autoscaled
+----
+
+All set! Now the Web UI can scale automatically to multiple intances if the laod on the CoolStore 
+online store increases.
+
+TODO: Run ab or curl to tip the autoscaler and scale to multiple pods
+
+
+#### Auto-healing Application Pods
+
+We looked at how to build more resilience into the applications through scaling in the 
+previous sections. In this section, you will learn how to recover application pods when 
+failures happen. In fact, you don't need to do anything because OpenShift automatically 
+recovers failed pods when pods are not feeling healthy. The healthiness of application pods 
+is determined via the {{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes[health probes]  
+which was discussed in the previous labs.
+
+There are three auto-healing scenarios that OpenShift handles automatically:
+
+* Application Pod Temporary Failure: when an application pod fails and does not pass its 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes[liveness health probe],  
+OpenShift restarts the pod in order to give the application a chance to recover and start functioning 
+again. Issues such as deadlocks, memory leaks, network distrubance and more are all examples of issues 
+than can most likely be resolved by restarting the application despite the potential bug remaining in the 
+application.
+
+* Application Pod Permanent Failure: when an application pod fails and does not pass its 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes[readiness health probe], 
+it signals that the failure is more severe and restart does not help to mitigate the issue. OpenShift then 
+removes the application pod from the load-balancer to prevent sending traffic to it.
+
+* Application Pod Removal: if an instance of the application pod get removed, OpenShift automatically 
+starts new identical application pods based on the same container image and configuration so that the 
+specified number of instances all running at all times. An example of a removed pod is when an entire 
+node (virtual or physical machine) crashes and is removed from the cluster.
+
+TIP: OpenShift is quite orderly in this regard and if extra instaces of the application pod would start running, 
+it would kill the extra pods so that the number of running instances matches what is configured on the deployment 
+config.
+
+All of the above comes out-of-the-box and don't need any extra configuration. You can now remove one of the 
+Web UI pods to verify how OpenShift starts the pod again. First, check the Web UI pods that are running:
+
+[source,bash]
+----
+$ oc get pods -l deploymentconfig=web
+
+NAME          READY     STATUS    RESTARTS   AGE
+web-2-f6s6r   1/1       Running   0          4m
+web-2-mdsm1   1/1       Running   0          22m
+----
+
+The `-l` options tells the command to list pods that have the `deploymentconfig=web` label which is set 
+automatically by the deployment config that starts the pod. You can see pods labels by 
+`oc get pods --show-labels` command.
+
+Delete one of the Web UI pods using the `oc delete` command:
+
+[source,bash]
+----
+$ oc delete pod web-2-mdsm1
+----
+
+You need to be fast for this one! List the Web UI pods again immediately:
+
+[source,bash]
+----
+
+$ oc get pods -l deploymentconfig=web
+NAME          READY     STATUS              RESTARTS   AGE
+web-2-dlzms   0/1       ContainerCreating   0          1s
+web-2-f6s6r   1/1       Running             0          6m
+web-2-mdsm1   1/1       Terminating         0          29m
+---
+
+As the pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Web UI pod automatically.
+
+#### Preventing Cascasing Failures with Circuit Breakers
+
+
+TODO: circuit breaker in gatway. take inventory down
+
 
 Well done! You are ready to move on to the next lab.
