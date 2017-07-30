@@ -27,3 +27,6 @@ $ oc new-app --name=guides --image-stream=guides
 $ oc expose svc/guides
 $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
 ```
+
+
+TODO: Add more desc to the lab goals

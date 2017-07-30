@@ -1,7 +1,9 @@
 ## Service Resilience and Fault Tolerance
 
-In this lab you will learn about how you can build fault-tolerant services using OpenShift capabilities as well as 
-using circuit breakers to prevent cascaing failures when when downstream dependencies fail.
+In this lab you will learn about how you can build service resilience and fault-tolerant into 
+the applications both at the infrastructure level using OpenShift capabilities as well as 
+at the application level using circuit breakers to prevent cascaing failures when 
+downstream dependencies fail.
 
 #### Running Multiple Instances of Applications
 
@@ -59,7 +61,7 @@ The `--replicas` option specified the number of Web UI pods that should be runni
 at the OpenShift Web Console, you can see a new pod is being started for the Web UI and as soon 
 as the health probes pass, it will be automaticaly added to the load-balancer.
 
-image::fault-scale-up.png[Scaling Out Pods,width=400,align=center] 
+image::fault-scale-up.png[Scaling Up Pods,width=500,align=center] 
 
 You can verify that the new pod is added to the load balancer by checking the details of the 
 Web UI service object:
@@ -102,10 +104,10 @@ down. Since the deployment config starts the application pods, the application p
 
 When allocating compute resources to application pods, each container may specify a _request_ 
 and a _limit_ value each for CPU and memory. The 
-{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests[_request_ constrains] 
-define how much resources should be dedicated to an application pod so that it can run. It's 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests[_request_] 
+values define how much resources should be dedicated to an application pod so that it can run. It's 
 the minimum resources needed in other words. The 
-{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-limits[_limit_ constraint] 
+{{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-limits[_limit_] values 
 defines how much resources an application pod is allowed to consume, if there is more resources 
 on the node available than what the pod has request. This is to allow various quality of service 
 tiers with regards to compute resources. You can read more about these quality of service tiers 
@@ -130,7 +132,7 @@ deploymentconfig "web" resource requirements updated
 ----
 
 TIP: You can also use the OpenShift Web Console by clicking on *Applications* -> *Deployments* within 
-the {{coolstore}} project. Click then on 'web' and from the *Actions* menu on the top-right, choose 
+the {{coolstore}} project. Click then on *web* and from the *Actions* menu on the top-right, choose 
 *Edit Resource Limits*.
 
 The pods get restarted automatically setting the new resource limits in effect. Now you can define an 
@@ -195,7 +197,7 @@ web-2-mdsm1   1/1       Running   0          22m
 ----
 
 The `-l` options tells the command to list pods that have the `deploymentconfig=web` label which is set 
-automatically by the deployment config that starts the pod. You can see pods labels by 
+automatically by the deployment config that starts the pod. You can see pods labels using 
 `oc get pods --show-labels` command.
 
 Delete one of the Web UI pods using the `oc delete` command:
@@ -209,20 +211,141 @@ You need to be fast for this one! List the Web UI pods again immediately:
 
 [source,bash]
 ----
-
 $ oc get pods -l deploymentconfig=web
+
 NAME          READY     STATUS              RESTARTS   AGE
 web-2-dlzms   0/1       ContainerCreating   0          1s
 web-2-f6s6r   1/1       Running             0          6m
 web-2-mdsm1   1/1       Terminating         0          29m
----
+----
 
 As the pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Web UI pod automatically.
 
 #### Preventing Cascasing Failures with Circuit Breakers
 
+In this lab so far you have been looking how to make sure the application pod is running, can scale to accomodate 
+user load and recovers from failures. However failures also happen in the downstream services that an application 
+is depenent on. It's not uncommon that the whole application fails or slows down because one of the downstream 
+services consumed by the application is not responsive or responds slowly.
 
-TODO: circuit breaker in gatway. take inventory down
+https://martinfowler.com/bliki/CircuitBreaker.html[Circuit Breaker] is a pattern to address this issue and while 
+became popular with microservice architecture, it's a useful pattern for all applications that depend on other 
+services.
+
+The idea behind the circuit breaker is that you wrap the API calls to downstream services in a circuit breaker 
+object, which monitors for failures. Once the service invocation failes certain number of times, the circuit 
+breaker flips open, and all further calls to the circuit breaker return with an error or a fallback logic 
+without making the call to the unresponive API. After a certain period, the circuit breaker for allow a call 
+to the downstream service to test the waters. If the call success, the circuit breaker closes and would call 
+the downstream service on consequent calls.
 
 
-Well done! You are ready to move on to the next lab.
+image::fault-circuit-breaker.png[Circuit Breaker,width=300,align=center] 
+
+Spring Boot and WildFly Swarm provide convenient integration with https://github.com/Netflix/Hystrix[Hystrix] 
+which is a framework that provides circuit breaker functionality. Eclipse Vert.x in addition to integrating 
+with Hystrix, it provides built-in support for circuit breakers.
+
+Let's take the Inventory service down and see what happens to the CoolStore online shop.
+
+[source,bash]
+----
+$ oc scale dc/inventory --replicas=0
+----
+
+Now point your browser at the Web UI route url.
+
+TIP: You can find the Web UI route url in the OpenShift Web Console above the `web` pod or using the 
+`oc get routes` command.
+
+image::fault-coolstore-no-cb.png[CoolStore Without Circuit Breaker,width=800,align=center] 
+
+Although only the Inventory service is down, there are no products displayed in the online store because 
+the Inventory service call failure propagates and causes the entire API Gateway to blow up! You can verify 
+that by checking the logs API Gateway logs:
+
+[source,bash]
+----
+$ oc logs dc/gateway
+----
+
+TODO: Log something form the vert.x gateway and grep it here
+
+The CoolStore online shop cannot function without the products list, however the inventory status is not a 
+crucial bit in the shopping experience. Let's add a circuit breaker for calls to the Inventory service and 
+provide a default inventory status when the Inventory service is not responsive.
+
+In the `gateway-vertx` project, open `src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java` in 
+a text editor or your IDE and replace the `inventory(...)` method with the following:
+
+[source,java]
+----
+private Future<Void> inventory(JsonObject product) {
+    Future<Void> inventoryFuture = Future.future();
+    String baseUrl = config().getString("catalog.url", "http://catalog:8080") + "/api/inventory/";
+
+    CircuitBreakerOptions options = new CircuitBreakerOptions()
+            .setMaxFailures(5)
+            .setTimeout(1000);
+    CircuitBreaker breaker = CircuitBreaker.create("inventory", vertx, options);
+
+    breaker.execute(future -> {
+        client.getAbs(baseUrl + product.getString("itemId"),
+                resp -> {
+                    if (resp.statusCode() == 200) {
+                        resp.bodyHandler(buff -> {
+                            product.put("availability",
+                                    new JsonObject().put("quantity", new JsonObject(buff).getInteger("quantity")));
+                            inventoryFuture.complete();
+                            future.complete();
+                        });
+                    } else {
+                        inventoryFuture.fail(resp.statusMessage());
+                        future.fail(resp.statusMessage());
+                    }
+                }).end();
+    }).setHandler(ar -> {
+        if (ar.failed()) {
+            product.put("availability", new JsonObject().put("quantity", -1));
+            inventoryFuture.fail(ar.cause().getMessage());
+        }
+    });
+
+    return inventoryFuture;
+}
+----
+
+The above code is quite similar to the previous code however it wraps the calls to the Inventory 
+service in a `CircuitBreaker` using the built-in circuit breaker in Vert.x. The circuit breaker 
+is configured (using `CircuitBreakerOptions`) to flip open after 5 failures and time out on the 
+calls after 1 second. 
+
+The `setHandler(...)` method, defines the fallback logic when the circuit is open. It will then, 
+return a default -1 quantity for each product without calling the Inventory service.
+
+Build the API Gateway using Maven and trigger a new continer image build on OpenShift using 
+the `oc start-build` command which allows you to build container images directly from the application 
+archives (`jar`, `war`, etc) without the need to have access to the source code for example by downloading 
+the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
+
+[source,bash]
+----
+$ mvn package
+$ oc start-build gateway --from-file=target/gateway-1.0-SNAPSHOT.jar
+----
+
+As soon as the new `gateway` container image is built, OpenShift deploys the new image automatically 
+thanks to the {{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers[triggers] 
+defined on the `gateway` deployment config.
+
+Let's try the Web UI again in the browser while the Inventory service is still down.
+
+image::fault-coolstore-with-cb.png[CoolStore With Circuit Breaker,width=800,align=center] 
+
+TODO: add the coolstore screenshot with products out of stock
+
+It looks better now! The Inventory service failure is contained and the CoolStore online shop can continue to function 
+and accept orders. Selling an out-of-stock product to a few customers can simply be resolved by a discount coupons while 
+losing the trust of all visiting customers due to a crashed online store is not so easily repairable!
+
+Well done! Let's move on to the next.
