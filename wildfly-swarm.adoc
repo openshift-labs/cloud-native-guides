@@ -168,8 +168,9 @@ Examine `pom.xml` and note the `org.wildfly.swarm:jpa` that is already added to 
 Examine `src/main/resources/META-INF/persistence.xml` to see the JPA datasource configuration for this project. Also note 
 that the configurations uses `META-INF/load.sql` to import initial data into the database.
 
-Examine `src/main/resources/project-defaults.yml` to see the database connection details. You are using an H2 database as 
-the default database in this project.
+Examine `src/main/resources/project-defaults.yml` to see the database connection details. An in-memory H2 database is used 
+in this lab for local development and in the following labs will be replaced with a PostgreSQL database. Be patient! More 
+on that later.
 
 #### Create a RESTful Service
 
