@@ -152,7 +152,7 @@ online store increases.
 TODO: Run ab or curl to tip the autoscaler and scale to multiple pods
 
 
-#### Auto-healing Application Pods
+#### Auto-healing Failed Application Pods
 
 We looked at how to build more resilience into the applications through scaling in the 
 previous sections. In this section, you will learn how to recover application pods when 
