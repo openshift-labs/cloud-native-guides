@@ -139,6 +139,10 @@ The pods get restarted automatically setting the new resource limits in effect. 
 autoscaler using `oc autoscale` command to scale the Web UI pods up to 5 instances whenever 
 the CPU consumption passes 50% utilization:
 
+TIP: You can configure an autoscaler using OpenShift Web Console by clicking on *Applications* -> *Deployments* within 
+the {{coolstore}} project. Click then on *web* and from the *Actions* menu on the top-right, choose 
+*Edit Autoscaler*.
+
 [source,bash]
 ----
 $ oc autoscale dc/web --min 1 --max 5 --cpu-percent=50
@@ -147,10 +151,33 @@ deploymentconfig "web" autoscaled
 ----
 
 All set! Now the Web UI can scale automatically to multiple intances if the laod on the CoolStore 
-online store increases.
+online store increases. You can verify that using for example `ab`, the 
+https://httpd.apache.org/docs/2.4/programs/ab.html[Apache HTTP server benchmarking tool]. Let's 
+deploy the `ab` container image from https://hub.docker.com/r/jordi/ab/[Docker] Hub and 
+generate some load on the Web UI. Since we want to run this container only once and after it runs 
+it's not needed anymore, use the 'oc run' command:
 
-TODO: Run ab or curl to tip the autoscaler and scale to multiple pods
+[source,bash]
+----
+oc run web-load --generator=run-pod/v1 --image=jordi/ab -- ab -n 10000 -c 10 http://web:8080/
+----
 
+In the above, `--image` specified which container image should be deployed. OpenShift will first 
+look in the internal image registry and then in defined upstream registries 
+(https://access.redhat.com/search/#/container-images[Red Hat Container Catalog] and 
+https://hub.docker.com/[Docker Hub] by default) to find and pull this image. After `--`, you 
+can override the container entry point to whatever command you want to run in that container.
+
+As you the `ab` container generates the load, you will notice that it will create a spike in the 
+Web UI cpu usage and trigger the autoscaler to scale the Web UI cotnainer to 5 pods (as configured 
+on the deployment config) to cope with the load.
+
+image::fault-autoscale-web.png[Web UI Automatically Scaled,width=500,align=center] 
+
+You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
+*Monitoring* and then the arrow (*>*) on the left side of *web-n* under *Deployments*.
+
+image::fault-autoscale-metrics.png[Web UI Aggregated CPU Metrics,width=*00,align=center] 
 
 #### Auto-healing Failed Application Pods
 

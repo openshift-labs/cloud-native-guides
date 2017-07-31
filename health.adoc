@@ -173,6 +173,12 @@ $ oc set probe dc/catalog --readiness --get-url=http://:8080/health
 Viola! OpenShift automatically {{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers[restarts] 
 the Catalog pod and as soon as the health probes succeed, it is ready to receive traffic. 
 
+TIP: Fabric8 Maven Plugin can also be configured to automatically set the health probes when running `fabric8:deploy` 
+goal. Read more on https://maven.fabric8.io/#enrichers[Fabric8 docs] under 
+https://maven.fabric8.io/#f8-spring-boot-health-check[Spring Boot], 
+https://maven.fabric8.io/#f8-wildfly-swarm-health-check[WildFly Swarm] and 
+https://maven.fabric8.io/#f8-vertx-health-check[Eclipse Vert.x].
+
 ####  Monitoring Inventory Service Health
 
 Adding liveness and readiness probes can be done at the same time if you want to define the same health endpoint 
