@@ -262,14 +262,16 @@ image::fault-coolstore-no-cb.png[CoolStore Without Circuit Breaker,width=800,ali
 
 Although only the Inventory service is down, there are no products displayed in the online store because 
 the Inventory service call failure propagates and causes the entire API Gateway to blow up! You can verify 
-that by checking the logs API Gateway logs:
+this by checking the logs API Gateway logs:
 
 [source,bash]
 ----
 $ oc logs dc/gateway
-----
 
-TODO: Log something form the vert.x gateway and grep it here
+...
+io.netty.channel.AbstractChannel$AnnotatedNoRouteToHostException: No route to host: inventory.coolstore.svc.cluster.local/172.30.7.33:8080
+...
+----
 
 The CoolStore online shop cannot function without the products list, however the inventory status is not a 
 crucial bit in the shopping experience. Let's add a circuit breaker for calls to the Inventory service and 
@@ -341,8 +343,6 @@ defined on the `gateway` deployment config.
 Let's try the Web UI again in the browser while the Inventory service is still down.
 
 image::fault-coolstore-with-cb.png[CoolStore With Circuit Breaker,width=800,align=center] 
-
-TODO: add the coolstore screenshot with products out of stock
 
 It looks better now! The Inventory service failure is contained and the CoolStore online shop can continue to function 
 and accept orders. Selling an out-of-stock product to a few customers can simply be resolved by a discount coupons while 

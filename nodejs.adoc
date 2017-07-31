@@ -46,7 +46,7 @@ instead. To give you a hint, start by clicking on *Add to project* within the `c
 
 [source,bash]
 ----
-$ oc new-app nodejs~{{LABS_GIT_REPO}} --context-dir= --name=web
+$ oc new-app nodejs~{{LABS_GIT_REPO}} --context-dir=projects/web-nodejs --name=web
 ----
 
 A build gets created and starts building the Node.js Web UI container image. You can see the build 

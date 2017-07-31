@@ -6,7 +6,7 @@ ENV DEFAULT_LAB="roadshow"
 
 ADD *.adoc /opt/data/workshopper-content/
 ADD *.yml /opt/data/workshopper-content/
-ADD images /opt/data/workshopper-content/
+ADD images /opt/data/workshopper-content/images
 
 USER root
 
