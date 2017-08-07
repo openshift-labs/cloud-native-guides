@@ -1,3 +1,11 @@
 ##  Continuous Integration and Continuous Delivery
 
 TBD
+
+Goal: demonstrate OpenShift pipelines
+Create Git repository (GitLab/GitHub/Gogs) for catalog service
+Add existing catalog code to the Git repository
+Create a pipeline: 
+checkout, build jar, automated tests, build image, rolling deploy, verify tests
+Add a webhook to the git repo
+Verify triggering the webhook

@@ -3,3 +3,16 @@
 TBD
 
 Well done! You are ready to move on to the next lab.
+
+
+Goal: demonstrate centralized logging and OpenShift CLI dev capabilities
+An error happens when …
+Cause TBD
+Has to be in catalog service since webhooks configured
+See container logs for an exception (in Kibana?)
+Start a pod debug shell via CLI: oc debug
+Deploy a new container from the same image via web console
+Enable DEBUG on the new Catalog container and forward ports
+Remote JPDA debug in JBDS and watch code execute line-by-line
+Find the bug and fix the code
+Commit code

@@ -32,3 +32,32 @@ different configurations that are provided to the application at runtime.
 #### Do What?!
 
 Well done! You are ready to move on to the next lab.
+
+
+
+Goal: demonstrate OpenShift configmaps, secrets and fabric8 spring-cloud integration (spring-cloud-kube)
+Add a ConfigMap for catalog service configuration
+Add a secret for Catalog database credentials
+Use spring-cloud-kube to get the config and secret into Catalog service
+Verify Catalog API
+
+
+
+
+# WildFly Swarm Config
+
+swarm:
+  datasources:
+    datasources:
+      data-sources:
+        InventoryDS:
+          driver-name: postgresql
+          connection-url: jdbc:postgresql://inventory-postgresql:5432/inventorydb
+          user-name: userV7J
+          password: Sfa1whWOfspSXcsqs
+
+$ oc create configmap inventory-config --from-file=project-defaults.yml=/tmp/project-defaults.yml
+$ oc volume dc/inventory --add --configmap-name=inventory-config --mount-path=/app/config
+$ oc rsh dc/inventory
+$ cat /app/config/project-defaults.yml
+$ oc set env dc/inventory JAVA_OPTIONS="-Dswarm.project.stage.file=file:///app/config/project-defaults.yml"

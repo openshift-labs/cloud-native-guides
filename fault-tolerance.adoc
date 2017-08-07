@@ -155,15 +155,16 @@ online store increases. You can verify that using for example `ab`, the
 https://httpd.apache.org/docs/2.4/programs/ab.html[Apache HTTP server benchmarking tool]. Let's 
 deploy the `ab` container image from https://hub.docker.com/r/jordi/ab/[Docker] Hub and 
 generate some load on the Web UI. Since we want to run this container only once and after it runs 
-it's not needed anymore, use the 'oc run' command:
+it's not needed anymore, use the 'oc run' command with '--rm' option to remove the container 
+after it's done running:
 
 [source,bash]
 ----
-oc run web-load --generator=run-pod/v1 --image=jordi/ab -- ab -n 10000 -c 10 http://web:8080/
+$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 25000 -c 10 http://web:8080/
 ----
 
 In the above, `--image` specified which container image should be deployed. OpenShift will first 
-look in the internal image registry and then in defined upstream registries 
+looks in the internal image registry and then in defined upstream registries 
 (https://access.redhat.com/search/#/container-images[Red Hat Container Catalog] and 
 https://hub.docker.com/[Docker Hub] by default) to find and pull this image. After `--`, you 
 can override the container entry point to whatever command you want to run in that container.
@@ -172,12 +173,18 @@ As you the `ab` container generates the load, you will notice that it will creat
 Web UI cpu usage and trigger the autoscaler to scale the Web UI cotnainer to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
+NOTE: Depending on the resources available on the OpenShift cluster, Web UI might scale to fewer 
+than 5 pods to handle the extra load. 
+
 image::fault-autoscale-web.png[Web UI Automatically Scaled,width=500,align=center] 
 
 You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
 *Monitoring* and then the arrow (*>*) on the left side of *web-n* under *Deployments*.
 
 image::fault-autoscale-metrics.png[Web UI Aggregated CPU Metrics,width=*00,align=center] 
+
+When the load on Web UI disappears, after a while OpenShift scales the Web UI pods down to the minimum 
+or whatever this needed to cope with the load at that point.
 
 #### Auto-healing Failed Application Pods
 
