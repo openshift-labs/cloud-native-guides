@@ -24,8 +24,8 @@ Deploy on OpenShift
 $ oc new-build . --name=guides
 $ oc start-build guides --from-dir=.
 $ oc new-app --name=guides --image-stream=guides
-$ oc expose svc/guides
 $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
+$ oc expose svc/guides
 ```
 
 Deploy on OpenShift Online
@@ -38,8 +38,8 @@ $ docker build -t registry.CLUSTER-ID.openshift.com/roadshow/guides .
 $ docker push registry.CLUSTER-ID.openshift.com/roadshow/guides
 
 $ oc new-app --name=guides --image-stream=guides
-$ oc expose svc/guides
 $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
+$ oc expose svc/guides
 ```
 
 TODO: Add more desc to the lab goals

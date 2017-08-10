@@ -189,7 +189,7 @@ import javax.ws.rs.core.MediaType;
 @Path("/")
 @ApplicationScoped
 public class InventoryResource {
-    @PersistenceContext(unitName = "MyPU")
+    @PersistenceContext(unitName = "InventoryPU")
     private EntityManager em;
 
     @GET
@@ -262,7 +262,7 @@ To build and deploy the Inventory service on OpenShift using the `fabric8` maven
 
 [source,bash]
 ----
-$ mvn clean package fabric8:build fabric8:deploy
+$ mvn fabric8:deploy
 ----
 
 This will cause the following to happen:
