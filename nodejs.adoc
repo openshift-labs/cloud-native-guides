@@ -46,7 +46,7 @@ instead. To give you a hint, start by clicking on *Add to project* within the `c
 
 [source,bash]
 ----
-$ oc new-app nodejs~{{LABS_GIT_REPO}} --context-dir=projects/web-nodejs --name=web
+$ oc new-app nodejs~{{LABS_GIT_REPO}} --context-dir=projects/web-nodejs --name=web --labels=app=coolstore
 ----
 
 A build gets created and starts building the Node.js Web UI container image. You can see the build 
@@ -94,5 +94,20 @@ image::coolstore-web.png[CoolStore Shop,width=800,align=center]
 
 
 TODO: explain how web ui found the gateway. service discovery, internal dns, etc 
+
+
+[TIP]
+====
+Currently the `fabric8-maven-plugin` has a 
+https://github.com/fabric8io/fabric8-maven-plugin/issues/742[bug] 
+that prevents grouping the pods properly. Run the following 
+tweak to assign an `app` label to deployment configs and group them 
+together in the OpenShift Web Console
+
+[source,bash]
+----
+$ oc label dc app=coolstore --all --overwrite
+----
+====
 
 Well done! You are ready to move on to the next lab.

@@ -57,7 +57,8 @@ $ oc new-app postgresql-persistent \
     --param=DATABASE_SERVICE_NAME=inventory-postgresql \
     --param=POSTGRESQL_DATABASE=inventory \
     --param=POSTGRESQL_USER=inventory \
-    --param=POSTGRESQL_PASSWORD=inventory
+    --param=POSTGRESQL_PASSWORD=inventory \
+    --labels=app=coolstore
 ----
 
 IMPORTANT: The `--param` parameter provides a value for the given parameters. The recommended approach is 
@@ -74,7 +75,8 @@ $ oc new-app postgresql-persistent \
     --param=DATABASE_SERVICE_NAME=catalog-postgresql \
     --param=POSTGRESQL_DATABASE=catalog \
     --param=POSTGRESQL_USER=catalog \
-    --param=POSTGRESQL_PASSWORD=catalog
+    --param=POSTGRESQL_PASSWORD=catalog \
+    --labels=app=coolstore
 ----
 
 Now you can move on to configure the Inventory and Catalog service to use these PostgreSQL databases.
@@ -353,7 +355,7 @@ $ psql -U catalog -c "select item_id, name, price from product"
 ---------+-----------------------------+-------
  329299  | Red Fedora                  | 34.99
  329199  | Forge Laptop Sticker        |   8.5
- 165613  | Solitem_id Performance Polo |  17.8
+ 165613  | Solid Performance Polo      |  17.8
  165614  | Ogio Caliber Polo           | 28.75
  165954  | 16 oz. Vortex Tumbler       |     6
  444434  | Pebble Smart Watch          |    24

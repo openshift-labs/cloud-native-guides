@@ -318,11 +318,12 @@ a text editor or your IDE and replace the `inventory(...)` method with the follo
 ----
 private Future<Void> inventory(JsonObject product) {
     Future<Void> inventoryFuture = Future.future();
-    String baseUrl = config().getString("catalog.url", "http://catalog:8080") + "/api/inventory/";
+    String baseUrl = config().getString("inventory.url", "http://inventory:8080") + "/api/inventory/";
 
     CircuitBreakerOptions options = new CircuitBreakerOptions()
             .setMaxFailures(5)
             .setTimeout(1000);
+
     CircuitBreaker breaker = CircuitBreaker.create("inventory", vertx, options);
 
     breaker.execute(future -> {
@@ -342,8 +343,8 @@ private Future<Void> inventory(JsonObject product) {
                 }).end();
     }).setHandler(ar -> {
         if (ar.failed()) {
-            product.put("availability", new JsonObject().put("quantity", -1));
-            inventoryFuture.fail(ar.cause().getMessage());
+            LOGGER.log(Level.SEVERE, "Inventory failed for product "
+                    + product.getString("itemId") + ": " + ar.cause().getMessage());
         }
     });
 
@@ -356,8 +357,8 @@ service in a `CircuitBreaker` using the built-in circuit breaker in Vert.x. The 
 is configured (using `CircuitBreakerOptions`) to flip open after 5 failures and time out on the 
 calls after 1 second. 
 
-The `setHandler(...)` method, defines the fallback logic when the circuit is open. It will then, 
-return a default -1 quantity for each product without calling the Inventory service.
+The `setHandler(...)` method, defines the fallback logic when the circuit is open and logs an 
+error without calling the Inventory service when open.
 
 Build the API Gateway using Maven and trigger a new continer image build on OpenShift using 
 the `oc start-build` command which allows you to build container images directly from the application 
@@ -378,8 +379,9 @@ Let's try the Web UI again in the browser while the Inventory service is still d
 
 image::fault-coolstore-with-cb.png[CoolStore With Circuit Breaker,width=800,align=center] 
 
-It looks better now! The Inventory service failure is contained and the CoolStore online shop can continue to function 
-and accept orders. Selling an out-of-stock product to a few customers can simply be resolved by a discount coupons while 
+It looks better now! The Inventory service failure is contained and the inventory status is removed from the 
+user interface and allows the CoolStore online shop to continue functioning and accept orders. Selling an 
+out-of-stock product to a few customers can simply be resolved by a discount coupons while 
 losing the trust of all visiting customers due to a crashed online store is not so easily repairable!
 
 Well done! Let's move on to the next.

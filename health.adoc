@@ -95,11 +95,15 @@ CAUTION: The route urls in your project would be different from the ones in this
 
 [source,bash]
 ----
-$ curl http://INVENTORY-ROUTE-URL/health
+$ curl http://INVENTORY-ROUTE-URL/node
 
-{"checks": [
-{"id":"Inventory Health","result":"UP","data": {"date":"Sat Jul 29 04:37:13 UTC 2017"}}],
-"outcome": "UP"
+{
+    "name" : "localhost",
+    "server-state" : "running",
+    "suspend-state" : "RUNNING",
+    "running-mode" : "NORMAL",
+    "uuid" : "79b3ffc5-d98c-4b8e-ae5c-9756ed13944a",
+    "swarm-version" : "2017.8.1"
 }
 ----
 
@@ -188,7 +192,7 @@ Add liveness and readiness probes to the Inventory service:
 
 [source,bash]
 ----
-$ oc set probe dc/inventory --liveness --readiness --get-url=http://:8080/health
+$ oc set probe dc/inventory --liveness --readiness --get-url=http://:8080/node
 ----
 
 OpenShift automatically restarts the Inventory pod and as soon as the health probes succeed, it is ready to receive traffic. 
@@ -200,15 +204,15 @@ configured as you wanted:
 ----
 $ oc describe dc/inventory
 
-Name:		inventory
-Namespace:	coolstore
+Name:       inventory
+Namespace:  coolstore
 ...
   Containers:
    wildfly-swarm:
-    Image:		172.30.200.222:5000/coolstore/inventory@sha256:afbf4e134573bfaa61690d346bb76866a6881977558bec4f0db74390ac2be950
-    Ports:		8080/TCP, 9779/TCP, 8778/TCP
-    Liveness:		http-get http://:8080/health delay=180s timeout=1s period=10s #success=1 #failure=3
-    Readiness:		http-get http://:8080/health delay=10s timeout=1s period=10s #success=1 #failure=3
+    Image:        172.30.200.222:5000/coolstore/inventory@sha256:afbf4e134573bfaa61690d346bb76866a6881977558bec4f0db74390ac2be950
+    Ports:        8080/TCP, 9779/TCP, 8778/TCP
+    Liveness:     http-get http://:8080/node delay=180s timeout=1s period=10s #success=1 #failure=3
+    Readiness:    http-get http://:8080/node delay=10s timeout=1s period=10s #success=1 #failure=3
 ...
 ----
 
