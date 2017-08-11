@@ -1,18 +1,188 @@
 ## Debugging Applications
 
-TBD
+TODO:
+- Note that the inventory status is missing for only one product
+- Check the logs for gateway
+
+[source,bash]
+----
+$ oc logs dc/gateway | grep -i error
+
+...
+Inventory error for 444436: Invalid response from inventory: 204
+...
+----
+
+- Something is wrong in the inventory service
+- Check the logs in the inventory
+
+[source,bash]
+----
+$ oc logs dc/inventory | grep -i error
+----
+
+- Nothing relevant is there!
+- Call the inventory api for the specific product with error
+
+[source,bash]
+----
+$ curl -v http://INVENTORY-URL/api/inventory/444436
+----
+
+Nothing comes back!
+
+TIP: You can find out the Inventory route url using `oc get routes`
+
+- Let's debug
+- Enable debug on inventory
+
+[source,bash]
+----
+$ oc env dc/inventory -e JAVA_DEBUG=true -e JAVA_DEBUG_PORT=8787
+----
+
+Inventory pod gets restarted in debug mode. Wait till it's ready
+
+- Port forward 
+
+[source,bash]
+----
+$ oc get pods --show-all=false
+
+NAME                           READY     STATUS    RESTARTS   AGE
+...
+inventory-7-wkg6x              1/1       Running   0          26m
+...
+----
+
+[source,bash]
+----
+$ oc port-forward INVENTORY-POD-NAME 8787
+
+Forwarding from 127.0.0.1:8787 -> 8787
+Forwarding from [::1]:8787 -> 8787
+----
+
+- Run remote debug against inventory
+
+If JDB
+
+[source,bash]
+----
+$ cd inventory-wildfly-swarm
+$ jdb -attach 8787 -sourcepath :src/main/java/
+
+Set uncaught java.lang.Throwable
+Set deferred uncaught java.lang.Throwable
+Initializing jdb ...
+>
+----
+
+- Breakpoint on the getInventory method
+
+[source,bash]
+----
+> stop in com.redhat.cloudnative.inventory.InventoryResource.getAvailability
+----
+
+
+- Call inventory to stop at breakpoint
+
+[source,bash]
+----
+$ curl -v http://INVENTORY-URL/api/inventory/444436
+----
+
+- Stops at inventory. Run `list` command to see the source code
+
+[source,bash]
+----
+> list
+----
+
+You'll see something like:
+
+[source,bash]
+----
+default task-3[1] list
+21        @GET
+22        @Path("/api/inventory/{itemId}")
+23        @Produces(MediaType.APPLICATION_JSON)
+24        public Inventory getAvailability(@PathParam("itemId") String itemId) {
+25 =>         Inventory inventory = em.find(Inventory.class, itemId);
+26            return inventory;
+27        }
+28    }
+----
+
+The arrow shows where you are right now (line 25) .
+
+- Execute one line  
+[source,bash]
+----
+> next
+----
+
+- Print the local variables
+[source,bash]
+----
+> locals
+----
+
+You'll get something like
+
+[source,bash]
+----
+default task-2[1] locals
+Method arguments:
+itemId = "444436"
+Local variables:
+inventory = null
+----
+
+You found it! Inventory object is null because we don't have any database entry for this 
+product in the Inventory database. It could be possibly because this product is discontinued 
+but not removed from the product catalog yet.
+
+Exit the debugger if still connected
+
+[source,bash]
+----
+> quit
+----
+
+- Edit `InventoryResource.java` add update the `getAvailability()` method with the following 
+code in order to return a zero inventory for products that don't exist in the inventory 
+database:
+
+[source,java]
+----
+public Inventory getAvailability(@PathParam("itemId") String itemId) {
+    Inventory inventory = em.find(Inventory.class, itemId);
+
+    if (inventory == null) {
+        inventory = new Inventory();
+        inventory.setItemId(itemId);
+        inventory.setQuantity(0);
+    }
+
+    return inventory;
+}
+----
+
+
+- Commit code
+
+[source,bash]
+----
+$ git commit -m "inventory returns zero for removed products" 
+$ git push origin master
+----
+
+- Pipline executes
+- Viola!
 
 Well done! You are ready to move on to the next lab.
 
 
 Goal: demonstrate centralized logging and OpenShift CLI dev capabilities
-An error happens when …
-Cause TBD
-Has to be in catalog service since webhooks configured
-See container logs for an exception (in Kibana?)
-Start a pod debug shell via CLI: oc debug
-Deploy a new container from the same image via web console
-Enable DEBUG on the new Catalog container and forward ports
-Remote JPDA debug in JBDS and watch code execute line-by-line
-Find the bug and fix the code
-Commit code
