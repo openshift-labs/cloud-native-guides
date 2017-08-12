@@ -6,18 +6,18 @@ look into line-by-line code execution as the code runs inside a container on Ope
 #### Investigate The Bug
 
 CoolStore application seem to have a bug that causes the inventory status for one of the 
-products not be shown in the web interface. 
+products not be displayed in the web interface. 
 
 image::debug-coolstore-bug.png[Inventory Status Bug,width=900,align=center]
 
-This is not an expected behaviour! In previous labs, you added a circuit breaker to 
-projected the coolstore application from failures and in case the Inventory API is not 
+This is not an expected behavior! In previous labs, you added a circuit breaker to 
+protect the coolstore application from failures and in case the Inventory API is not 
 available, to skip it and show the products without the inventory status. However, right 
 now the inventory status is available for all products but one which is not how we 
 expect to see the products.
 
 Since the product list is provides by the API Gateway, take a look into the API Gateway 
-logs to see if there are any errors logged:
+logs to see if there are any errors:
 
 [source,bash]
 ----
@@ -29,10 +29,10 @@ Inventory error for 444436: Invalid response from inventory: 204
 ----
 
 Oh! Something seems to be wrong with the response the API Gateway has received from the 
-Inventory API for a single product with id `444436`. 
+Inventory API for the product id `444436`. 
 
-Look into the Inventory pod logs to investigate furture and see if you can find more  
-information about this issue:
+Look into the Inventory pod logs to investigate further and see if you can find more  
+information about this bug:
 
 [source,bash]
 ----
@@ -40,7 +40,7 @@ $ oc logs dc/inventory | grep -i error
 ----
 
 There doesn't seem to be anything relevant to the `invalid response` error that the 
-API Gateway received! 
+API Gateway received either! 
 
 Invoke the Inventory API using `curl` for the suspect product id to see what actually 
 happens when API Gateway makes this call:
@@ -65,8 +65,8 @@ Let's debug the Inventory service to get to the bottom of this!
 
 Remote debugging is a useful debugging technique for application development which allows 
 looking into the code that is being executed somewhere else on a different machine and 
-execute the code line-by-line to help investigate bugs and issues. Remote debugging Java SE 
-standard debugging architecture which you can learn more about it in https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs].
+execute the code line-by-line to help investigate bugs and issues. Remote debugging is 
+part of  Java SE standard debugging architecture which you can learn more about it in https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html[Java SE docs].
 
 The Java image on OpenShift has built-in support for remote debugging and it can be enabled 
 by setting the `JAVA_DEBUG=true` environment variables on the deployment config for the pod 
@@ -80,17 +80,17 @@ $ oc env dc/inventory -e JAVA_DEBUG=true
 ----
 
 The default port for remoting debugging is `5005` however you can change this port by setting 
-the `JAVA_DEBUG_PORT` environment varialbe. You can read about all the supported environment 
-variables to change the Java image behaviour in the https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables[Java S2I Image docs].
+the `JAVA_DEBUG_PORT` environment variable. You can read more about all the supported environment 
+variables for changing the Java image behavior in the https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables[Java S2I Image docs].
 
-As soon as you set the environment varialble, a new Inventory pod gets started with the new 
+As soon as you set the environment variable, a new Inventory pod gets started with the new 
 configurations (environment variables).
 
-You can now use the CLI to forward a local port to the remote debbuging port on the Inventory 
+You can now use the OpenShift CLI to forward a local port to the remote debugging port on the Inventory 
 pod and treat it as if the JVM was running locally on your machine. Find out the name of the 
-Inventory pod:
+Inventory pod using `oc get` command:
 
-TIP: The `--show-all=false` option tells the CLI to list only pods that are running excluding 
+TIP: The `--show-all=false` option makes the OpenShift CLI to list only pods that are running excluding 
 pods that are stopped.
 
 [source,bash]
@@ -116,7 +116,9 @@ Forwarding from 127.0.0.1:5005 -> 5005
 Forwarding from [::1]:5005 -> 5005
 ----
 
-You are all set now to start debugging using the tools of you choice. Remote debugging can be done 
+You are all set now to start debugging using the tools of you choice. 
+
+Remote debugging can be done 
 using the prevalently available Java Debugger command line,`jdb`, or any modern IDE like JBoss 
 Developer Studio (Eclipse) and IntelliJ IDEA.
 
@@ -125,18 +127,18 @@ Developer Studio (Eclipse) and IntelliJ IDEA.
 #### Debug Remotely Using JDB (The Java Debugger)
 
 The http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jdb.html[Java Debugger (JDB)] 
-is a simple command-line debugger for Java classes. The `jdb` command is included by default in 
+is a simple command-line debugger for Java. The `jdb` command is included by default in 
 Java SE and provides inspection and debugging of a local or remote JVM. Although `jdb` is not 
 the most convenient way to debug Java code, it's a handy tool since it can be run on any environment 
 that Java SE is available.
 
-Go to the `inventory-wildfly-swarm` project folder and start JDB by pointing it at where it can 
-find the source code for the application under debug:
+Go to the `inventory-wildfly-swarm` project folder and start JDB by pointing it at the folder 
+containing the Java source code for the application under debug:
 
 [source,bash]
 ----
 $ cd inventory-wildfly-swarm
-$ jdb -attach 8787 -sourcepath :src/main/java/
+$ jdb -attach 5005 -sourcepath :src/main/java/
 
 Set uncaught java.lang.Throwable
 Set deferred uncaught java.lang.Throwable
@@ -147,9 +149,9 @@ Initializing jdb ...
 Now that you are connected to the JVM running inside the Inventory pod on OpenShift, add 
 a breakpoint to pause the code execution when it reaches the Java method handling the 
 REST API `/api/inventory`. Review the `InventoryResource.java` class and note that the 
-`getAvailability()` is the method is where you need to add the breakpoint:
+`getAvailability()` is the method where you should add the breakpoint.
 
-Add a breakpoint.
+Add the breakpoint.
 
 [source,bash]
 ----
@@ -176,7 +178,7 @@ to execute next:
 > list
 ----
 
-You'll see and output similar to this.
+You'll see an output similar to this.
 
 [source,bash]
 ----
@@ -207,7 +209,7 @@ object from the database.
 > locals
 ----
 
-You'll see and output similar to this.
+You'll see an output similar to this.
 
 [source,bash]
 ----
@@ -218,8 +220,10 @@ Local variables:
 inventory = null
 ----
 
-Oh! Did you noitce? the `inventory` object which is the object retrieved from the database 
-for the provided product id is null and it's returned as the REST response! The non-existing 
+Oh! Did you notice the problem? 
+
+The `inventory` object which is the object retrieved from the database 
+for the provided product id is `null` and is returned as the REST response! The non-existing 
 product id is not a problem on its own because it simply could mean this product is discontinued 
 and removed from the Inventory database but it's not removed from the product catalog database 
 yet. The bug is however caused because the code returns this `null` value instead of a sensible 
@@ -271,7 +275,9 @@ to debug Java applications using the Java remote debugging architecture and allo
 execute code line-by-line on a remote machine (pod in this case) while seeing 
 the code within the IDE.
 
-Start JBDS. If the `inventory-wildfly-swarm` project is not already imported into your 
+Start JBDS. 
+
+If the `inventory-wildfly-swarm` project is not already imported into your 
 workspace, click on *File &rarr; Import... &rarr; Existing Maven Projects* and then *Next*.
 
 image::debug-jbds-import-maven.png[Import Maven Project,width=500,align=center]
@@ -290,8 +296,10 @@ Now you are ready to connect to the Inventory pod.
 
 From the menu, click on *Run &rarr; Debug Configurations*. The debug configurations window 
 opens. From the left sidebar, double-click on *Remote Java Application* to create a new debug 
-configuration for Java remote debugging. Set the port field to `5005` as it was exposed on the 
-Inventory pod and leave the rest of the fields with their default values. Click on *Debug* button.
+configuration for Java remote debugging. 
+
+Set the port field to `5005` as it was forwarded to your local machine on and 
+leave the rest of the fields with default values. Click on *Debug* button.
 
 image::debug-jbds-debug-config.png[Add Breakpoint,width=700,align=center]
 
@@ -314,14 +322,16 @@ image::debug-jbds-debug-view.png[JBDS Debug,width=900,align=center]
 Click on the step over icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
-Could you spot the bug now? Look at the *Variables* window. The retireved inventory object is `null`. 
+Can you spot the bug now? 
 
-image::debug-jbds-debug-vars.png[Debug Variables,width=300,align=center]
+Look at the *Variables* window. The retrieved inventory object is `null`. 
+
+image::debug-jbds-debug-vars.png[Debug Variables,width=600,align=center]
 
 You can also verify that by hovering your mouse over the `inventory` variable in the code 
 editor.
 
-image::debug-jbds-debug-hover.png[Debug Variables,width=500,align=center]
+image::debug-jbds-debug-hover.png[Debug Variables,width=600,align=center]
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
@@ -379,7 +389,7 @@ Open `com.redhat.cloudnative.inventory.InventoryResource` in the editor. Click o
 sidebar near the first line of the `getAvailability()` method to add a breakpoint to that line. 
 A circle appears near the line to show a breakpoint is set.
 
-image::debug-idea-add-breakpoint.png[Add Breakpoint,width=500,align=center]
+image::debug-idea-add-breakpoint.png[Add Breakpoint,width=650,align=center]
 
 From the menu, click on *Run &rarr; Edit Configurations...* to create a new Java remote debug 
 configuration. Click on the plus icon and then from the drop down list click on *Remote*
@@ -414,7 +424,7 @@ given product id from the database.
 
 Could you spot the bug now? The retireved inventory object is `null`. 
 
-image::debug-idea-debug-vars.png[Variables,width=500,align=center]
+image::debug-idea-debug-vars.png[Variables,width=700,align=center]
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
@@ -456,6 +466,8 @@ $ git push origin master
 ----
 
 {% endif %}
+
+#### Deploy the Bug Fix 
 
 As soon as you commit the changes to the Git repository, the `inventory-pipeline` gets 
 triggered to build and deploy a new Inventory container with the fix. Go to the 
