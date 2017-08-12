@@ -1,11 +1,84 @@
-##  Continuous Integration and Continuous Delivery
+##  Automating Deployments Using Pipelines
+
+In this lab you will learn about deployment pipelines and you will create a pipeline to 
+automate build and deployment of the Inventory service.
+
+
+#### Continuous Delivery
+So far you have been building and deploying each service manually to OpenShift. Although 
+it's convenient for local development, it's an error-prone way of delivering software if 
+extended to test and production environments.
+
+Continuous Delivery (CD) refers to a set of practices with the intention of automating 
+various aspects of delivery software. One of these practices is called delivery pipeline 
+which is an automated process to define the steps a change in code or configuration has 
+to go through in order to reach upper environments and eventually to production. 
+
+OpenShift simplifies building CI/CD Pipelines by integrating
+the popular https://jenkins.io/doc/book/pipeline/overview/[Jenkins pipelines] into
+the platform and enables defining truly complex workflows directly from within OpenShift.
+
+The first step for any deployment pipeline is to store all code and configurations in 
+a source code repository.
+
+#### Create a Git Repository for Inventory
+
+You will use https://github.com/[GitHub], the vastly popular web-based Git hosting for this 
+lab. If you don't already have an account on GitHub, you really should now! Head to 
+https://github.com/[GitHub] and sign in with your account or sign up for a new account.
+
+INFO: You could really use any Git hosting such as GitLab, BitBucket, etc. However the 
+instructions in this lab are tailored for GitHub.
+
+Click on the plus icon on the top navigation bar and then on *New Repository*.
+
+image::cd-github-plus-icon.png[Create New Repository,width=900,align=center]
+
+Give `inventory-wildfly-swarm` as *Repository name* and click on *Create repository* 
+button, leaving the rest with default values.
+
+The Git repository is created now. Write down the HTTPS Git url which you will need 
+in a few minutes.
+
+#### Push Inventory Code to the Git Repository
+
+Now that you have a Git repository for the Inventory service, you should push the 
+source code into the Git repository.
+
+Go the `inventory-wildfly-swarm` folder, initialize it as a Git working copy and add 
+the GitHub repository as the remote repository for your working copy. Make sure you 
+replace `YOUR-USERNAME` with your GitHub username in the following:
+
+[source,bash]
+----
+$ cd $HOME/projects/inventory-wildfly-swarm
+$ git init
+$ git remote add origin https://github.com/YOUR-USERNAME/inventory-wildfly-swarm.git
+----
+
+Commit and push the existing code to the GitHub repository.
+
+[source,bash]
+----
+$ git add . --all
+$ git commit -m "initial add"
+$ git push origin master
+----
+
+Enter your GitHub username and password if you get asked to enter your credentials. Go 
+to your `inventory-wildfly-swarm` repository on GitHub and refresh the page. You should 
+see the project files in the repository.
+
+#### Create a Deployment Pipeline
+
+
 
 TBD
 
 Goal: demonstrate OpenShift pipelines
-Create Git repository (GitLab/GitHub/Gogs) for catalog service
-Add existing catalog code to the Git repository
-Create a pipeline: 
-checkout, build jar, automated tests, build image, rolling deploy, verify tests
-Add a webhook to the git repo
-Verify triggering the webhook
+- Create Git repository (GitLab/GitHub/Gogs) for catalog service
+- Add existing catalog code to the Git repository
+- Create a pipeline: 
+- checkout, build jar, automated tests, build image, rolling deploy, verify tests
+- Add a webhook to the git repo
+- Verify triggering the webhook

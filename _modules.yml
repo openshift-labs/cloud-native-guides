@@ -35,7 +35,7 @@ modules:
     requires:
       - nodejs
   continuous-delivery:
-    name:  Continuous Integration and Continuous Delivery
+    name:  Continuous Delivery
     requires:
       - nodejs
   debug:
