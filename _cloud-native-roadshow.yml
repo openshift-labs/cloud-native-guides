@@ -10,6 +10,9 @@ vars:
   DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/linux/oc.tar.gz
   LABS_GIT_REPO: https://github.com/siamaksade/cloud-native-labs.git
   WEB_NODEJS_GIT_REPO: https://github.com/siamaksade/cloud-native-labs/tree/master/projects/web-nodejs
+  REMOTE_DEBUGGER_JDB: true
+  REMOTE_DEBUGGER_JBDS: true
+  REMOTE_DEBUGGER_IDEA: true
   
 modules:
   activate:

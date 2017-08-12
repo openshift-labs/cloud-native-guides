@@ -14,6 +14,8 @@ $ cd $HOME
 $ git clone git@gitlab.com:siamaksade/cloud-native-labs
 ----
 
+TODO: download projects as a zip file instead of clone so they don't have .git folder
+
 TIP: You can choose any directory, these instructions use $HOME as an example.
 
 This will create a copy of the lab materials in the cloud-native-labs subdirectory.
