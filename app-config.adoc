@@ -297,18 +297,24 @@ if enabled, triggers hot reloading of beans or Spring context when changes are d
 
 Although Spring Cloud Kubernetes tries to discover config maps, due to security reasons containers 
 by default are not allowed to snoop around OpenShift clusters and discover objects. Security comes first, 
-and discovery is a privillege that needs to be granted to containers in each project. 
+and discovery is a privilege that needs to be granted to containers in each project. 
 
-Since you do want Spring Boot to discover the config maps inside the `{{COOLSTORE_PROJECT}}` project, use 
-the `oc policy` command to let containers in the `{{COOLSTORE_PROJECT}}` project to `view` other objects
-in the same project but not modify them.
+Since you do want Spring Boot to discover the config maps inside the `{{COOLSTORE_PROJECT}}` project, you 
+need to grant permission to the Spring Boot service account to access the OpenShift REST API and find the 
+config maps. However you have done this already in previous labs and no need to grant permission again. 
+
+[NOTE] 
+====
+For the record, you can grant permission to the default service account in your project using the 
+`oc policy` command.
 
 [source,bash]
 ----
 $ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
 ----
+====
 
-That's all. The Catalog container Delete the Catalog container to make it start again and look for the config maps:
+Delete the Catalog container to make it start again and look for the config maps:
 
 [source,bash]
 ----

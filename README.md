@@ -42,4 +42,12 @@ $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failur
 $ oc expose svc/guides
 ```
 
-TODO: Add more desc to the lab goals
+Run Locally
+===
+```
+$ docker run -p 8080:8080 \
+              -v /path/to/clone/dir:/app-data \
+              -e CONTENT_URL_PREFIX="file:///app-data" \
+              -e WORKSHOPS_URLS="file:///app-data/_cloud-native-roadshow.yml" \
+              osevg/workshopper
+```

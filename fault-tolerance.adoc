@@ -322,6 +322,7 @@ import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.json.Json;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.web.client.WebClientOptions;
 import io.vertx.rxjava.circuitbreaker.CircuitBreaker;
 import io.vertx.rxjava.core.AbstractVerticle;
 import io.vertx.rxjava.ext.web.Router;
@@ -345,6 +346,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
     @Override
     public void start() {
+
         circuit = CircuitBreaker.create("inventory-circuit-breaker", vertx,
             new CircuitBreakerOptions()
                 .setFallbackOnFailure(true)
@@ -363,11 +365,17 @@ public class GatewayVerticle extends AbstractVerticle {
 
             // Catalog lookup
             Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("catalog"));
+                    rec -> rec.getName().equals("catalog"))
+                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                            .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                            .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
             // Inventory lookup
             Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("inventory"));
+                    rec -> rec.getName().equals("inventory"))
+                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                            .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
+                            .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
             // Zip all 3 requests
             Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
@@ -376,7 +384,7 @@ public class GatewayVerticle extends AbstractVerticle {
                 inventory = i;
                 return vertx.createHttpServer()
                     .requestHandler(router::accept)
-                    .listen(config().getInteger("http.port", 8080));
+                    .listen(Integer.getInteger("http.port", 8080));
             }).subscribe();
         });
     }
@@ -386,7 +394,7 @@ public class GatewayVerticle extends AbstractVerticle {
         catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
             .map(resp -> {
                 if (resp.statusCode() != 200) {
-                    error("Invalid response from the catalog: " + resp.statusCode());
+                    new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
                 }
                 return resp.body();
             })
@@ -401,15 +409,18 @@ public class GatewayVerticle extends AbstractVerticle {
                                     .rxSend()
                                     .map(resp -> {
                                         if (resp.statusCode() != 200) {
-                                            error("Invalid response from inventory: " + resp.statusCode());
+                                            LOG.warn("Inventory error for {}: status code {}",
+                                                    product.getString("itemId"), resp.statusCode());
+                                            return product.copy();
                                         }
-                                        return product.copy().put("quantity", resp.body().getInteger("quantity"));
+                                        return product.copy().put("availability", 
+                                            new JsonObject().put("quantity", resp.body().getInteger("quantity")));
                                     })
                                     .subscribe(
                                         future::complete,
                                         future::fail),
                             error -> {
-                                LOG.error("Inventory failed for {}: {}", product.getString("itemId"), error.getMessage());
+                                LOG.error("Inventory error for {}: {}", product.getString("itemId"), error.getMessage());
                                 return product;
                             }
                         ))
@@ -419,10 +430,6 @@ public class GatewayVerticle extends AbstractVerticle {
                 list -> rc.response().end(Json.encodePrettily(list)),
                 error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
             );
-    }
-
-    private void error(String message) {
-        throw new RuntimeException(message);
     }
 }
 ----

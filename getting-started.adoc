@@ -1,21 +1,30 @@
 ## Explore OpenShift
 
-In this lab you will get faimilar with the OpenShift CLI and OpenShift Web Console.
+In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
+and get ready for the Cloud Native Roadshow labs.
 
-#### Command Line Interface
+#### OpenShift CLI
 
 OpenShift ships with a feature rich web console as well as command line tools
 to provide users with a nice interface to work with applications deployed to the
 platform.  The OpenShift tools are a single executable written in the Go
-programming language and is available for the following operating systems:
+programming language and is available for Microsoft Windows, Apple OS X and Linux.
 
-- Microsoft Windows
-- Apple OS X
-- Linux
+You might already have the OpenShift CLI available on your environment. You can verify 
+it by running an 'oc' command:
+
+[source]
+----
+$ oc version
+----
+
+If the `oc` doesn't exist or you have an older version of the OpenShift CLI, follow 
+the next sections to install or update the OpenShift CLI. Otherwise, skip to the 
+*Explore OpenShift with OpenShift CLI* section.
 
 #### Download and Install OpenShift CLI on Windows
 
-Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_WINDOWS}}[Microsoft Windows]
+Download the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_WINDOWS}}[Microsoft Windows]
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
@@ -62,7 +71,7 @@ You should see the OpenShift version.
 
 #### Download and Install OpenShift CLI on Linux
 
-Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_LIN64}}[Linux 64]
+Download the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_LIN64}}[Linux 64]
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
@@ -101,7 +110,7 @@ You should see the OpenShift version.
 
 #### Download and Install OpenShift CLI on Mac
 
-Dowload the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_MAC}}[Apple OS X]
+Download the the OpenShift CLI tool for {{DOWNLOAD_CLIENT_MAC}}[Apple OS X]
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
@@ -138,14 +147,16 @@ $ oc version
 
 You should see the OpenShift version.
 
+[#explore_openshift]
 #### Explore OpenShift with OpenShift CLI
 
 In order to login, we will use the `oc` command and then specify the server that we
-want to authenticate to.  Issue the following command:
+want to authenticate to.  Issue the following command and replace `OPENSHIFT-CONSOLE-URL` 
+with your OpenShift Web Console url:
 
 [source]
 ----
-$ oc login {{OPENSHIFT_ADDRESS}}
+$ oc login OPENSHIFT-CONSOLE-URL
 ----
 
 You may see the following output:
@@ -168,11 +179,12 @@ corporate-standard CA that you already have installed on your system.
 ====
 On some versions of Microsoft Windows, you may get an error that the
 server has an invalid x.509 certificate.  If you receive this error, enter in
-the following command:
+the following command and replace `OPENSHIFT-CONSOLE-URL` 
+with your OpenShift Web Console url:
 
 [source]
 ----
-$ oc login {{OPENSHIFT_ADDRESS}} --insecure-skip-tls-verify=true
+$ oc login OPENSHIFT-CONSOLE-URL --insecure-skip-tls-verify=true
 ----
 ====
 
@@ -198,13 +210,13 @@ deploying your applications.
 ----
 $ oc new-project {{COOLSTORE_PROJECT}}
 
-Now using project "{{COOLSTORE_PROJECT}}" on server "{{OPENSHIFT_ADDRESS}}".
+Now using project "{{COOLSTORE_PROJECT}}" on server ...
 ...
 ----
 
 OpenShift ships with a web-based console that will allow users to
 perform various tasks via a browser.  To get a feel for how the web console
-works, open your browser and go to the following URL: {{OPENSHIFT_ADDRESS}}
+works, open your browser and go to the OpenShift Web Console.
 
 
 The first screen you will see is the authentication screen. Enter your username and password and 
@@ -216,4 +228,37 @@ which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
 
-Well done! You are ready to move on to the next lab.
+#### Download Lab Projects
+
+In order to get started, you need a few project skeletons to skip building those during 
+the lab. 
+
+Download the project skeletons to your local machine:
+
+[source,bash]
+----
+$ cd $HOME
+$ curl -sL -o projects.zip {{LABS_DOWNLOAD_URL}}
+----
+
+TIP: You can choose any directory, these instructions use $HOME as an example.
+
+Unzip the `projects.zip` file in your home directory.
+
+TIP: You can use `unzip` or any other decompressor utility with `zip`format support 
+you have available on your machine.
+
+[source,bash]
+----
+$ tar xvfz projects.zip --strip-components 1
+$ ls -a
+
+-rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 catalog-spring-boot
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 gateway-vertx
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 inventory-wildfly-swarm
+drwxr-xr-x  9 user  wheel   306 Aug 14 14:50 solutions
+drwxr-xr-x  8 user  wheel   272 Aug 14 14:50 web-nodejs
+----
+
+Now you are ready to get started with the labs!

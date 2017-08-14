@@ -1,20 +1,18 @@
 modules:
-  explore-openshift:
-    name: Explore OpenShift
-  project-setup:
-    name: Setup Projects
+  getting-started:
+    name: Getting Started
   spring-boot:
     name: Microservices with Spring Boot
     requires:
-      - project-setup
+      - getting-started
   wildfly-swarm:
     name: Enterprise Microservices with WildFly Swarm
     requires:
-      - project-setup
+      - getting-started
   vertx:
     name: Reactive Microservices with Eclipse Vert.x
     requires:
-      - project-setup
+      - getting-started
   nodejs:
     name: Web UI with Node.js and AngularJS
     requires:

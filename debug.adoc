@@ -24,7 +24,7 @@ logs to see if there are any errors:
 $ oc logs dc/gateway | grep -i error
 
 ...
-Inventory error for 444436: Invalid response from inventory: 204
+WARNING: Inventory error for 444436: status code 204
 ...
 ----
 

@@ -19,7 +19,7 @@ scalable web applications.
 #### Deploy Web UI on OpenShift
 
 The Web UI is built using Node.js for server-side JavaScript and AngularJS for client-side 
-JavaScript. Let's deploy it on OpenShift using the ceritifed Node.js container image available 
+JavaScript. Let's deploy it on OpenShift using the certified Node.js container image available 
 in OpenShift. 
 
 In the previous labs, you used the OpenShift 
@@ -29,7 +29,9 @@ source code on your laptop. In this lab, you will still use S2I but instead inst
 to obtain the application code directly from the source repository and build and deploy a 
 container image of it.
 
-The source code for the the Node.js Web component is available in this Git repository: {{WEB_NODEJS_GIT_REPO}}
+The source code for the the Node.js Web front-end is available in this Git repository: 
+
+{{WEB_NODEJS_GIT_REPO}}
 
 First, make sure you are on the  `{{COOLSTORE_PROJECT}}` project:
 
@@ -40,13 +42,17 @@ $ oc project {{COOLSTORE_PROJECT}}
 
 Use the OpenShift CLI command to create a new build and deployment for the Web component:
 
-TIP: Feeling adventureous? Build and deploy the Web component via the OpenShift Web Console 
-instead. To give you a hint, start by clicking on *Add to project* within the `coolstore` project.
+TIP: Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
+instead. To give you a hint, start by clicking on *Add to project* within the 
+*{{COOLSTORE_PROJECT}}* project and pick *JavaScript* in the service catalog .
 
 
 [source,bash]
 ----
-$ oc new-app nodejs~{{LABS_GIT_REPO}} --context-dir=projects/web-nodejs --name=web --labels=app=coolstore
+$ oc new-app nodejs~{{LABS_GIT_REPO}} \
+        --context-dir=web-nodejs \
+        --name=web \
+        --labels=app=coolstore,microservice=web
 ----
 
 A build gets created and starts building the Node.js Web UI container image. You can see the build 
@@ -72,32 +78,13 @@ $ oc expose svc/web
 route "web" exposed
 ----
 
-Get the route urls for Web UI:
-
-[source,bash]
-----
-$ oc get routes
-
-NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
-catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog     8080                     None
-gateway     gateway-coolstore.roadshow.openshiftapps.com               gateway     8080                     None
-inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
-web         web-coolstore.roadshow.openshiftapps.com                   web         8080                     None
-----
-
-CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the one from yor project.
-
-Now point your browser at the Web UI route url. You should be able to see the CoolStore with all 
+Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.
+
+TIP: You can see the Web route url in the OpenShift Web Console or via the `oc get routes` command.
 
 image::coolstore-web.png[CoolStore Shop,width=800,align=center]
 
-
-TODO: explain how web ui found the gateway. service discovery, internal dns, etc 
-
-
-[TIP]
-====
 Currently the `fabric8-maven-plugin` has a 
 https://github.com/fabric8io/fabric8-maven-plugin/issues/742[bug] 
 that prevents grouping the pods properly. Run the following 
@@ -108,6 +95,5 @@ together in the OpenShift Web Console
 ----
 $ oc label dc app=coolstore --all --overwrite
 ----
-====
 
 Well done! You are ready to move on to the next lab.
