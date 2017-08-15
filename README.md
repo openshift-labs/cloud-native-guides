@@ -8,13 +8,11 @@ Agenda
 * Building services with Spring Boot
 * Building Java EE services with WildFly Swarm
 * Building Reactive Services with Vert.x
-* Rolling updates and deployments (demo)
 * Monitoring Application Health
 * Fault Tolerance and Service Resilience
-* Debugging Services
 * Configuration Management 
-* Service Discovery and Load Balancing
 * Continuous Delivery 
+* Debugging Services
 * OpenShift.io (demo)
 
 
