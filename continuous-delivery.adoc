@@ -208,8 +208,8 @@ once more if you are ask to do so.
 
 Create a webhook with the following details:
 
-* Payload URL: paste the GitHub webhook url you copied from the `inventory-pipeline`
-* Content type: `application/json`
+* *Payload URL*: paste the GitHub webhook url you copied from the `inventory-pipeline`
+* *Content type*: `application/json`
 * Disable SSL by clicking on *Disable SSL verification*.
 
 The reason for disabling SSL in this lab is that we are using self-generated certificates 
