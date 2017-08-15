@@ -208,7 +208,7 @@ once more if you are ask to do so.
 
 Paste the GitHub webhook url you copied from the `inventory-pipeline` as the *Payload URL* and 
 disable SSL verification by clicking on *Disable SSL verification* and then *I understand my 
-wehooks may not be secure*. The reason for disabling SSL in this lab is that we are using 
+webhooks may not be secure*. The reason for disabling SSL in this lab is that we are using 
 self-generated certificates in this lab environment which cannot be verified by GitHub. 
 
 [IMPORTANT]

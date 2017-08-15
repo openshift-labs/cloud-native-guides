@@ -1,5 +1,5 @@
 id: "roadshow"
-name: "Cloud-Native Roadshow"
+name: "OpenShift Cloud-Native Roadshow"
 
 vars:
   OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.6"
