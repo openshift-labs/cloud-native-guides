@@ -2,7 +2,8 @@
 
 In this lab you will learn about building microservices using a subset of Java EE 
 technologies which are driven via the MicroProfile standard. Furthermore you will create a 
-microservice called Inventory using WildFly Swarm to expose a REST API for checking product inventory status.
+microservice called Inventory using WildFly Swarm to expose a REST API for 
+checking product inventory status.
 
 #### What is WildFly Swarm?
 
@@ -313,7 +314,7 @@ OpenShift CLI:
 $ oc get routes
 
 NAME        HOST/PORT                                        PATH       SERVICES  PORT  TERMINATION   
-inventory   inventory-coolstore.roadshow.openshiftapps.com   inventory  8080            None
+inventory   inventory-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com   inventory  8080            None
 ----
 
 Copy the route url for the Inventory service and verify the API Gateway service works using 'curl':

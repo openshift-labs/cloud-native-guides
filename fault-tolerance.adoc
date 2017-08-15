@@ -2,7 +2,7 @@
 
 In this lab you will learn about how you can build service resilience and fault-tolerant into 
 the applications both at the infrastructure level using OpenShift capabilities as well as 
-at the application level using circuit breakers to prevent cascaing failures when 
+at the application level using circuit breakers to prevent cascading failures when 
 downstream dependencies fail.
 
 #### Running Multiple Instances of Applications
@@ -23,15 +23,15 @@ In previous labs, you learned how to build container images from your applicatio
 deploy them on OpenShift. Container images on OpenShift follow the 
 https://martinfowler.com/bliki/ImmutableServer.html[immutable server] pattern which guarantees 
 your application instances will always starts from a known well-configured state and makes 
-deploying instances a repeatable practise. Immutable server pattern simplifies scaling out 
+deploying instances a repeatable practice. Immutable server pattern simplifies scaling out 
 application instances to starting a new instance which is guaranteed to be identical to the 
-existing instances and addimg it to the load-balancer.
+existing instances and adding it to the load-balancer.
 
 Now, let's use the `oc scale` command to scale up the Web UI pod in the CoolStore retail 
 application to 2 instances. In OpenShift, deployment config is responsible for starting the 
 application pods and ensuring the specified number of instances for each application pod 
 is running. Therefore the number of pods you want to scale to should be defined on the 
-deployment controller.
+deployment config.
 
 TIP: You can scale pods up and down via the OpenShift Web Console by clicking on the up and 
 down arrows on the right side of each pods blue circle.
@@ -59,9 +59,9 @@ $ oc scale dc/web --replicas=2
 
 The `--replicas` option specified the number of Web UI pods that should be running. If you look 
 at the OpenShift Web Console, you can see a new pod is being started for the Web UI and as soon 
-as the health probes pass, it will be automaticaly added to the load-balancer.
+as the health probes pass, it will be automatically added to the load-balancer.
 
-image::fault-scale-up.png[Scaling Up Pods,width=500,align=center] 
+image::fault-scale-up.png[Scaling Up Pods,width=800,align=center] 
 
 You can verify that the new pod is added to the load balancer by checking the details of the 
 Web UI service object:
@@ -77,22 +77,30 @@ Endpoints:              10.129.0.146:8080,10.129.0.232:8080
 
 `Endpoints` shows the IPs of the 2 pods that the load-balancer is sending traffic to.
 
-TIP: The load-balancer by default, sends the client to the same pod on consequent requests. The 
+[TIP]
+====
+The load-balancer by default, sends the client to the same pod on consequent requests. The 
 https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/routes.html#load-balancing[load-balancing strategy] 
 can be specified using an annotation on the route object. Run the following to change the load-balancing 
-strategy to round robin: `oc annotate route/web haproxy.router.openshift.io/balance=roundrobin`
+strategy to round robin: 
+
+[source,bash]
+----
+$ oc annotate route/web haproxy.router.openshift.io/balance=roundrobin
+----
+====
 
 #### Scaling Applications on Auto-pilot
 
-Although scaling up and scaling down pods are automated and easy using OpenShift, howerver it still 
+Although scaling up and scaling down pods are automated and easy using OpenShift, however it still 
 requires a person or a system to run a command or invoke an API call (to OpenShift REST API. Yup! there
 is a REST API for all OpenShift operations) to scale the applications. That in turn needs to be in response 
-to some sort of increase to the application load and therfore the person or the system needs to be aware of 
+to some sort of increase to the application load and therefore the person or the system needs to be aware of 
 how much load the application is handling at all times to make the scaling decision.
 
 OpenShift automates this aspect of scaling as well via automatically scaling the application pods up 
-and down within a specified min and max boundry based on the container metrics such as cpu and memory 
-consumption. In that case, if there is a surge of users visitng the CoolStore online shop due to 
+and down within a specified min and max boundary based on the container metrics such as cpu and memory 
+consumption. In that case, if there is a surge of users visiting the CoolStore online shop due to 
 holiday season coming up or a good deal on a product, OpenShift would automatically add more pods to 
 handle the increase load on the application and after the load goes, the application is automatically 
 scaled down to free up compute resources.
@@ -121,7 +129,7 @@ Set resource containers on the Web UI pod using `oc set resource` to the followi
 * CPU Limit: 300 millicore
 
 NOTE: CPU is measured in units called millicores; 1 core is 1000 millicores. Memory is measured in 
-bytes and is sepcified with {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-compute-resources[SI suffices] 
+bytes and is specified with {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-compute-resources[SI suffices] 
 (E, P, T, G, M, K) or their power-of-two-equivalents (Ei, Pi, Ti, Gi, Mi, Ki).
 
 [source,bash]
@@ -145,22 +153,22 @@ the {{coolstore}} project. Click then on *web* and from the *Actions* menu on th
 
 [source,bash]
 ----
-$ oc autoscale dc/web --min 1 --max 5 --cpu-percent=50
+$ oc autoscale dc/web --min 1 --max 5 --cpu-percent=40
 
 deploymentconfig "web" autoscaled
 ----
 
-All set! Now the Web UI can scale automatically to multiple intances if the laod on the CoolStore 
+All set! Now the Web UI can scale automatically to multiple instances if the load on the CoolStore 
 online store increases. You can verify that using for example `ab`, the 
 https://httpd.apache.org/docs/2.4/programs/ab.html[Apache HTTP server benchmarking tool]. Let's 
 deploy the `ab` container image from https://hub.docker.com/r/jordi/ab/[Docker] Hub and 
 generate some load on the Web UI. Since we want to run this container only once and after it runs 
-it's not needed anymore, use the 'oc run' command with '--rm' option to remove the container 
+it's not needed anymore, use the `oc run --rm` command to run the container and throw it away 
 after it's done running:
 
 [source,bash]
 ----
-$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 25000 -c 10 http://web:8080/
+$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 40000 -c 10 http://web:8080/
 ----
 
 In the above, `--image` specified which container image should be deployed. OpenShift will first 
@@ -170,13 +178,13 @@ https://hub.docker.com/[Docker Hub] by default) to find and pull this image. Aft
 can override the container entry point to whatever command you want to run in that container.
 
 As you the `ab` container generates the load, you will notice that it will create a spike in the 
-Web UI cpu usage and trigger the autoscaler to scale the Web UI cotnainer to 5 pods (as configured 
+Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
-NOTE: Depending on the resources available on the OpenShift cluster, Web UI might scale to fewer 
-than 5 pods to handle the extra load. 
+NOTE: Depending on the resources available on the OpenShift cluster in the lab environment, 
+the Web UI might scale to fewer than 5 pods to handle the extra load. 
 
-image::fault-autoscale-web.png[Web UI Automatically Scaled,width=500,align=center] 
+image::fault-autoscale-web.png[Web UI Automatically Scaled,width=800,align=center] 
 
 You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
 *Monitoring* and then the arrow (*>*) on the left side of *web-n* under *Deployments*.
@@ -200,7 +208,7 @@ There are three auto-healing scenarios that OpenShift handles automatically:
 * Application Pod Temporary Failure: when an application pod fails and does not pass its 
 {{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes[liveness health probe],  
 OpenShift restarts the pod in order to give the application a chance to recover and start functioning 
-again. Issues such as deadlocks, memory leaks, network distrubance and more are all examples of issues 
+again. Issues such as deadlocks, memory leaks, network disturbance and more are all examples of issues 
 than can most likely be resolved by restarting the application despite the potential bug remaining in the 
 application.
 
@@ -214,52 +222,53 @@ starts new identical application pods based on the same container image and conf
 specified number of instances all running at all times. An example of a removed pod is when an entire 
 node (virtual or physical machine) crashes and is removed from the cluster.
 
-TIP: OpenShift is quite orderly in this regard and if extra instaces of the application pod would start running, 
+TIP: OpenShift is quite orderly in this regard and if extra instances of the application pod would start running, 
 it would kill the extra pods so that the number of running instances matches what is configured on the deployment 
 config.
 
-All of the above comes out-of-the-box and don't need any extra configuration. You can now remove one of the 
-Web UI pods to verify how OpenShift starts the pod again. First, check the Web UI pods that are running:
+All of the above comes out-of-the-box and don't need any extra configuration. Remove the Catalog 
+pod to verify how OpenShift starts the pod again. First, check the Catalog pod that is running:
 
 [source,bash]
 ----
-$ oc get pods -l deploymentconfig=web
+$ oc get pods -l microservice=catalog
 
-NAME          READY     STATUS    RESTARTS   AGE
-web-2-f6s6r   1/1       Running   0          4m
-web-2-mdsm1   1/1       Running   0          22m
+NAME              READY     STATUS    RESTARTS   AGE
+catalog-3-xf111   1/1       Running   0          42m
 ----
 
-The `-l` options tells the command to list pods that have the `deploymentconfig=web` label which is set 
-automatically by the deployment config that starts the pod. You can see pods labels using 
-`oc get pods --show-labels` command.
+The `-l` options tells the command to list pods that have the `microservice=catalog` label 
+assigned to them. You can see pods labels using `oc get pods --show-labels` command.
 
-Delete one of the Web UI pods using the `oc delete` command:
+Delete the Catalog pod.
+
+CAUTION: Replace `CATALOG-POD-NAME` with the name of the Catalog pod in your project
 
 [source,bash]
 ----
-$ oc delete pod web-2-mdsm1
+$ oc delete pod CATALOG-POD-NAME
 ----
 
-You need to be fast for this one! List the Web UI pods again immediately:
+You need to be fast for this one! List the Catalog pods again immediately:
 
 [source,bash]
 ----
-$ oc get pods -l deploymentconfig=web
+$ oc get pods -l microservice=catalog
 
 NAME          READY     STATUS              RESTARTS   AGE
-web-2-dlzms   0/1       ContainerCreating   0          1s
-web-2-f6s6r   1/1       Running             0          6m
-web-2-mdsm1   1/1       Terminating         0          29m
+NAME              READY     STATUS              RESTARTS   AGE
+catalog-3-5dx5d   0/1       ContainerCreating   0          1s
+catalog-3-xf111   0/1       Terminating         0          4m
 ----
 
-As the pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Web UI pod automatically.
+As the pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Catalog 
+pod automatically.
 
-#### Preventing Cascasing Failures with Circuit Breakers
+#### Preventing Cascading Failures with Circuit Breakers
 
-In this lab so far you have been looking how to make sure the application pod is running, can scale to accomodate 
+In this lab so far you have been looking how to make sure the application pod is running, can scale to accommodate 
 user load and recovers from failures. However failures also happen in the downstream services that an application 
-is depenent on. It's not uncommon that the whole application fails or slows down because one of the downstream 
+is dependent on. It's not uncommon that the whole application fails or slows down because one of the downstream 
 services consumed by the application is not responsive or responds slowly.
 
 https://martinfowler.com/bliki/CircuitBreaker.html[Circuit Breaker] is a pattern to address this issue and while 
@@ -267,9 +276,9 @@ became popular with microservice architecture, it's a useful pattern for all app
 services.
 
 The idea behind the circuit breaker is that you wrap the API calls to downstream services in a circuit breaker 
-object, which monitors for failures. Once the service invocation failes certain number of times, the circuit 
+object, which monitors for failures. Once the service invocation fails certain number of times, the circuit 
 breaker flips open, and all further calls to the circuit breaker return with an error or a fallback logic 
-without making the call to the unresponive API. After a certain period, the circuit breaker for allow a call 
+without making the call to the unresponsive API. After a certain period, the circuit breaker for allow a call 
 to the downstream service to test the waters. If the call success, the circuit breaker closes and would call 
 the downstream service on consequent calls.
 
@@ -277,8 +286,8 @@ the downstream service on consequent calls.
 image::fault-circuit-breaker.png[Circuit Breaker,width=300,align=center] 
 
 Spring Boot and WildFly Swarm provide convenient integration with https://github.com/Netflix/Hystrix[Hystrix] 
-which is a framework that provides circuit breaker functionality. Eclipse Vert.x in addition to integrating 
-with Hystrix, it provides built-in support for circuit breakers.
+which is a framework that provides circuit breaker functionality. Eclipse Vert.x, in addition to integration 
+with Hystrix, provides built-in support for circuit breakers.
 
 Let's take the Inventory service down and see what happens to the CoolStore online shop.
 
@@ -295,17 +304,7 @@ TIP: You can find the Web UI route url in the OpenShift Web Console above the `w
 image::fault-coolstore-no-cb.png[CoolStore Without Circuit Breaker,width=800,align=center] 
 
 Although only the Inventory service is down, there are no products displayed in the online store because 
-the Inventory service call failure propagates and causes the entire API Gateway to blow up! You can verify 
-this by checking the logs API Gateway logs:
-
-[source,bash]
-----
-$ oc logs dc/gateway
-
-...
-io.netty.channel.AbstractChannel$AnnotatedNoRouteToHostException: No route to host: inventory.coolstore.svc.cluster.local/172.30.7.33:8080
-...
-----
+the Inventory service call failure propagates and causes the entire API Gateway to blow up! 
 
 The CoolStore online shop cannot function without the products list, however the inventory status is not a 
 crucial bit in the shopping experience. Let's add a circuit breaker for calls to the Inventory service and 
@@ -436,7 +435,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
 The above code is quite similar to the previous code however it wraps the calls to the Inventory 
 service in a `CircuitBreaker` using the built-in circuit breaker in Vert.x. The circuit breaker 
-is configured (using `CircuitBreakerOptions`) to flip open after 5 failures and time out on the 
+is configured (using `CircuitBreakerOptions`) to flip open after 3 failures and time out on the 
 calls after 1 second. 
 
 [source,java]
@@ -445,7 +444,7 @@ circuit = CircuitBreaker.create("inventory-circuit-breaker", vertx,
     new CircuitBreakerOptions()
         .setFallbackOnFailure(true)
         .setMaxFailures(3)
-        .setResetTimeout(5000)
+        .setResetTimeout(10000)
         .setTimeout(1000)
 );
 ----
@@ -467,7 +466,7 @@ circuit.rxExecuteCommandWithFallback(
 )
 ----
 
-Build the API Gateway using Maven and trigger a new continer image build on OpenShift using 
+Build the API Gateway using Maven and trigger a new continuer image build on OpenShift using 
 the `oc start-build` command which allows you to build container images directly from the application 
 archives (`jar`, `war`, etc) without the need to have access to the source code for example by downloading 
 the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
@@ -475,11 +474,11 @@ the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
 [source,bash]
 ----
 $ mvn package
-$ oc start-build gateway --from-file=target/gateway-1.0-SNAPSHOT.jar
+$ oc start-build gateway-s2i --from-file=target/gateway-1.0-SNAPSHOT.jar
 ----
 
 As soon as the new `gateway` container image is built, OpenShift deploys the new image automatically 
-thanks to the {{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers[triggers] 
+thanks to the {{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers[deployment triggers] 
 defined on the `gateway` deployment config.
 
 Let's try the Web UI again in the browser while the Inventory service is still down.
@@ -490,5 +489,13 @@ It looks better now! The Inventory service failure is contained and the inventor
 user interface and allows the CoolStore online shop to continue functioning and accept orders. Selling an 
 out-of-stock product to a few customers can simply be resolved by a discount coupons while 
 losing the trust of all visiting customers due to a crashed online store is not so easily repairable!
+
+Scale the Inventory service back up before moving on to the next labs.
+
+[source,bash]
+----
+$ oc scale dc/inventory --replicas=1
+----
+
 
 Well done! Let's move on to the next.

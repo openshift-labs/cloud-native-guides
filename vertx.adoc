@@ -1,8 +1,8 @@
 ## Reactive Microservices with Eclipse Vert.x
 
-In this section we will give an overview of Eclipse Vert.x and how you can build microservices using reactive principles.
-
-In this section you will learn about building reactive microservies with Eclipse Vert.x and create a scalable API Gateway using reactive principle.
+In this lab you will learn about Eclipse Vert.x and how you can 
+build microservices using reactive principles. During this lab you will 
+create a scalable API Gateway that aggregates Catalog and Inventory APIs.
 
 
 #### What is Eclipse Vert.x?
@@ -502,9 +502,9 @@ Get the route url for the deployed API Gateway either using the OpenShift Web Co
 $ oc get routes
 
 NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
-catalog     catalog-coolstore.roadshow.openshiftapps.com               catalog     8080                     None
-inventory   inventory-coolstore.roadshow.openshiftapps.com             inventory   8080                     None
-gateway     gateway-coolstore.roadshow.openshiftapps.com               gateway     8080                     None
+catalog     catalog-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com               catalog     8080                     None
+inventory   inventory-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com             inventory   8080                     None
+gateway     gateway-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com               gateway     8080                     None
 ----
 
 Copy the route url for API Gateway and verify the API Gateway service works using `curl`:

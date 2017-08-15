@@ -5,7 +5,7 @@ specific configuration to the services.
 
 #### Application Configuration
 
-Applications require configuration in order to tweak the application behaviour 
+Applications require configuration in order to tweak the application behavior 
 or adapt it to a certain environment without the need to write code and repackage 
 the application for every change. These configurations are sometimes specific to 
 the application itself such as the number of products to be displayed on a product 
@@ -27,18 +27,18 @@ provide sensitive configuration data such as certificates, credentials, etc to t
 application containers in a secure and encrypted mechanism called Secrets.
 
 This allows developers to build the container image for their application only once, 
-and reuse that image to deploy the application across various environemtns with 
+and reuse that image to deploy the application across various environments with 
 different configurations that are provided to the application at runtime.
 
 #### Create PostgreSQL Databases for Inventory and Catalog
 
-So far Catalog and Inventory services have been using an in-memory H2 database. Althugh H2 
+So far Catalog and Inventory services have been using an in-memory H2 database. Although H2 
 is a convenient database to run locally on your laptop, it's in no ways appropriate for production or 
 even integration tests. Since it's strongly recommended to use the same technology stack (operating 
 system, JVM, middleware, database, etc) that is used in production across all environments, you 
 should modify Inventory and Catalog services to use PostgreSQL instead of the H2 in-memory database.
 
-Fortunatley, OpenShfit supports statefull applications such as databases which required access to 
+Fortunately, OpenShfit supports stateful applications such as databases which required access to 
 a persistent storage that survives the container itself. You can deploy databases on OpenShift and 
 regardless of what happens to the container itself, the data is safe and can be used by the next 
 database container.
@@ -49,7 +49,7 @@ for the Inventory service using the PostgreSQL template that is provided out-of-
 NOTE: {{OPENSHIFT_DOCS_BASE}}/dev_guide/templates.html[OpenShift Templates] uses YAML/JSON to compose 
 multiple containers and their configurations as a list of objects to be created and deployed at once hence 
 making it simple to re-create complex deployments by just deploying a single template. Templates can 
-be paramterized to get input for fields like service names and generate values for fields like passwords.
+be parameterized to get input for fields like service names and generate values for fields like passwords.
 
 [source,bash]
 ----
@@ -58,7 +58,7 @@ $ oc new-app postgresql-persistent \
     --param=POSTGRESQL_DATABASE=inventory \
     --param=POSTGRESQL_USER=inventory \
     --param=POSTGRESQL_PASSWORD=inventory \
-    --labels=app=coolstore
+    --labels=app=coolstore,microservice=inventory
 ----
 
 IMPORTANT: The `--param` parameter provides a value for the given parameters. The recommended approach is 
@@ -76,7 +76,7 @@ $ oc new-app postgresql-persistent \
     --param=POSTGRESQL_DATABASE=catalog \
     --param=POSTGRESQL_USER=catalog \
     --param=POSTGRESQL_PASSWORD=catalog \
-    --labels=app=coolstore
+    --labels=app=coolstore,microservice=catalog
 ----
 
 Now you can move on to configure the Inventory and Catalog service to use these PostgreSQL databases.
@@ -86,9 +86,9 @@ Now you can move on to configure the Inventory and Catalog service to use these 
 WildFly Swarm supports multiple mechanisms for externalizing configurations such as environment variables, 
 Maven properties, command-line arguments and more. The recommend approach for the long-term for externalizing 
 configuration is however using a https://reference.wildfly-swarm.io/configuration.html#_using_yaml[YAML file] 
-which you have aleady packaged within the Inventory Maven project.
+which you have already packaged within the Inventory Maven project.
 
-The YAML file can be packaged within the application JAR file and be overlayed https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties[using command-line or system] which you will do in this lab.
+The YAML file can be packaged within the application JAR file and be overladed https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties[using command-line or system properties] which you will do in this lab.
 
 TIP: Check out `inventory-wildfly-swarm/src/main/resources/project-stages.yml` which contains the default configuration.
 
@@ -102,13 +102,12 @@ project:
   stage: prod
 swarm:
   datasources:
-    datasources:
-      data-sources:
-        InventoryDS:
-          driver-name: postgresql
-          connection-url: jdbc:postgresql://inventory-postgresql:5432/inventory
-          user-name: inventory
-          password: inventory
+    data-sources:
+      InventoryDS:
+        driver-name: postgresql
+        connection-url: jdbc:postgresql://inventory-postgresql:5432/inventory
+        user-name: inventory
+        password: inventory
 EOF
 ----
 
@@ -126,8 +125,8 @@ $ oc create configmap inventory --from-file=project-stages.yml=./project-stages.
 
 [TIP]
 ====
-If the above bash commands look scary to you, it's because they are! Go to the *{{COOLSTORE_PROJECT}}* 
-project in OpenShift Web Console and then on the left sidebar, *Resources &rarr; Config Maps*. Click 
+If you don't like bash commands, Go to the *{{COOLSTORE_PROJECT}}* 
+project in OpenShift Web Console and then on the left sidebar, *Resources -> Config Maps*. Click 
 on *Create Config Map* button to create a config map with the following info:
 
 * Name: `inventory`
@@ -136,7 +135,7 @@ on *Create Config Map* button to create a config map with the following info:
 ====
 
 Config maps hold key-value pairs and in the above command an `inventory` config map 
-is created with `project-stages.yml` as key and the content of the `./project-stages.yml` as the 
+is created with `project-stages.yml` as the key and the content of the `./project-stages.yml` as the 
 value. Whenever a config map is injected into a container, it would appear as a file with the same 
 name as the key, at path on the filesystem.
 
@@ -145,7 +144,7 @@ a config map into the Inventory container:
 
 [source,bash]
 ----
-$ oc volume dc/inventory --add --configmap-name=inventory-config --mount-path=/app/config
+$ oc volume dc/inventory --add --configmap-name=inventory --mount-path=/app/config
 ----
 
 The above command mounts the content of the `inventory` config map into the Inventory container 
@@ -156,15 +155,15 @@ WildFly Swarm configuration, using the `JAVA_OPTIONS` environment variable.
 
 TIP: The Java runtime on OpenShift can be configured using 
 https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables[a set of environment variables] 
-to tune the JVM without the need to rebuild a new Java runtime container image everytime a new option is needed.
+to tune the JVM without the need to rebuild a new Java runtime container image every time a new option is needed.
 
 [source,bash]
 ----
 $ oc set env dc/inventory JAVA_OPTIONS="-Dswarm.project.stage=prod -Dswarm.project.stage.file=file:///app/config/project-stages.yml"
 ----
 
-The Inventory pod gets restarted automatically due to the configuration changes. After it's ready, 
-verify that the config map is infact injected into the container by opening a remote shell into the 
+The Inventory pod gets restarted automatically due to the configuration changes. Wait till it's ready, 
+and then verify that the config map is in fact injected into the container by opening a remote shell into the 
 Inventory container:
 
 [source,bash]
@@ -191,18 +190,10 @@ swarm:
         user-name: inventory
         password: inventory
 
-
 $ exit
 ----
 
-[TIP]
-====
-You can run a command remotely on a container using `oc rsh`:
-[source,bash]
-----
-$ oc rsh dc/inventory cat /app/config/project-stages.yml
-----
-====
+TIP: You can run a command remotely on a container using `oc rsh dc/inventory cat /app/config/project-stages.yml`
 
 Also verify that the PostgreSQL database is actually used. You can either the Inventory pod logs:
 
@@ -213,7 +204,7 @@ $ oc logs dc/inventory | grep hibernate.dialect
 2017-08-10 16:55:44,657 INFO  [org.hibernate.dialect.Dialect] (ServerService Thread Pool -- 15) HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ----
 
-Or open a remote shell to the PostgreSQL database and check if the seed data is loaded:
+You can also connect to Inventory PostgreSQL database and check if the seed data is loaded:
 
 [source,bash]
 ----
@@ -254,7 +245,7 @@ You should be quite familiar with config maps by now. Spring Boot application co
 via a properties filed called `application.properties` and can be 
 https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html[overriden and overlayed via multiple mechanisms]. 
 
-TIP: Check out the default Spring Boot configuration in Catalog Maven project `catalog-spring-boot/src/main/resources/applicaiton.properties`.
+TIP: Check out the default Spring Boot configuration in Catalog Maven project `catalog-spring-boot/src/main/resources/application.properties`.
 
 In this lab, you will configure the Catalog service which is based on Spring Boot to override the default 
 configuration using an alternative `application.properties` backed by a config map.
@@ -285,8 +276,13 @@ $ oc create configmap catalog --from-file=application.properties=./application.p
 [TIP]
 ====
 You can use the OpenShift Web Console to create config maps by clicking on *Resources &rarr; Config Maps* 
-on the left sidebar inside the your project. Click on *Create Config Map* button and specify the content of the 
-config map matching the `oc` command above.
+on the left sidebar inside the your project. Click on *Create Config Map* button to create a config map 
+with the following info:
+
+* Name: `catalog`
+* Key: `application.properties`
+* Value: _Copy-paste the content of the above application.properties excluding the first 
+    and last lines (the lines that contain EOF)_
 ====
 
 The https://github.com/spring-cloud-incubator/spring-cloud-kubernetes[Spring Cloud Kubernetes] plug-in implements 
@@ -303,16 +299,8 @@ Since you do want Spring Boot to discover the config maps inside the `{{COOLSTOR
 need to grant permission to the Spring Boot service account to access the OpenShift REST API and find the 
 config maps. However you have done this already in previous labs and no need to grant permission again. 
 
-[NOTE] 
-====
-For the record, you can grant permission to the default service account in your project using the 
-`oc policy` command.
-
-[source,bash]
-----
-$ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
-----
-====
+NOTE: For the record, you can grant permission to the default service account in your project using this 
+command: `oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default`
 
 Delete the Catalog container to make it start again and look for the config maps:
 
@@ -330,7 +318,7 @@ $ oc logs dc/catalog | grep hibernate.dialect
 2017-08-10 21:07:51.670  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ----
 
-Or like before, look into the PostgreSQL database to check if the seed data is loaded:
+You can also connect to the Catalog PostgreSQL database and verify that the seed data is loaded:
 
 [source,bash]
 ----

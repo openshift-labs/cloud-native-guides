@@ -36,7 +36,7 @@ information about this bug:
 
 [source,bash]
 ----
-$ oc logs dc/inventory | grep -i error
+$ oc logs dc/inventory | grep ERROR
 ----
 
 There doesn't seem to be anything relevant to the `invalid response` error that the 
@@ -45,7 +45,7 @@ API Gateway received either!
 Invoke the Inventory API using `curl` for the suspect product id to see what actually 
 happens when API Gateway makes this call:
 
-TIP: You can find out the Inventory route url using `oc get routes`. Replace 
+TIP: You can find out the Inventory route url using `oc get route inventory`. Replace 
 `INVENTORY-URL` with the Inventory route url from your project.
 
 [source,bash]
@@ -119,7 +119,7 @@ Forwarding from [::1]:5005 -> 5005
 You are all set now to start debugging using the tools of you choice. 
 
 Remote debugging can be done 
-using the prevalently available Java Debugger command line,`jdb`, or any modern IDE like JBoss 
+using the prevalently available Java Debugger command line or any modern IDE like JBoss 
 Developer Studio (Eclipse) and IntelliJ IDEA.
 
 {% if REMOTE_DEBUGGER_JDB %}
@@ -230,38 +230,11 @@ yet. The bug is however caused because the code returns this `null` value instea
 REST response. If the product id does not exist, a proper JSON response stating a zero inventory 
 should be returned instead of `null`.
 
-Exist the debugger.
+Exit the debugger and move on to the *Fix the Inventory Bug* section to fix the bug.
 
 [source,bash]
 ----
 > quit
-----
-
-Edit the `InventoryResource.java` add update the `getAvailability()` to make it look like the following 
-code in order to return a zero inventory for products that don't exist in the inventory 
-database:
-
-[source,java]
-----
-public Inventory getAvailability(@PathParam("itemId") String itemId) {
-    Inventory inventory = em.find(Inventory.class, itemId);
-
-    if (inventory == null) {
-        inventory = new Inventory();
-        inventory.setItemId(itemId);
-        inventory.setQuantity(0);
-    }
-
-    return inventory;
-}
-----
-
-Commit the changes to the Git repository.
-
-[source,bash]
-----
-$ git commit -m "inventory returns zero for non-existing product id" 
-$ git push origin master
 ----
 
 {% endif %}
@@ -278,11 +251,11 @@ the code within the IDE.
 Start JBDS. 
 
 If the `inventory-wildfly-swarm` project is not already imported into your 
-workspace, click on *File &rarr; Import... &rarr; Existing Maven Projects* and then *Next*.
+workspace, click on *File -> Import... -> Existing Maven Projects* and then *Next*.
 
 image::debug-jbds-import-maven.png[Import Maven Project,width=500,align=center]
 
-Click on *Browse*, select `$HOME/projects/inventory-wildfly-swarm` folder and click on 
+Click on *Browse*, select `inventory-wildfly-swarm` folder and click on 
 *Finish*.
 
 Open  `com.redhat.cloudnative.inventory.InventoryResource` in the code editor. Double-click 
@@ -294,7 +267,7 @@ image::debug-jbds-add-breakpoint.png[Add Breakpoint,width=500,align=center]
 
 Now you are ready to connect to the Inventory pod. 
 
-From the menu, click on *Run &rarr; Debug Configurations*. The debug configurations window 
+From the menu, click on *Run -> Debug Configurations*. The debug configurations window 
 opens. From the left sidebar, double-click on *Remote Java Application* to create a new debug 
 configuration for Java remote debugging. 
 
@@ -340,35 +313,7 @@ the code returns this `null` value instead of a sensible REST response. If the p
 id does not exist, a proper JSON response stating a zero inventory should be 
 returned instead of `null`.
 
-Stop the debugger and edit the `InventoryResource.java` to update the `getAvailability()` 
-method and make it look like the following code in order to return a zero inventory 
-for products that don't exist in the inventory database:
-
-[source,java]
-----
-public Inventory getAvailability(@PathParam("itemId") String itemId) {
-    Inventory inventory = em.find(Inventory.class, itemId);
-
-    if (inventory == null) {
-        inventory = new Inventory();
-        inventory.setItemId(itemId);
-        inventory.setQuantity(0);
-    }
-
-    return inventory;
-}
-----
-
-Commit the changes to the Git repository.
-
-TIP: There are multiple ways to commit the changes to the Git repository 
-from within JBDS. Go the _Git Perspective_, right-click on the project and then *Commit*.
-
-[source,bash]
-----
-$ git commit -m "inventory returns zero for non-existing product id" 
-$ git push origin master
-----
+Stop the debugger and move on to the *Fix the Inventory Bug* section to fix the bug.
 
 {% endif %}
 
@@ -381,8 +326,10 @@ to debug Java applications using the Java remote debugging architecture and allo
 execute code line-by-line on a remote machine (pod in this case) while seeing 
 the code within the IDE.
 
-Start IntellJ. If the `inventory-wildfly-swarm` project is not already imported into your 
-workspace, click on *Import Project* and then select `$HOME/projects/inventory-wildfly-swarm` 
+Start IntellJ. 
+
+If the `inventory-wildfly-swarm` project is not already imported into your 
+workspace, click on *Import Project* and then select `inventory-wildfly-swarm` 
 folder. Click on *Next* a few times and then click on *Finish*.
 
 Open `com.redhat.cloudnative.inventory.InventoryResource` in the editor. Click on the editor 
@@ -402,7 +349,7 @@ on *OK*.
 image::debug-idea-debug-config.png[Add Debug Configuration,width=700,align=center]
 
 Now you are ready to connect to the Inventory pod. From the menu, click on 
-*Run &rarr; Debug 'inventory'* to connect to the Inventory pod.
+*Run -> Debug 'inventory'* to connect to the Inventory pod.
 
 Use `curl` to invoke the Inventory API with the suspect product id in order to pause the 
 code execution at the defined breakpoint.
@@ -422,7 +369,7 @@ image::debug-idea-debug-view.png[IntelliJS IDEA Debug,width=900,align=center]
 Click on the step over icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
-Could you spot the bug now? The retireved inventory object is `null`. 
+Could you spot the bug now? The retrieved inventory object is `null`. 
 
 image::debug-idea-debug-vars.png[Variables,width=700,align=center]
 
@@ -433,12 +380,21 @@ the code returns this `null` value instead of a sensible REST response. If the p
 id does not exist, a proper JSON response stating a zero inventory should be 
 returned instead of `null`.
 
-Stop the debugger and edit the `InventoryResource.java` to update the `getAvailability()` 
-method and make it look like the following code in order to return a zero inventory 
-for products that don't exist in the inventory database:
+Stop the debugger and move on to the *Fix the Inventory Bug* section to fix the bug.
+
+{% endif %}
+
+#### Fix the Inventory Bug
+
+Edit the `InventoryResource.java` add update the `getAvailability()` to make it look like the following 
+code in order to return a zero inventory for products that don't exist in the inventory 
+database:
 
 [source,java]
 ----
+@GET
+@Path("/api/inventory/{itemId}")
+@Produces(MediaType.APPLICATION_JSON)
 public Inventory getAvailability(@PathParam("itemId") String itemId) {
     Inventory inventory = em.find(Inventory.class, itemId);
 
@@ -454,25 +410,17 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 
 Commit the changes to the Git repository.
 
-TIP: You can commit the changes to the Git repository from within IntelliJ IDEA 
-as well. From the menu, click on *VCS &rarr; Enable VCS Integration* and then 
-select *Git* and then *OK*. Now that Git is enabled, from the menu click on 
-*VCS &rarr; Commit Changes...*.
-
 [source,bash]
 ----
+$ git add src/main/java/com/redhat/cloudnative/inventory/InventoryResource.java
 $ git commit -m "inventory returns zero for non-existing product id" 
 $ git push origin master
 ----
 
-{% endif %}
-
-#### Deploy the Bug Fix 
-
 As soon as you commit the changes to the Git repository, the `inventory-pipeline` gets 
 triggered to build and deploy a new Inventory container with the fix. Go to the 
 OpenShift Web Console and inside the *{{COOLSTORE_PROJECT}}* project. On the sidebar 
-menu, Click on *Builds &rarr; Pipelines* to see its progress.
+menu, Click on *Builds -> Pipelines* to see its progress.
 
 When the pipeline completes successfully, point your browser at the Web route and verify 
 that the inventory status is visible for all products. The suspect product should show 
@@ -481,3 +429,4 @@ the inventory status as _Not in Stock_.
 image::debug-coolstore-bug-fixed.png[Inventory Status Bug Fixed,width=900,align=center]
 
 
+Well done and congratulations for completing all the labs.

@@ -1,7 +1,8 @@
 ## Web UI with Node.js and AngularJS 
 
-In this section you will learn about Node.js and will deploy the Node.js and Angular-based 
-web UI for services deployed in the previous labs.
+In this lab you will learn about Node.js and will deploy the Node.js and Angular-based 
+web front+end for the CoolStore online shop which uses the API Gateway services you deployed 
+in previous labs. 
 
 image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
 
@@ -44,7 +45,9 @@ Use the OpenShift CLI command to create a new build and deployment for the Web c
 
 TIP: Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
 instead. To give you a hint, start by clicking on *Add to project* within the 
-*{{COOLSTORE_PROJECT}}* project and pick *JavaScript* in the service catalog .
+*{{COOLSTORE_PROJECT}}* project and pick *JavaScript* and then *Node.js* in the service 
+catalog. Don't forget to click on *advanced options* and set *Context Dir* to `web-nodejs` 
+which is the sub-folder of the Git repository where the source code for Web resides.
 
 
 [source,bash]
@@ -95,5 +98,7 @@ together in the OpenShift Web Console
 ----
 $ oc label dc app=coolstore --all --overwrite
 ----
+
+image::coolstore-pods-nodb.png[CoolStore Pods,width=900,align=center]
 
 Well done! You are ready to move on to the next lab.

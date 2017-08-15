@@ -237,7 +237,7 @@ Download the project skeletons to your local machine:
 
 [source,bash]
 ----
-$ cd $HOME
+$ cd ~
 $ curl -sL -o projects.zip {{LABS_DOWNLOAD_URL}}
 ----
 
@@ -245,7 +245,7 @@ TIP: You can choose any directory, these instructions use $HOME as an example.
 
 Unzip the `projects.zip` file in your home directory.
 
-TIP: You can use `unzip` or any other decompressor utility with `zip`format support 
+TIP: You can use `unzip` or any other archiving utility with `zip` format support 
 you have available on your machine.
 
 [source,bash]

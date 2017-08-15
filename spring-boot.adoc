@@ -1,8 +1,8 @@
 ## Microservices with Spring Boot
 
-In this section we will give an overview of Spring Boot and how you can build microservices 
+In this lab you will learn about Spring Boot and how you can build microservices 
 using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
-the Catalog service in order to provide a list of products for the retail store.
+the Catalog service in order to provide a list of products for the CoolStore online shop.
 
 #### What is Spring Boot?
 
@@ -341,8 +341,8 @@ OpenShift CLI:
 $ oc get routes
 
 NAME        HOST/PORT                                        PATH       SERVICES  PORT  TERMINATION   
-catalog     catalog-coolstore.roadshow.openshiftapps.com     catalog    8080            None
-inventory   inventory-coolstore.roadshow.openshiftapps.com   inventory  8080            None
+catalog     catalog-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com     catalog    8080            None
+inventory   inventory-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com   inventory  8080            None
 ----
 
 Copy the route url for the Catalog service and verify the Catalog service works using 'curl':

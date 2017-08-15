@@ -27,8 +27,8 @@ You will use https://github.com/[GitHub], the vastly popular web-based Git hosti
 lab. If you don't already have an account on GitHub, you really should now! Head to 
 https://github.com/[GitHub] and sign in with your account or sign up for a new account.
 
-INFO: You could really use any Git hosting such as GitLab, BitBucket, etc. However the 
-instructions in this lab are tailored for GitHub.
+INFO: You could use any Git hosting such as GitLab, BitBucket, etc. However the 
+instructions in this lab assume you are using GitHub.
 
 Click on the plus icon on the top navigation bar and then on *New Repository*.
 
@@ -51,7 +51,7 @@ replace `YOUR-USERNAME` with your GitHub username in the following:
 
 [source,bash]
 ----
-$ cd $HOME/projects/inventory-wildfly-swarm
+$ cd inventory-wildfly-swarm
 $ git init
 $ git remote add origin https://github.com/YOUR-USERNAME/inventory-wildfly-swarm.git
 ----
@@ -83,11 +83,11 @@ a Git repository and referenced by the build configuration.
 Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline 
 and is created using a https://jenkins.io/doc/book/pipeline/syntax/[scripted or declarative syntax].
 
-Create a file called `Jenkinsfile` in the root the `inventory-wildfly-swarm` project 
-with the following content.
+Create a file called `Jenkinsfile` in the root the `inventory-wildfly-swarm`:
 
 [source,groovy]
 ----
+cat << 'EOF' > Jenkinsfile
 node("maven") {
   stage("Build JAR") {
     git url: "INVENTORY-GIT-URL"
@@ -100,18 +100,19 @@ node("maven") {
     sh "oc start-build inventory-s2i --from-file=target/inventory-1.0-SNAPSHOT-swarm.jar"
     openshiftVerifyBuild bldCfg: "inventory-s2i", waitTime: '20', waitUnit: 'min'
   }
-  
+
   stage("Deploy") {
     openshiftDeploy deploymentConfig: inventory
   }
 }
+EOF
 ----
 
-This pipelne has three stages:
+This pipeline has three stages:
 
-* Build JAR: to build and test the jar file using Maven
-* Build Image: to build a container image from the Inventory JAR archive using OpenShift S2I
-* Deploy: to deploy the Inventory container image in the current project
+* _Build JAR_: to build and test the jar file using Maven
+* _Build Image_: to build a container image from the Inventory JAR archive using OpenShift S2I
+* _Deploy Image_: to deploy the Inventory container image in the current project
 
 Note that the pipeline definition is fully integrated with OpenShift and you can 
 perform operations like image build, image deploy, etc directly from within the `Jenkinsfile`.
@@ -125,7 +126,7 @@ Commit and push the `Jenkinsfile` to the Git repository.
 ----
 $ git add Jenkinsfile
 $ git commit -m "pipeline added"
-$ git push -u origin master
+$ git push origin master
 ----
 
 The pipeline definition is ready and now you can create a deployment pipeline using 
@@ -133,10 +134,9 @@ this `Jenkinsfile`.
 
 #### Create an OpenShift Pipeline
 
-Like mentioned, OpenShift Pipelines enable creating deployment pipelines using the 
-widely popoular `Jenkinsfile` format.
+Like mentioned, {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#pipeline-build[OpenShift Pipelines] enable creating deployment pipelines using the widely popular `Jenkinsfile` format.
 
-Create a deployment pipeline using the 'oc new-app' command:
+Create a deployment pipeline.
 
 CAUTION: Make sure to run the `oc new-app` command from within the 
 `inventory-widlfly-swarm` folder.
@@ -144,7 +144,7 @@ CAUTION: Make sure to run the `oc new-app` command from within the
 [source,bash]
 ----
 $ oc new-app . --name=inventory-pipeline --strategy=pipeline
----
+----
 
 The above command creates a new build config of type pipeline which is automatically 
 configured to fetch the `Jenkinsfile` from the Git repository of the current folder 
@@ -155,16 +155,18 @@ the certified Jenkins image that is available in OpenShift image registry.
 Go OpenShift Web Console inside the {{COOLSTORE_PROJECT}} project and from the left sidebar 
 click on *Builds -> Pipelines*
 
-image::cd-pipeline-inprogress.png[OpenShift Pipeline,width=900,align=center]]
+image::cd-pipeline-inprogress.png[OpenShift Pipeline,width=900,align=center]
 
 
 Pipeline syntax allows creating complex deployment scenarios with the possibility of defining 
 checkpoint for manual interaction and approval process using 
 https://jenkins.io/doc/pipeline/steps/[the large set of steps and plugins that Jenkins provide] in 
-order to adapt the pipeline to the process used in your team.
+order to adapt the pipeline to the process used in your team. You can see a few examples of 
+advanced pipelines in the 
+https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline[OpenShift GitHub Repository].
 
 In order to update the deployment pipeline, all you need to do is to update the `Jenkinsfile` 
-in the `inventory-wildfly-swarm` Git repository. OpenShift pipeline automaticaly executes the 
+in the `inventory-wildfly-swarm` Git repository. OpenShift pipeline automatically executes the 
 updated pipeline next time it runs.
 
 #### Run the Pipeline on Every Code Change
@@ -197,24 +199,30 @@ click on the pipeline and go to the *Configurations* tab.
 
 Copy the GitHub webhook url which you will need in the next steps.
 
-Go to GitHub and your 'inventory-wildfly-swarm' Git repository, then click on *Settings*.
+Go to GitHub and your *inventory-wildfly-swarm* Git repository, then click on *Settings*.
 
-image::cd-github-settings-link.png[GitHub Settings,width=900,align=center]]
+image::cd-github-settings-link.png[GitHub Settings,width=900,align=center]
 
 On the left menu, click on *Webhooks* and then on *Add webhook* button. Enter your password 
 once more if you are ask to do so.
 
-Paste the GitHub webhook url you copied from the `inventory-pipline` as the *Payload URL* and 
+Paste the GitHub webhook url you copied from the `inventory-pipeline` as the *Payload URL* and 
 disable SSL verification by clicking on *Disable SSL verification* and then *I understand my 
 wehooks may not be secure*. The reason for disabling SSL in this lab is that we are using 
 self-generated certificates in this lab environment which cannot be verified by GitHub. 
 
-CAUTION: When adding a webhook to GitHub, your OpenShift cluster should be accessible to the 
-public internet in order for GitHub to be able to invoke the provided webhook url.
+[IMPORTANT]
+====
+When adding a webhook to GitHub, your OpenShift cluster should be accessible to the 
+public internet in order for GitHub to be able to invoke the provided webhook url. Y
+
+If you are not sure, enter your OpenShift Web Console url on https://isitup.org[Is It Up?] 
+and you'll know!  
+====
 
 Click on *Add webhook*
 
-image::cd-github-webhook-add.png[GitHub Webhook,width=900,align=center]]
+image::cd-github-webhook-add.png[GitHub Webhook,width=900,align=center]
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
 Clicking on a delivery, allows you to manually trigger the webhook for testing purposes.
