@@ -97,7 +97,7 @@ name to this configuration (e.g. `prod`) in order to tell WildFly Swarm which on
 
 [source,bash]
 ----
-$ cat << 'EOF' > ./project-stages.yml
+$ cat <<EOF > ./project-stages.yml
 project:
   stage: prod
 swarm:
@@ -255,7 +255,7 @@ credentials:
 
 [source,bash]
 ----
-$ cat << 'EOF' > ./application.properties
+$ cat <<EOF > ./application.properties
 spring.datasource.url=jdbc:postgresql://catalog-postgresql:5432/catalog
 spring.datasource.username=catalog
 spring.datasource.password=catalog

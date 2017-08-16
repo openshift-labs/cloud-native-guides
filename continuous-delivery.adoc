@@ -87,7 +87,7 @@ Create a file called `Jenkinsfile` in the root the `inventory-wildfly-swarm`:
 
 [source,groovy]
 ----
-cat << 'EOF' > Jenkinsfile
+cat <<EOF > Jenkinsfile
 node("maven") {
   stage("Build JAR") {
     git url: "INVENTORY-GIT-URL"
