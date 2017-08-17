@@ -46,11 +46,11 @@ Invoke the Inventory API using `curl` for the suspect product id to see what act
 happens when API Gateway makes this call:
 
 TIP: You can find out the Inventory route url using `oc get route inventory`. Replace 
-`INVENTORY-URL` with the Inventory route url from your project.
+`INVENTORY-ROUTE-HOST` with the Inventory route url from your project.
 
 [source,bash]
 ----
-$ curl http://INVENTORY-URL/api/inventory/444436
+$ curl http://INVENTORY-ROUTE-HOST/api/inventory/444436
 ----
 
 TIP: You can use `curl -v` to see all the headers sent and received. You would received 
@@ -162,11 +162,11 @@ Use `curl` to invoke the Inventory API with the suspect product id in order to p
 code execution at the defined breakpoint.
 
 TIP: You can find out the Inventory route url using `oc get routes`. Replace 
-`INVENTORY-URL` with the Inventory route url from your project.
+`INVENTORY-ROUTE-HOST` with the Inventory route url from your project.
 
 [source,bash]
 ----
-$ curl -v http://INVENTORY-URL/api/inventory/444436
+$ curl -v http://INVENTORY-ROUTE-HOST/api/inventory/444436
 ----
 
 The code execution pauses at the `getAvailability()` method. You can verify it 
@@ -281,11 +281,11 @@ Inventory API with the suspect product id in order to pause the
 code execution at the defined breakpoint.
 
 TIP: You can find out the Inventory route url using `oc get routes`. Replace 
-`INVENTORY-URL` with the Inventory route url from your project.
+`INVENTORY-ROUTE-HOST` with the Inventory route url from your project.
 
 [source,bash]
 ----
-$ curl -v http://INVENTORY-URL/api/inventory/444436
+$ curl -v http://INVENTORY-ROUTE-HOST/api/inventory/444436
 ----
 
 JBDS switches to the _Debug Perspective_ and pauses on the breakpoint.
@@ -355,11 +355,11 @@ Use `curl` to invoke the Inventory API with the suspect product id in order to p
 code execution at the defined breakpoint.
 
 TIP: You can find out the Inventory route url using `oc get routes`. Replace 
-`INVENTORY-URL` with the Inventory route url from your project.
+`INVENTORY-ROUTE-HOST` with the Inventory route url from your project.
 
 [source,bash]
 ----
-$ curl -v http://INVENTORY-URL/api/inventory/444436
+$ curl -v http://INVENTORY-ROUTE-HOST/api/inventory/444436
 ----
 
 IDEA pauses on the breakpoint.

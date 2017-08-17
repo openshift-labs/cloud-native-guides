@@ -23,11 +23,71 @@ a source code repository.
 
 #### Create a Git Repository for Inventory
 
+{% if MINISHIFT %}
+
+First, create a new project and deploy the https://gogs.io[Gogs Git Server] on OpenShift 
+which you will use in the rest of this lab as your Git server.
+
+[source,bash]
+----
+$ oc new-project gogs
+$ oc process -f http://bit.ly/openshift-gogs-persistent-template \
+  --param=HOSTNAME=gogs-gogs.$(minishift ip).nip.io \
+  --param=GOGS_VERSION=0.9.113 \
+  --param=SKIP_TLS_VERIFY=true \
+  | oc create -f -
+----
+
+After Gogs Git Server is ready, go the Gogs route url.
+
+TIP: Remember how to find out the route urls via OpenShift CLI? Try `oc get route gogs`
+
+Click on *Register* to register a new user with the following details and then click on 
+*Create New Account*: 
+
+* Username: `developer`
+
+* Email: _your email_  (Don't worry! Gogs won't send you any emails)
+
+* Password: `developer`
+
+image::cd-gogs-signup.png[Sign Up Gogs,width=600,align=center]
+
+You will be redirected to the sign in page. Sign in using the above username and password.
+
+Click on the plus icon on the top navigation bar and then on *New Repository*.
+
+image::cd-gogs-plus-icon.png[Create New Repository,width=900,align=center]
+
+Give `inventory-wildfly-swarm` as *Repository Name* and click on *Create Repository* 
+button, leaving the rest with default values.
+
+image::cd-gogs-new-repo.png[Create New Repository,width=600,align=center]
+
+The Git repository is created now. 
+
+Click on the copy-to-clipboard icon to near the 
+HTTP Git url to copy it to the clipboard which you will need in a few minutes.
+
+image::cd-gogs-empty-repo.png[Empty Repository,width=900,align=center]
+
+
+Although you can use the `-n` or `--namespace` flag to specify the project when using 
+OpenShift CLI, it's just easier to change the active project back to the 
+`{{COOLSTORE_PROJECT}}` project.
+
+[source,bash]
+----
+$ oc project {{COOLSTORE_PROJECT}}
+----
+
+{% else %}
+
 You will use https://github.com/[GitHub], the vastly popular web-based Git hosting for this 
 lab. If you don't already have an account on GitHub, you really should now! Head to 
 https://github.com/[GitHub] and sign in with your account or sign up for a new account.
 
-INFO: You could use any Git hosting such as GitLab, BitBucket, etc. However the 
+NOTE: You could use any Git hosting such as GitLab, BitBucket, etc. However the 
 instructions in this lab assume you are using GitHub.
 
 Click on the plus icon on the top navigation bar and then on *New Repository*.
@@ -37,23 +97,32 @@ image::cd-github-plus-icon.png[Create New Repository,width=900,align=center]
 Give `inventory-wildfly-swarm` as *Repository name* and click on *Create repository* 
 button, leaving the rest with default values.
 
-The Git repository is created now. Write down the HTTPS Git url which you will need 
-in a few minutes.
+image::cd-github-new-repo.png[Create New Repository,width=600,align=center]
+
+The Git repository is created now. Click on the copy-to-clipboard icon to near the 
+HTTPS Git url to copy it to the clipboard which you will need in a few minutes.
+
+image::cd-github-empty-repo.png[Empty Repository,width=900,align=center]
+
+{% endif %}
 
 #### Push Inventory Code to the Git Repository
 
 Now that you have a Git repository for the Inventory service, you should push the 
-source code into the Git repository.
+source code into this Git repository.
 
 Go the `inventory-wildfly-swarm` folder, initialize it as a Git working copy and add 
 the GitHub repository as the remote repository for your working copy. Make sure you 
-replace `YOUR-USERNAME` with your GitHub username in the following:
+replace `GIT-REPO` with the Git repository url in the following commands:
+
+TIP: Paste the Git repository url from the clipboard which you have copied in the 
+previous steps. 
 
 [source,bash]
 ----
 $ cd inventory-wildfly-swarm
 $ git init
-$ git remote add origin https://github.com/YOUR-USERNAME/inventory-wildfly-swarm.git
+$ git remote add origin https://GIT-REPO/inventory-wildfly-swarm.git
 ----
 
 Commit and push the existing code to the GitHub repository.
@@ -65,9 +134,15 @@ $ git commit -m "initial add"
 $ git push -u origin master
 ----
 
-Enter your GitHub username and password if you get asked to enter your credentials. Go 
-to your `inventory-wildfly-swarm` repository on GitHub and refresh the page. You should 
+Enter your Git repository username and password if you get asked to enter your credentials. Go 
+to your `inventory-wildfly-swarm` repository web interface and refresh the page. You should 
 see the project files in the repository.
+
+{% if MINISHIFT %}
+image::cd-gogs-inventory-repo.png[Inventory Repository,width=700,align=center]
+{% else %}
+image::cd-github-inventory-repo.png[Inventory Repository,width=700,align=center]
+{% endif %}
 
 #### Define the Deployment Pipeline
 
@@ -197,11 +272,39 @@ Webhook Generic:
 TIP: You can also see the webhooks in the OpenShift Web Console by going to *Build -> Pipelines*, 
 click on the pipeline and go to the *Configurations* tab.
 
+
+{% if MINISHIFT %}
+
+Copy the Generic webhook url which you will need in the next steps.
+
+Go to Gogs and your *inventory-wildfly-swarm* Git repository, then click on *Settings*.
+
+image::cd-gogs-settings-link.png[Repository Settings,width=800,align=center]
+
+On the left menu, click on *Webhooks* and then on *Add Webhook* button and then *Gogs*. 
+
+Create a webhook with the following details:
+
+* *Payload URL*: paste the Generic webhook url you copied from the `inventory-pipeline`
+* *Content type*: `application/json`
+
+Click on *Add Webhook*. 
+
+image::cd-gogs-webhook-add.png[Repository Webhook,width=600,align=center]
+
+All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
+Clicking on the *Test Delivery* button allows you to manually trigger the webhook for 
+testing purposes. Click on it and verify that the `inventory-pipeline` start running 
+immediately.
+
+
+{% else %}
+
 Copy the GitHub webhook url which you will need in the next steps.
 
 Go to GitHub and your *inventory-wildfly-swarm* Git repository, then click on *Settings*.
 
-image::cd-github-settings-link.png[GitHub Settings,width=900,align=center]
+image::cd-github-settings-link.png[GitHub Settings,width=800,align=center]
 
 On the left menu, click on *Webhooks* and then on *Add webhook* button. Enter your password 
 once more if you are ask to do so.
@@ -218,7 +321,7 @@ in this lab environment which cannot be verified by GitHub.
 [IMPORTANT]
 ====
 When adding a webhook to GitHub, your OpenShift cluster should be accessible to the 
-public internet in order for GitHub to be able to invoke the provided webhook url. Y
+public internet in order for GitHub to be able to invoke the provided webhook url.
 
 If you are not sure, enter your OpenShift Web Console url on https://isitup.org[Is It Up?] 
 and you'll know!  
@@ -226,9 +329,12 @@ and you'll know!
 
 Click on *Add webhook*
 
-image::cd-github-webhook-add.png[GitHub Webhook,width=900,align=center]
+image::cd-github-webhook-add.png[GitHub Webhook,width=600,align=center]
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
-Clicking on a delivery, allows you to manually trigger the webhook for testing purposes.
+Clicking on a delivery, allows you to manually trigger the webhook for testing purposes by 
+clicking on the *Redeliver* button.
+
+{% endif %}
 
 Well done! You are ready for the next lab.

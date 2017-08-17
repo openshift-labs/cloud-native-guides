@@ -3,6 +3,23 @@
 In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
 and get ready for the Cloud Native Roadshow labs.
 
+{% if MINISHIFT %}
+
+#### Red Hat Container Development Kit (CDK)
+
+https://developers.redhat.com/products/cdk/overview[Red Hat Container Development Kit] 
+provides a pre-built Container Development 
+Environment based on Red Hat Enterprise Linux to help you develop container-based 
+applications quickly on OpenShift. 
+
+CDK configures a pre-built, single-node OpenShift cluster locally, so you can try 
+the latest version of OpenShift Container Platform. 
+
+
+If you haven't already installed CDK, follow these instructions to install it now: https://access.redhat.com/documentation/en-us/red_hat_container_development_kit/3.1/html/getting_started_guide/getting_started_with_container_development_kit#installing-minishift[Installing Container Development Kit]
+
+{% else %}
+
 #### OpenShift CLI
 
 OpenShift ships with a feature rich web console as well as command line tools
@@ -147,17 +164,36 @@ $ oc version
 
 You should see the OpenShift version.
 
-[#explore_openshift]
+{% endif %}
+
 #### Explore OpenShift with OpenShift CLI
 
 In order to login, we will use the `oc` command and then specify the server that we
-want to authenticate to.  Issue the following command and replace `OPENSHIFT-CONSOLE-URL` 
+want to authenticate to.
+
+{% if MINISHIFT %}
+
+When CDK starts, it prints the OpenShift Web Console in the logs. Alternatively, 
+you can use the `minishift console --url` to find it out. 
+
+Login to OpenShift.
+
+[source]
+----
+$ oc login OPENSHIFT-CONSOLE-URL
+----
+
+{% else %}
+
+Issue the following command and replace `OPENSHIFT-CONSOLE-URL` 
 with your OpenShift Web Console url:
 
 [source]
 ----
 $ oc login OPENSHIFT-CONSOLE-URL
 ----
+
+{% endif %}
 
 You may see the following output:
 

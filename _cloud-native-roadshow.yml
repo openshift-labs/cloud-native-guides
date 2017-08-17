@@ -13,6 +13,7 @@ vars:
   REMOTE_DEBUGGER_JDB: true
   REMOTE_DEBUGGER_JBDS: true
   REMOTE_DEBUGGER_IDEA: true
+  MINISHIFT: true
   
 modules:
   activate:
