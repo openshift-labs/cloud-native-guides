@@ -23,7 +23,7 @@ a source code repository.
 
 #### Create a Git Repository for Inventory
 
-{% if MINISHIFT %}
+{% if MINISHIFT == true %}
 
 First, create a new project and deploy the https://gogs.io[Gogs Git Server] on OpenShift 
 which you will use in the rest of this lab as your Git server.
@@ -138,7 +138,7 @@ Enter your Git repository username and password if you get asked to enter your c
 to your `inventory-wildfly-swarm` repository web interface and refresh the page. You should 
 see the project files in the repository.
 
-{% if MINISHIFT %}
+{% if MINISHIFT == true %}
 image::cd-gogs-inventory-repo.png[Inventory Repository,width=700,align=center]
 {% else %}
 image::cd-github-inventory-repo.png[Inventory Repository,width=700,align=center]
@@ -273,7 +273,7 @@ TIP: You can also see the webhooks in the OpenShift Web Console by going to *Bui
 click on the pipeline and go to the *Configurations* tab.
 
 
-{% if MINISHIFT %}
+{% if MINISHIFT == true %}
 
 Copy the Generic webhook url which you will need in the next steps.
 

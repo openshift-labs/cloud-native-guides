@@ -3,7 +3,7 @@
 In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
 and get ready for the Cloud Native Roadshow labs.
 
-{% if MINISHIFT %}
+{% if MINISHIFT == true %}
 
 #### Red Hat Container Development Kit (CDK)
 
@@ -171,7 +171,7 @@ You should see the OpenShift version.
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-{% if MINISHIFT %}
+{% if MINISHIFT == true %}
 
 When CDK starts, it prints the OpenShift Web Console in the logs. Alternatively, 
 you can use the `minishift console --url` to find it out. 
