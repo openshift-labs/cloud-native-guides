@@ -1,0 +1,338 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: guides
+parameters:
+- displayName: Application Name
+  name: APPLICATION_NAME
+  required: true
+  value: guides
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${APPLICATION_NAME}
+      deploymentconfig: ${APPLICATION_NAME}
+    strategy:
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}
+          deploymentconfig: ${APPLICATION_NAME}
+      spec:
+        containers:
+        - env:
+          - name: CONTENT_URL_PREFIX
+            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/master
+          - name: WORKSHOPS_URLS
+            value: file:///app/config/cloud-native-roadshow.yml
+          - name: CACHE_PRELOAD
+            value: "true"
+          image: ${APPLICATION_NAME}
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: ${APPLICATION_NAME}
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /app/config
+            name: config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: cloud-native-roadshow.yml
+              path: cloud-native-roadshow.yml
+            name: ${APPLICATION_NAME}
+          name: config
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}-cdk
+    name: ${APPLICATION_NAME}-cdk
+  spec:
+    replicas: 1
+    selector:
+      app: ${APPLICATION_NAME}-cdk
+      deploymentconfig: ${APPLICATION_NAME}-cdk
+    strategy:
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: ${APPLICATION_NAME}-cdk
+          deploymentconfig: ${APPLICATION_NAME}-cdk
+      spec:
+        containers:
+        - env:
+          - name: CONTENT_URL_PREFIX
+            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/master
+          - name: WORKSHOPS_URLS
+            value: file:///app/config/cloud-native-roadshow-cdk.yml
+          - name: CACHE_PRELOAD
+            value: "true"
+          image: ${APPLICATION_NAME}
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: ${APPLICATION_NAME}-cdk
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /app/config
+            name: config
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+            - key: cloud-native-roadshow-cdk.yml
+              path: cloud-native-roadshow-cdk.yml
+            name: ${APPLICATION_NAME}
+          name: config
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APPLICATION_NAME}-cdk
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: ${APPLICATION_NAME}
+  spec:
+    dockerImageRepository: docker.io/osevg/workshopper
+    tags:
+    - name: "latest"
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: ${APPLICATION_NAME}
+      deploymentconfig: ${APPLICATION_NAME}
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}-cdk
+    name: ${APPLICATION_NAME}-cdk
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: ${APPLICATION_NAME}-cdk
+      deploymentconfig: ${APPLICATION_NAME}-cdk
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${APPLICATION_NAME}-cdk
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: ${APPLICATION_NAME}-cdk
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  kind: Route
+  metadata:
+    name: ${APPLICATION_NAME}
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: ${APPLICATION_NAME}
+      weight: 100
+    wildcardPolicy: None
+- apiVersion: v1
+  data:
+    cloud-native-roadshow-cdk.yml: |-
+      id: "roadshow"
+      name: "OpenShift Cloud-Native Roadshow"
+      vars:
+        OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.6"
+        COOLSTORE_PROJECT: "coolstore"
+        DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/windows/oc.zip
+        DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/macosx/oc.tar.gz
+        DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/linux/oc.tar.gz
+        LABS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs.git
+        LABS_DOWNLOAD_URL: https://github.com/openshift-roadshow/cloud-native-labs/archive/master.zip
+        WEB_NODEJS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs/tree/master/web-nodejs
+        REMOTE_DEBUGGER_JDB: true
+        REMOTE_DEBUGGER_JBDS: true
+        REMOTE_DEBUGGER_IDEA: true
+        MINISHIFT: true
+      modules:
+        activate:
+        - getting-started
+        - wildfly-swarm
+        - spring-boot
+        - vertx
+        - nodejs
+        - health
+        - fault-tolerance
+        - app-config
+        - continuous-delivery
+        - debug
+    cloud-native-roadshow.yml: |-
+      id: "roadshow"
+      name: "OpenShift Cloud-Native Roadshow"
+      vars:
+        OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.6"
+        COOLSTORE_PROJECT: "coolstore"
+        DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/windows/oc.zip
+        DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/macosx/oc.tar.gz
+        DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/linux/oc.tar.gz
+        LABS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs.git
+        LABS_DOWNLOAD_URL: https://github.com/openshift-roadshow/cloud-native-labs/archive/master.zip
+        WEB_NODEJS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs/tree/master/web-nodejs
+        REMOTE_DEBUGGER_JDB: true
+        REMOTE_DEBUGGER_JBDS: true
+        REMOTE_DEBUGGER_IDEA: true
+        MINISHIFT: false
+      modules:
+        activate:
+        - getting-started
+        - wildfly-swarm
+        - spring-boot
+        - vertx
+        - nodejs
+        - health
+        - fault-tolerance
+        - app-config
+        - continuous-delivery
+        - debug
+  kind: ConfigMap
+  metadata:
+    name: ${APPLICATION_NAME}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
+    labels:
+      name: ${APPLICATION_NAME}-pipeline
+    name: ${APPLICATION_NAME}-pipeline
+  spec:
+    runPolicy: SerialLatestOnly
+    source:
+      type: None
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfile: |-
+          node {
+              stage('reload guide') {
+                  sh "curl -v http://${APPLICATION_NAME}:8080/api/reload"
+              }
+              
+              stage('reload guide cdk') {
+                  sh "curl -v http://${APPLICATION_NAME}-cdk:8080/api/reload"
+              }
+          }
+      type: JenkinsPipeline
+    triggers:
+    - github:
+        secret: 6q5p7KDfwv
+      type: GitHub
+    - generic:
+        secret: 6q5p7KDfwv
+      type: Generic
