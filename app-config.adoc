@@ -120,7 +120,7 @@ packaged in the Inventory JAR archive:
 
 [source,bash]
 ----
-$ oc create configmap inventory --from-file=project-stages.yml=./project-stages.yml
+$ oc create configmap inventory --from-file=./project-stages.yml
 ----
 
 [TIP]
@@ -138,6 +138,9 @@ Config maps hold key-value pairs and in the above command an `inventory` config 
 is created with `project-stages.yml` as the key and the content of the `./project-stages.yml` as the 
 value. Whenever a config map is injected into a container, it would appear as a file with the same 
 name as the key, at path on the filesystem.
+
+TIP: You can see the content of the config map in the OpenShift Web Console or by 
+using `oc describe cm inventory` command.
 
 Modify the Inventory deployment config so that it injects the YAML configuration you just created as 
 a config map into the Inventory container:
@@ -270,7 +273,7 @@ exposed by OpenShift and accessible to containers running on OpenShift.
 
 [source,bash]
 ----
-$ oc create configmap catalog --from-file=application.properties=./application.properties
+$ oc create configmap catalog --from-file=./application.properties
 ----
 
 [TIP]
