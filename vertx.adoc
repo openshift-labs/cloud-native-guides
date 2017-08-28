@@ -193,12 +193,11 @@ public class GatewayVerticle extends AbstractVerticle {
 
         ServiceDiscovery.create(vertx, discovery -> {
             // Catalog lookup
-            // Catalog lookup
-            Single<WebClient> gatewayDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("gateway"))
+            Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
+                    rec -> rec.getName().equals("catalog"))
                     .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                            .setDefaultHost(System.getProperty("gateway.api.host", "localhost"))
-                            .setDefaultPort(Integer.getInteger("gateway.api.port", 9000))));
+                            .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                            .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
             // Inventory lookup
             Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
@@ -280,11 +279,11 @@ public void start() {
 
     ServiceDiscovery.create(vertx, discovery -> {
         // Catalog lookup
-        Single<WebClient> gatewayDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("gateway"))
+        Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
+                rec -> rec.getName().equals("catalog"))
                 .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                        .setDefaultHost(System.getProperty("gateway.api.host", "localhost"))
-                        .setDefaultPort(Integer.getInteger("gateway.api.port", 9000))));
+                        .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                        .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
         // Inventory lookup
         Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
