@@ -25,7 +25,6 @@ components of the Spring Boot project are laid out in different subdirectories a
 
 [source]
 ----
-.
 ├── pom.xml            # The Maven project file
 └── src
     └── main
@@ -169,7 +168,7 @@ Review the `Product` domain model and note the JPA annotations on this class. `@
 class as a JPA entity, `@Table` customizes the table creation process by defining a table 
 name and database constraint and `@Id` marks the primary key for the table
 
-Spring Data repository abstraction simplies dealing with data models in Spring applications by 
+Spring Data repository abstraction simplifies dealing with data models in Spring applications by 
 reducing the amount of boilerplate code required to implement data access layers for various 
 persistence stores. https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts[Repository]
 and its sub-interfaces are the central concept in Spring Data which is a marker interface to provide 
@@ -283,7 +282,7 @@ folder to the OpenShift platform.
 Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
-allowing to build aproject, deploy it and finally launch a docker process as a pod.
+allowing to build a project, deploy it and finally launch a docker process as a pod.
 
 To build and deploy the Catalog service on OpenShift using the `fabric8` maven plugin, run the following maven command:
 

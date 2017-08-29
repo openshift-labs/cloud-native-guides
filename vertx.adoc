@@ -9,7 +9,7 @@ create a scalable API Gateway that aggregates Catalog and Inventory APIs.
 
 http://vertx.io[Eclipse Vert.x] is a toolkit for building reactive applications on the Java Virtual Machine (JVM). Vert.x does not 
 impose a specific framework or packaging model and can be used within your existing applications and frameworks 
-in order to add reactive functionaly by just adding the Vert.x jar files to the application classpath.
+in order to add reactive functionality by just adding the Vert.x jar files to the application classpath.
 
 Vert.x enables building reactive systems as defined by http://www.reactivemanifesto.org/[The Reactive Manifesto] and build 
 services that are:
@@ -28,7 +28,6 @@ the Vert.x project laid out in different subdirectories according to Maven best 
 
 [source]
 ----
-.
 ├── pom.xml               # The Maven project file
 └── src
     └── main
@@ -37,7 +36,7 @@ the Vert.x project laid out in different subdirectories according to Maven best 
 ----
 
 This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
-other than the main class, `GatewayVerticle.java` which is there to boostrap the Vert.x application. Verticles
+other than the main class, `GatewayVerticle.java` which is there to bootstrap the Vert.x application. Verticles
 are encapsulated parts of the application that can run completely independently and communicate with each other
 via the built-in event bus in Vert.x. Verticles get deployed and run by Vert.x in an event loop and therefore it 
 is important that the code in a Verticle does not block. This asynchronous architecture allows Vert.x applications 
@@ -139,7 +138,7 @@ $ curl http://localhost:8080
 {"message": "Hello Vert.x"}
 ----
 
-Note that while the appliation is running using `mvn vertx:run`, you can make changes in the code
+Note that while the application is running using `mvn vertx:run`, you can make changes in the code
 and they would immediately be compiled and updated in the running application to provide the fast
 feedback to the developer.
 
@@ -149,8 +148,8 @@ Now that the project is ready, let's get coding!
 
 In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
 web front contacting each of these backend services, you can create an API Gateway which is an entry 
-point for for the web front to access all backend services from a single place. This pattern is expectecly 
-called http://microservices.io/patterns/apigateway.html[API Gateway] and is a common practise in Microservices 
+point for for the web front to access all backend services from a single place. This pattern is expectedly 
+called http://microservices.io/patterns/apigateway.html[API Gateway] and is a common practice in Microservices 
 architecture.
 
 image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
@@ -440,7 +439,7 @@ the `target` folder to the OpenShift platform.
 Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
-allowing to build aproject, deploy it and finally launch a docker process as a pod.
+allowing to build a project, deploy it and finally launch a docker process as a pod.
 
 To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
 

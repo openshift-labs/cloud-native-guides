@@ -47,5 +47,6 @@ $ docker run -p 8080:8080 \
               -v /path/to/clone/dir:/app-data \
               -e CONTENT_URL_PREFIX="file:///app-data" \
               -e WORKSHOPS_URLS="file:///app-data/_cloud-native-roadshow.yml" \
+              -e LC_ALL=en_US.UTF-8 \
               osevg/workshopper
 ```

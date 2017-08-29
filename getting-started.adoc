@@ -10,7 +10,7 @@ In order to perform the labs, you will need the following installed in your work
 * Java Development Kit 8
 * Apache Maven 3.3.x 
 * Git client
-* A Text Editor (e.g. Atom and Visual Studio Code) or an IDE (JBoss Developer Studio, Eclipse or IDEA IntelliJ)
+* A Text Editor (e.g. Atom, Visual Studio Code) or an IDE (JBoss Developer Studio, Eclipse, IntelliJ)
 
 {% if MINISHIFT == true %}
 

@@ -119,7 +119,7 @@ the minimum resources needed in other words. The
 defines how much resources an application pod is allowed to consume, if there is more resources 
 on the node available than what the pod has request. This is to allow various quality of service 
 tiers with regards to compute resources. You can read more about these quality of service tiers 
-in {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#quality-of-service-tiers[OpenShift Docs].
+in {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#quality-of-service-tiers[OpenShift Documentation].
 
 Set resource containers on the Web UI pod using `oc set resource` to the following:
 
@@ -128,7 +128,11 @@ Set resource containers on the Web UI pod using `oc set resource` to the followi
 * CPU Request: 200 millicore
 * CPU Limit: 300 millicore
 
-NOTE: CPU is measured in units called millicores; 1 core is 1000 millicores. Memory is measured in 
+NOTE: CPU is measured in units called millicores. Each node in a cluster inspects the 
+operating system to determine the amount of CPU cores on the node, then multiplies 
+that value by 1000 to express its total capacity. For example, if a node has 2 cores, 
+the node’s CPU capacity would be represented as 2000m. If you wanted to use 1/10 of 
+a single core, it would be represented as 100m. Memory is measured in 
 bytes and is specified with {{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-compute-resources[SI suffices] 
 (E, P, T, G, M, K) or their power-of-two-equivalents (Ei, Pi, Ti, Gi, Mi, Ki).
 
@@ -168,7 +172,7 @@ after it's done running:
 
 [source,bash]
 ----
-$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 40000 -c 10 http://web:8080/
+$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 50000 -c 10 http://web:8080/
 ----
 
 In the above, `--image` specified which container image should be deployed. OpenShift will first 
@@ -182,7 +186,8 @@ Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 p
 on the deployment config) to cope with the load.
 
 NOTE: Depending on the resources available on the OpenShift cluster in the lab environment, 
-the Web UI might scale to fewer than 5 pods to handle the extra load. 
+the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
+the load by specifying a higher number of requests (e.g. 80K) using `ab -n` flag.
 
 image::fault-autoscale-web.png[Web UI Automatically Scaled,width=800,align=center] 
 

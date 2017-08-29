@@ -17,7 +17,7 @@ packaging them with just enough of the Java EE server runtime to be able to run 
 on the JVM using `java -jar`. 
 
 WildFly Swarm is based on WildFly and it's compatible with 
-MicroProfile, which is a communnity effort to standardized the subset of Java EE standards 
+MicroProfile, which is a community effort to standardized the subset of Java EE standards 
 such as JAX-RS, CDI and JSON-P that are useful for building microservices applications.
 
 Since WildFly Swarm is based on Java EE standards, it significantly simplifies refactoring 
@@ -31,12 +31,11 @@ the WildFly Swarm project laid out in different subdirectories according to Mave
 
 [source]
 ----
-.
 ├── pom.xml              # The Maven project file
 └── src
     └── main
-        └── java         # The source code to the project
-        └── resources    # The static resource files and configurations
+        └── java       # The source code to the project
+        └── resources  # The static resource files and configurations
 ----
 
 TIP: WildFly Swarm projects can also be managed using other tools besides Maven, such as Gradle, JBoss Forge, or SwarmTool. Refer to https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/getting-started/tooling/forge-addon.html[WildFly Swarm Documentation] for more details.
@@ -85,8 +84,8 @@ $ ls target/*.jar
 target/inventory-1.0-SNAPSHOT-swarm.jar
 ----
 
-This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
-application with `java -jar`. WildFly Swarm also creates a _war_ packaiging as a standard Java EE web app 
+This is an uber-jar with all the dependencies required packaged in the _jar_ to enable running the 
+application with `java -jar`. WildFly Swarm also creates a _war_ packaging as a standard Java EE web app 
 that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project). For 
 more details on various ways to package Java applications, read https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber[this blog post].
 
@@ -205,8 +204,8 @@ public class InventoryResource {
 }
 ----
 
-The above REST services defines an endpoint that is accessbile via `HTTP GET` at for example `/api/inventory/329299` with 
-the last path param being the product id which we want to check its iventory status.
+The above REST services defines an endpoint that is accessible via `HTTP GET` at for example `/api/inventory/329299` with 
+the last path param being the product id which we want to check its inventory status.
 
 Build and package the Inventory service using Maven
 
@@ -295,7 +294,7 @@ and assigns a public DNS name to it so that it can be reached from outside OpenS
 You can review the above resources in the OpenShift Web Console or using `oc describe` command:
 
 NOTE: `bc` is the short-form of `buildconfig` and can be interchangeably used instead of it with the
-OpenShift CLI. The same goes for `is` instead of `imagestream`, `dc` instead of`deploymentconfig` 
+OpenShift CLI. The same goes for `is` instead of `imagestream`, `dc` instead of `deploymentconfig` 
 and `svc` instead of `service`.
 
 [source,bash]
