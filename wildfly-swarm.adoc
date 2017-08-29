@@ -87,7 +87,8 @@ target/inventory-1.0-SNAPSHOT-swarm.jar
 
 This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
 application with `java -jar`. WildFly Swarm also creates a _war_ packaiging as a standard Java EE web app 
-that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project).
+that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project). For 
+more details on various ways to package Java applications, read https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber[this blog post].
 
 Now let's write some code!
 
