@@ -24,7 +24,6 @@ applications quickly on OpenShift.
 CDK configures a pre-built, single-node OpenShift cluster locally, so you can try 
 the latest version of OpenShift Container Platform. 
 
-
 If you haven't already installed CDK, follow these instructions to install it now: https://access.redhat.com/documentation/en-us/red_hat_container_development_kit/3.1/html/getting_started_guide/getting_started_with_container_development_kit#installing-minishift[Installing Container Development Kit]
 
 {% else %}
@@ -37,7 +36,7 @@ platform.  The OpenShift tools are a single executable written in the Go
 programming language and is available for Microsoft Windows, Apple OS X and Linux.
 
 You might already have the OpenShift CLI available on your environment. You can verify 
-it by running an 'oc' command:
+it by running an `oc` command:
 
 [source]
 ----
@@ -71,7 +70,7 @@ on windows varies by version of the operating system, we will not list each oper
 However, the general workflow is right click on your computer name inside of the file
  explorer. Select Advanced system settings. I guess changing your PATH is considered 
  an advanced task? :) Click on the advanced tab, and then finally click on Environment variables.
-Once the new dialog opens, select the Path variable and add ";C:\OpenShift" at
+Once the new dialog opens, select the Path variable and add `;C:\OpenShift` at
 the end.  For an easy way out, you could always just copy it to C:\Windows or a
 directory you know is already on your path. For more detailed instructions:
 

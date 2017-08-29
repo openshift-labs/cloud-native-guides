@@ -86,10 +86,16 @@ $ ls target/*.jar
 target/catalog-1.0-SNAPSHOT.jar
 ----
 
-This is an uber-jar with all the dependencies required packaged in the `jar` to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the `jar` to enable running the 
 application with `java -jar`.
 
-Now that the project is ready, let's get coding!
+
+
+
+Now that the project is ready, let's get coding and create a domain model, data repository, and a  
+RESTful endpoint to create the Catalog service:
+
+image::springboot-catalog-arch.png[Catalog RESTful Service,width=640,align=center]
 
 #### Create the Domain Model
 

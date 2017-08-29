@@ -14,7 +14,8 @@ the development teams and has been used over the past several years.
 
 WildFly Swarm offers an innovative approach to packaging and running Java EE applications by 
 packaging them with just enough of the Java EE server runtime to be able to run them directly 
-on the JVM using `java -jar`. 
+on the JVM using `java -jar`. For more details on various approaches to packaging Java 
+applications, read https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber[this blog post].
 
 WildFly Swarm is based on WildFly and it's compatible with 
 MicroProfile, which is a community effort to standardized the subset of Java EE standards 
@@ -31,7 +32,7 @@ the WildFly Swarm project laid out in different subdirectories according to Mave
 
 [source]
 ----
-├── pom.xml              # The Maven project file
+├── pom.xml            # The Maven project file
 └── src
     └── main
         └── java       # The source code to the project
@@ -41,7 +42,9 @@ the WildFly Swarm project laid out in different subdirectories according to Mave
 TIP: WildFly Swarm projects can also be managed using other tools besides Maven, such as Gradle, JBoss Forge, or SwarmTool. Refer to https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/getting-started/tooling/forge-addon.html[WildFly Swarm Documentation] for more details.
 
 This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
-to a database. This project currently contains no code other than the main class for exposing a single 
+to a database. https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm[JAX-RS] is one of Java EE specifications that uses Java programming language annotations to simplify the development of RESTful web services. https://docs.oracle.com/javaee/7/tutorial/partpersist.htm[Java Persistence API (JPA)] is another Java EE specification that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
+
+This project currently contains no code other than the main class for exposing a single 
 RESTful application defined in `InventoryApplication.java`. 
 
 Examine `src/main/java/com/redhat/cloudnative/inventory/InventoryApplication.java`
@@ -86,10 +89,13 @@ target/inventory-1.0-SNAPSHOT-swarm.jar
 
 This is an uber-jar with all the dependencies required packaged in the _jar_ to enable running the 
 application with `java -jar`. WildFly Swarm also creates a _war_ packaging as a standard Java EE web app 
-that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project). For 
-more details on various ways to package Java applications, read https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber[this blog post].
+that could be deployed to any Java EE app server (for example, JBoss EAP, or its upstream WildFly project). 
 
-Now let's write some code!
+Now let's write some code and create a domain model and a RESTful endpoint to create the Inventory service:
+
+image::wfswarm-inventory-arch.png[Inventory RESTful Service,width=500,align=center]
+
+
 
 #### Create the Domain Model
 
