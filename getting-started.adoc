@@ -3,6 +3,15 @@
 In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
 and get ready for the Cloud Native Roadshow labs.
 
+#### Prerequisites
+
+In order to perform the labs, you will need the following installed in your workstation:
+
+* Java Development Kit 8
+* Apache Maven 3.3.x 
+* Git client
+* A Text Editor (e.g. Atom and Visual Studio Code) or an IDE (JBoss Developer Studio, Eclipse or IDEA IntelliJ)
+
 {% if MINISHIFT == true %}
 
 #### Red Hat Container Development Kit (CDK)
