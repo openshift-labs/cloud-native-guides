@@ -104,7 +104,7 @@ $ ls target/*.jar
 target/gateway-1.0-SNAPSHOT.jar
 ----
 
-This is an uber-jar with all the dependencies required packaged in the _jar_ to enable runing the 
+This is an uber-jar with all the dependencies required packaged in the _jar_ to enable running the 
 application with `java -jar`.
 
 You can run the Vert.x application using `java -jar` or conveniently using `vertx:run` goal from 
@@ -119,23 +119,13 @@ $ mvn vertx:run
 ...
 ----
 
-[NOTE]
-====
-You will see the following exception in the logs: 
-`java.io.FileNotFoundException: /.../kubernetes.io/serviceaccount/token`
-
-This is expected and is the result of Vert.x trying to import services form OpenShift. Since you are 
-running the API Gateway on your local machine, the lookup fails and falls back to the local service 
-lookup. It's all good!
-====
-
 Verify the application is working using `curl` in a new terminal window:
 
 [source,bash]
 ----
 $ curl http://localhost:8080
 
-{"message": "Hello Vert.x"}
+{"message": "Hello World"}
 ----
 
 Note that while the application is running using `mvn vertx:run`, you can make changes in the code
@@ -382,7 +372,17 @@ $ cd gateway-vertx
 $ mvn vertx:run 
 ----
 
-Now you can test the API Gatway by hitting the `/api/products` endpoint using `curl`:
+[NOTE]
+====
+You will see the following exception in the logs: 
+`java.io.FileNotFoundException: /.../kubernetes.io/serviceaccount/token`
+
+This is expected and is the result of Vert.x trying to import services form OpenShift. Since you are 
+running the API Gateway on your local machine, the lookup fails and falls back to the local service 
+lookup. It's all good!
+====
+
+Now you can test the API Gateway by hitting the `/api/products` endpoint using `curl`:
 
 [source,bash]
 ----

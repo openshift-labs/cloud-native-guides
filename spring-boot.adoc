@@ -268,7 +268,7 @@ $ curl http://localhost:9000/api/catalog
 
 The REST API returned a JSON object representing the product list. Congratulations!
 
-Stop the service by pressing CTRL-C in the terminal window.
+Stop the service by pressing `CTRL-C` in the terminal window.
 
 #### Deploy Spring Boot on OpenShift
 
