@@ -356,7 +356,7 @@ CAUTION: The route urls in your project would be different from the ones in this
 
 [source,bash]
 ----
-$ curl http://CATALOG-ROUTE-HOST/api/catalog
+$ curl http://{{CATALOG_ROUTE_HOST}}/api/catalog
 
 [{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ----

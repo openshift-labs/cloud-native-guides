@@ -511,7 +511,7 @@ CAUTION: The route urls in your project would be different from the ones in this
 
 [source,bash]
 ----
-$ curl http://API-GATEWAY-ROUTE-HOST/api/products
+$ curl http://{{API_GATEWAY_ROUTE_HOST}}/api/products
 
 [ {
   "itemId" : "329299",
