@@ -1,12 +1,16 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: guides
+  name: cloud-native-guides
 parameters:
 - displayName: Application Name
   name: APPLICATION_NAME
   required: true
   value: guides
+- displayName: Workshopper Image Version
+  name: WORKSHOPPER_VERSION
+  required: true
+  value: ruby
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -41,7 +45,7 @@ objects:
             value: file:///app/config/cloud-native-roadshow.yml
           - name: CACHE_PRELOAD
             value: "true"
-          image: ${APPLICATION_NAME}
+          image: workshopper
           livenessProbe:
             failureThreshold: 5
             httpGet:
@@ -90,7 +94,7 @@ objects:
         - ${APPLICATION_NAME}
         from:
           kind: ImageStreamTag
-          name: ${APPLICATION_NAME}:latest
+          name: workshopper:${WORKSHOPPER_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: DeploymentConfig
@@ -125,7 +129,7 @@ objects:
             value: file:///app/config/cloud-native-roadshow-cdk.yml
           - name: CACHE_PRELOAD
             value: "true"
-          image: ${APPLICATION_NAME}
+          image: workshopper
           imagePullPolicy: Always
           livenessProbe:
             failureThreshold: 5
@@ -175,17 +179,17 @@ objects:
         - ${APPLICATION_NAME}-cdk
         from:
           kind: ImageStreamTag
-          name: ${APPLICATION_NAME}:latest
+          name: workshopper:${WORKSHOPPER_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ${APPLICATION_NAME}
+    name: workshopper
   spec:
     dockerImageRepository: docker.io/osevg/workshopper
     tags:
-    - name: "latest"
+    - name: "${WORKSHOPPER_VERSION}"
 - apiVersion: v1
   kind: Service
   metadata:
@@ -261,6 +265,10 @@ objects:
         REMOTE_DEBUGGER_JBDS: true
         REMOTE_DEBUGGER_IDEA: true
         MINISHIFT: true
+        OPENSHIFT_CONSOLE_URL: OPENSHIFT-CONSOLE-URL
+        INVENTORY_ROUTE_HOST: INVENTORY-ROUTE-HOST
+        CATALOG_ROUTE_HOST: CATALOG-ROUTE-HOST
+        API_GATEWAY_ROUTE_HOST: API-GATEWAY-ROUTE-HOST
       modules:
         activate:
         - getting-started
@@ -288,7 +296,11 @@ objects:
         REMOTE_DEBUGGER_JDB: true
         REMOTE_DEBUGGER_JBDS: true
         REMOTE_DEBUGGER_IDEA: true
-        MINISHIFT: false
+        MINISHIFT: false 
+        OPENSHIFT_CONSOLE_URL: OPENSHIFT-CONSOLE-URL
+        INVENTORY_ROUTE_HOST: INVENTORY-ROUTE-HOST
+        CATALOG_ROUTE_HOST: CATALOG-ROUTE-HOST
+        API_GATEWAY_ROUTE_HOST: API-GATEWAY-ROUTE-HOST
       modules:
         activate:
         - getting-started
@@ -304,35 +316,3 @@ objects:
   kind: ConfigMap
   metadata:
     name: ${APPLICATION_NAME}
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "${APPLICATION_NAME}", "namespace": "", "kind": "DeploymentConfig"}]'
-    labels:
-      name: ${APPLICATION_NAME}-pipeline
-    name: ${APPLICATION_NAME}-pipeline
-  spec:
-    runPolicy: SerialLatestOnly
-    source:
-      type: None
-    strategy:
-      jenkinsPipelineStrategy:
-        jenkinsfile: |-
-          node {
-              stage('reload guide') {
-                  sh "curl -v http://${APPLICATION_NAME}:8080/api/reload"
-              }
-              
-              stage('reload guide cdk') {
-                  sh "curl -v http://${APPLICATION_NAME}-cdk:8080/api/reload"
-              }
-          }
-      type: JenkinsPipeline
-    triggers:
-    - github:
-        secret: 6q5p7KDfwv
-      type: GitHub
-    - generic:
-        secret: 6q5p7KDfwv
-      type: Generic

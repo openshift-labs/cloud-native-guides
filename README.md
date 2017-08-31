@@ -16,7 +16,7 @@ Agenda
 * OpenShift.io (demo)
 
 
-Deploy on OpenShift
+Deploy on OpenShift with Embedded Content
 ===
 ```
 $ oc new-build . --name=guides
@@ -26,7 +26,7 @@ $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failur
 $ oc expose svc/guides
 ```
 
-Deploy on OpenShift Online
+Deploy on OpenShift Online with Embedded Content
 ===
 ```
 $ oc new-project roadshow
@@ -38,6 +38,12 @@ $ docker push registry.CLUSTER-ID.openshift.com/roadshow/guides
 $ oc new-app --name=guides --image-stream=guides
 $ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
 $ oc expose svc/guides
+```
+
+Deploy on OpenShift with GitHub Content
+===
+```
+$ oc process -f openshift/template.yml | oc create -f -
 ```
 
 Run Locally
