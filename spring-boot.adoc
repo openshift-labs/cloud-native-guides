@@ -62,6 +62,9 @@ with a PostgreSQL database in the following labs. Be patient! More on that later
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the logs, otherwise the build has failed.
 
+CAUTION: Make sure to run the `package` Maven goal and not `install`. The latter would 
+download a lot more dependencies and do things you don't need yet!
+
 [source,bash]
 ----
 $ cd catalog-spring-boot
