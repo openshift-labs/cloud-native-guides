@@ -295,7 +295,7 @@ you have available on your machine.
 [source,bash]
 ----
 $ tar xvfz projects.zip --strip-components 1
-$ ls -a
+$ ls -l
 
 -rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
 drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 catalog-spring-boot
