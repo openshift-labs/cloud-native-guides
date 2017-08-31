@@ -188,17 +188,17 @@ Login to OpenShift.
 
 [source]
 ----
-$ oc login OPENSHIFT-CONSOLE-URL
+$ oc login {{OPENSHIFT_CONSOLE_URL}}
 ----
 
 {% else %}
 
-Issue the following command and replace `OPENSHIFT-CONSOLE-URL` 
+Issue the following command and replace `{{OPENSHIFT_CONSOLE_URL}}` 
 with your OpenShift Web Console url:
 
 [source]
 ----
-$ oc login OPENSHIFT-CONSOLE-URL
+$ oc login {{OPENSHIFT_CONSOLE_URL}}
 ----
 
 {% endif %}
@@ -222,13 +222,13 @@ corporate-standard CA that you already have installed on your system.
 [NOTE]
 ====
 On some versions of Microsoft Windows, you may get an error that the
-server has an invalid x.509 certificate.  If you receive this error, enter in
-the following command and replace `OPENSHIFT-CONSOLE-URL` 
-with your OpenShift Web Console url:
+server has an invalid x.509 certificate. If you receive this error, enter in
+the following command and replace `{{OPENSHIFT_CONSOLE_URL}}` with your 
+OpenShift Web Console url: 
 
 [source]
 ----
-$ oc login OPENSHIFT-CONSOLE-URL --insecure-skip-tls-verify=true
+$ oc login {{OPENSHIFT_CONSOLE_URL}} --insecure-skip-tls-verify=true
 ----
 ====
 

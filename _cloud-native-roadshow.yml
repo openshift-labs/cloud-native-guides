@@ -13,7 +13,8 @@ vars:
   REMOTE_DEBUGGER_JDB: true
   REMOTE_DEBUGGER_JBDS: true
   REMOTE_DEBUGGER_IDEA: true
-  MINISHIFT: false
+  MINISHIFT: false             # if labs are intended to run on minishift or CDK
+  OPENSHIFT_CONSOLE_URL: OPENSHIFT-CONSOLE-URL
   
 modules:
   activate:
