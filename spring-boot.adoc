@@ -64,7 +64,7 @@ in the logs, otherwise the build has failed.
 
 [source,bash]
 ----
-$ cd projects/catalog-spring-boot
+$ cd catalog-spring-boot
 $ mvn package
 
 ...

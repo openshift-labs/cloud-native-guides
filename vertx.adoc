@@ -82,7 +82,7 @@ in the logs, otherwise the build has failed.
 
 [source,bash]
 ----
-$ cd projects/gateway-vertx
+$ cd gateway-vertx
 $ mvn package
 
 ...
