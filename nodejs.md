@@ -81,7 +81,7 @@ products and their inventory status.
 
 > You can see the Web route url in the OpenShift Web Console or via the `oc get routes` command.
 
-![CoolStore Shop](/api/workshops/roadshow/content/assets/images/coolstore-web.png){:width="800px"}
+![CoolStore Shop](/api/workshops/roadshow/content/assets/images/coolstore-web.png){:width="840px"}
 
 Currently the `fabric8-maven-plugin` has a 
 [bug](https://github.com/fabric8io/fabric8-maven-plugin/issues/742)

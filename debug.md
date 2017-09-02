@@ -8,7 +8,7 @@ look into line-by-line code execution as the code runs inside a container on Ope
 CoolStore application seem to have a bug that causes the inventory status for one of the 
 products not be displayed in the web interface. 
 
-![Inventory Status Bug](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug.png){:width="900px"}
+![Inventory Status Bug](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug.png){:width="800px"}
 
 This is not an expected behavior! In previous labs, you added a circuit breaker to 
 protect the coolstore application from failures and in case the Inventory API is not 
@@ -239,7 +239,7 @@ Start JBDS.
 If the `inventory-wildfly-swarm` project is not already imported into your 
 workspace, click on **File >> Import... >> Existing Maven Projects** and then **Next**.
 
-![Import Maven Project](/api/workshops/roadshow/content/assets/images/debug-jbds-import-maven.png){:width="500px"}
+![Import Maven Project](/api/workshops/roadshow/content/assets/images/debug-jbds-import-maven.png){:width="600px"}
 
 Click on **Browse**, select `inventory-wildfly-swarm` folder and click on 
 **Finish**.
@@ -260,7 +260,7 @@ configuration for Java remote debugging.
 Set the port field to `5005` as it was forwarded to your local machine on and 
 leave the rest of the fields with default values. Click on **Debug** button.
 
-![Add Breakpoint](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-config.png){:width="700px"}
+![Add Breakpoint](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-config.png){:width="800px"}
 
 JBDS connects to the Inventory pod and it's ready for debugging. Use `curl` to invoke the 
 Inventory API with the suspect product id in order to pause the 
@@ -326,12 +326,12 @@ A circle appears near the line to show a breakpoint is set.
 From the menu, click on **Run >> Edit Configurations...** to create a new Java remote debug 
 configuration. Click on the plus icon and then from the drop down list click on **Remote**
 
-![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-edit-config.png){:width="700px"}
+![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-edit-config.png){:width="840px"}
 
 In the debug configuration, specify `inventory` as name, make sure the port is `5005` and click 
 on **OK**.
 
-![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-debug-config.png){:width="700px"}
+![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-debug-config.png){:width="840px"}
 
 Now you are ready to connect to the Inventory pod. From the menu, click on 
 **Run >> Debug 'inventory'** to connect to the Inventory pod.
@@ -408,6 +408,6 @@ When the pipeline completes successfully, point your browser at the Web route an
 that the inventory status is visible for all products. The suspect product should show 
 the inventory status as _Not in Stock_.
 
-![Inventory Status Bug Fixed](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug-fixed.png){:width="900px"}
+![Inventory Status Bug Fixed](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug-fixed.png){:width="800px"}
 
 Well done and congratulations for completing all the labs.

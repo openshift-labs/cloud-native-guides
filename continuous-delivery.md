@@ -47,7 +47,7 @@ Click on **Register** to register a new user with the following details and then
 * Email: *your email*  (Don't worry! Gogs won't send you any emails)
 * Password: `developer`
 
-![Sign Up Gogs](/api/workshops/roadshow/content/assets/images/cd-gogs-signup.png){:width="600px"}
+![Sign Up Gogs](/api/workshops/roadshow/content/assets/images/cd-gogs-signup.png){:width="900px"}
 
 You will be redirected to the sign in page. Sign in using the above username and password.
 
@@ -58,7 +58,7 @@ Click on the plus icon on the top navigation bar and then on **New Repository**.
 Give `inventory-wildfly-swarm` as **Repository Name** and click on **Create Repository** 
 button, leaving the rest with default values.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/cd-gogs-new-repo.png){:width="600px"}
+![Create New Repository](/api/workshops/roadshow/content/assets/images/cd-gogs-new-repo.png){:width="700px"}
 
 The Git repository is created now. 
 
@@ -91,7 +91,7 @@ Click on the plus icon on the top navigation bar and then on *New Repository*.
 Give `inventory-wildfly-swarm` as **Repository name** and click on **Create repository** 
 button, leaving the rest with default values.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/cd-github-new-repo.png){:width="600px"}
+![Create New Repository](/api/workshops/roadshow/content/assets/images/cd-github-new-repo.png){:width="700px"}
 
 The Git repository is created now. Click on the copy-to-clipboard icon to near the 
 HTTPS Git url to copy it to the clipboard which you will need in a few minutes.
@@ -131,9 +131,9 @@ to your `inventory-wildfly-swarm` repository web interface and refresh the page.
 see the project files in the repository.
 
 {% if MINISHIFT == true %}
-![Inventory Repository](/api/workshops/roadshow/content/assets/images/cd-gogs-inventory-repo.png){:width="700px"}
+![Inventory Repository](/api/workshops/roadshow/content/assets/images/cd-gogs-inventory-repo.png){:width="900px"}
 {% else %}
-![Inventory Repository](/api/workshops/roadshow/content/assets/images/cd-github-inventory-repo.png){:width="700px"}
+![Inventory Repository](/api/workshops/roadshow/content/assets/images/cd-github-inventory-repo.png){:width="900px"}
 {% endif %}
 
 #### Define the Deployment Pipeline
@@ -264,7 +264,7 @@ Copy the Generic webhook url which you will need in the next steps.
 
 Go to Gogs and your **inventory-wildfly-swarm** Git repository, then click on **Settings**.
 
-![Repository Settings](/api/workshops/roadshow/content/assets/images/cd-gogs-settings-link.png){:width="800px"}
+![Repository Settings](/api/workshops/roadshow/content/assets/images/cd-gogs-settings-link.png){:width="900px"}
 
 On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
 
@@ -275,7 +275,7 @@ Create a webhook with the following details:
 
 Click on **Add Webhook**. 
 
-![Repository Webhook](/api/workshops/roadshow/content/assets/images/cd-gogs-webhook-add.png){:width="600px"}
+![Repository Webhook](/api/workshops/roadshow/content/assets/images/cd-gogs-webhook-add.png){:width="660px"}
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
 Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
@@ -288,7 +288,7 @@ Copy the GitHub webhook url which you will need in the next steps.
 
 Go to GitHub and your **inventory-wildfly-swarm** Git repository, then click on **Settings**.
 
-![GitHub Settings](/api/workshops/roadshow/content/assets/images/cd-github-settings-link.png){:width="800px"}
+![GitHub Settings](/api/workshops/roadshow/content/assets/images/cd-github-settings-link.png){:width="900px"}
 
 On the left menu, click on **Webhooks** and then on **Add webhook** button. Enter your password 
 once more if you are ask to do so.
@@ -310,7 +310,7 @@ in this lab environment which cannot be verified by GitHub.
 
 Click on **Add webhook**
 
-![GitHub Webhook](/api/workshops/roadshow/content/assets/images/cd-github-webhook-add.png){:width="600px"}
+![GitHub Webhook](/api/workshops/roadshow/content/assets/images/cd-github-webhook-add.png){:width="660px"}
 
 All done. You can click on the newly defined webhook to see the list of **Recent Delivery**. 
 Clicking on a delivery, allows you to manually trigger the webhook for testing purposes by 

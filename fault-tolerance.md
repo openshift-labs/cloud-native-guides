@@ -59,7 +59,7 @@ The `--replicas` option specified the number of Web UI pods that should be runni
 at the OpenShift Web Console, you can see a new pod is being started for the Web UI and as soon 
 as the health probes pass, it will be automatically added to the load-balancer.
 
-![Scaling Up Pods](/api/workshops/roadshow/content/assets/images/fault-scale-up.png){:width="800px"}
+![Scaling Up Pods](/api/workshops/roadshow/content/assets/images/fault-scale-up.png){:width="740px"}
 
 You can verify that the new pod is added to the load balancer by checking the details of the 
 Web UI service object:
@@ -179,12 +179,12 @@ on the deployment config) to cope with the load.
 > the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
 > the load by specifying a higher number of requests (e.g. 80K) using `ab -n` flag.
 
-![Web UI Automatically Scaled](/api/workshops/roadshow/content/assets/images/fault-autoscale-web.png){:width="800px"}
+![Web UI Automatically Scaled](/api/workshops/roadshow/content/assets/images/fault-autoscale-web.png){:width="740px"}
 
 You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
 **Monitoring** and then the arrow (**>**) on the left side of **web-n** under **Deployments**.
 
-![Web UI Aggregated CPU Metrics](/api/workshops/roadshow/content/assets/images/fault-autoscale-metrics.png){:width="800px"}
+![Web UI Aggregated CPU Metrics](/api/workshops/roadshow/content/assets/images/fault-autoscale-metrics.png){:width="740px"}
 
 When the load on Web UI disappears, after a while OpenShift scales the Web UI pods down to the minimum 
 or whatever this needed to cope with the load at that point.
@@ -291,7 +291,7 @@ Now point your browser at the Web UI route url.
 > You can find the Web UI route url in the OpenShift Web Console above the `web` pod or 
 > using the `oc get routes` command.
 
-![CoolStore Without Circuit Breaker](/api/workshops/roadshow/content/assets/images/fault-coolstore-no-cb.png){:width="800px"}
+![CoolStore Without Circuit Breaker](/api/workshops/roadshow/content/assets/images/fault-coolstore-no-cb.png){:width="840px"}
 
 Although only the Inventory service is down, there are no products displayed in the online store because 
 the Inventory service call failure propagates and causes the entire API Gateway to blow up! 
@@ -469,7 +469,7 @@ defined on the `gateway` deployment config.
 
 Let's try the Web UI again in the browser while the Inventory service is still down.
 
-![CoolStore With Circuit Breaker](/api/workshops/roadshow/content/assets/images/fault-coolstore-with-cb.png){:width="600px"}
+![CoolStore With Circuit Breaker](/api/workshops/roadshow/content/assets/images/fault-coolstore-with-cb.png){:width="840px"}
 
 It looks better now! The Inventory service failure is contained and the inventory status is removed from the 
 user interface and allows the CoolStore online shop to continue functioning and accept orders. Selling an 
