@@ -7,11 +7,11 @@ create a scalable API Gateway that aggregates Catalog and Inventory APIs.
 
 #### What is Eclipse Vert.x?
 
-http://vertx.io[Eclipse Vert.x] is a toolkit for building reactive applications on the Java Virtual Machine (JVM). Vert.x does not 
+[Eclipse Vert.x](http://vertx.io) is a toolkit for building reactive applications on the Java Virtual Machine (JVM). Vert.x does not 
 impose a specific framework or packaging model and can be used within your existing applications and frameworks 
 in order to add reactive functionality by just adding the Vert.x jar files to the application classpath.
 
-Vert.x enables building reactive systems as defined by http://www.reactivemanifesto.org/[The Reactive Manifesto] and build 
+Vert.x enables building reactive systems as defined by [The Reactive Manifesto](http://www.reactivemanifesto.org) and build 
 services that are:
 
 * *Responsive*: to handle requests in a reasonable time
@@ -23,17 +23,16 @@ Vert.x is designed to be event-driven and non-blocking. Events are delivered in 
 
 #### Vert.x Maven Project 
 
-The 'gateway-vertx' project has the following structure which shows the components of 
+The `gateway-vertx` project has the following structure which shows the components of 
 the Vert.x project laid out in different subdirectories according to Maven best practices:
 
-[source]
-----
+~~~shell
 ├── pom.xml               # The Maven project file
 └── src
     └── main
         └── java          # The source code to the project
         └── resources     # The static resource files and configurations
-----
+~~~
 
 This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
 other than the main class, `GatewayVerticle.java` which is there to bootstrap the Vert.x application. Verticles
@@ -43,14 +42,13 @@ is important that the code in a Verticle does not block. This asynchronous archi
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
 
-image::vertx-event-loop.jpg[Vert.x Event Loop,width=440,align=center]
+![Vert.x Event Loop](/api/workshops/roadshow/content/assets/images/vertx-event-loop.jpg){:width="440px"}
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. 
 
 Examine `src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java`
 
-[source,java]
-----
+~~~java
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.ext.web.Router;
@@ -60,7 +58,7 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start(Future<Void> future) {
         Router router = Router.router(vertx);
 
-        router.get("/*").handler(rc -> {
+        router.get("/*").handler(rc >> {
             rc.response().end("{\"message\": \"Hello World\"}");
         });
 
@@ -68,7 +66,7 @@ public class GatewayVerticle extends AbstractVerticle {
             .listen(Integer.getInteger("http.port", 8080));
     }
 }
-----
+~~~
 
 Here is what happens in the above code:
 
@@ -80,11 +78,10 @@ Here is what happens in the above code:
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the logs, otherwise the build has failed.
 
-CAUTION: Make sure to run the `package` Maven goal and not `install`. The latter would 
-download a lot more dependencies and do things you don't need yet!
+> Make sure to run the `package` Maven goal and not `install`. The latter would 
+> download a lot more dependencies and do things you don't need yet!
 
-[source,bash]
-----
+~~~shell
 $ cd gateway-vertx
 $ mvn package
 
@@ -95,41 +92,38 @@ $ mvn package
 [INFO] Total time: 2.769 s
 [INFO] Finished at: 2017-07-28T11:44:11+07:00
 [INFO] Final Memory: 20M/308M
-[INFO] ----------------------------------------------------------------------------
-----
+[INFO] ------------------------------------------------------------------------
+~~~
 
-Once built, the resulting _jar_ is located in the `target/` directory:
+Once built, the resulting *jar* is located in the `target/` directory:
 
-[source,bash]
-----
+~~~shell
 $ ls target/*.jar
 
 target/gateway-1.0-SNAPSHOT.jar
-----
+~~~
 
-This is an uber-jar with all the dependencies required packaged in the _jar_ to enable running the 
+This is an uber-jar with all the dependencies required packaged in the *jar* to enable running the 
 application with `java -jar`.
 
 You can run the Vert.x application using `java -jar` or conveniently using `vertx:run` goal from 
 the `vertx-maven-plugin`:
 
-[source,bash]
-----
+~~~shell
 $ mvn vertx:run
 
 ...
 [INFO] Succeeded in deploying verticle
 ...
-----
+~~~
 
 Verify the application is working using `curl` in a new terminal window:
 
-[source,bash]
-----
+~~~shell
 $ curl http://localhost:8080
 
 {"message": "Hello World"}
-----
+~~~
 
 Note that while the application is running using `mvn vertx:run`, you can make changes in the code
 and they would immediately be compiled and updated in the running application to provide the fast
@@ -142,15 +136,14 @@ Now that the project is ready, let's get coding!
 In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
 web front contacting each of these backend services, you can create an API Gateway which is an entry 
 point for for the web front to access all backend services from a single place. This pattern is expectedly 
-called http://microservices.io/patterns/apigateway.html[API Gateway] and is a common practice in Microservices 
+called [API Gateway](http://microservices.io/patterns/apigateway.html) and is a common practice in Microservices 
 architecture.
 
-image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
+![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/coolstore-arch.png){:width="400px"}
 
 Replace the content of `src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java` class with the following:
 
-[source,java]
-----
+~~~java
 package com.redhat.cloudnative.gateway;
 
 import io.vertx.core.http.HttpMethod;
@@ -180,26 +173,26 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start() {
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
+        router.get("/health").handler(ctx >> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
-        ServiceDiscovery.create(vertx, discovery -> {
+        ServiceDiscovery.create(vertx, discovery >> {
             // Catalog lookup
             Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("catalog"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    rec >> rec.getName().equals("catalog"))
+                    .onErrorReturn(t >> WebClient.create(vertx, new WebClientOptions()
                             .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
                             .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
             // Inventory lookup
             Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("inventory"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    rec >> rec.getName().equals("inventory"))
+                    .onErrorReturn(t >> WebClient.create(vertx, new WebClientOptions()
                             .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
                             .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
             // Zip all 3 requests
-            Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
+            Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) >> {
                 // When everything is done
                 catalog = c;
                 inventory = i;
@@ -213,20 +206,20 @@ public class GatewayVerticle extends AbstractVerticle {
     private void products(RoutingContext rc) {
         // Retrieve catalog
         catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
-            .map(resp -> {
+            .map(resp >> {
                 if (resp.statusCode() != 200) {
                     new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
                 }
                 return resp.body();
             })
-            .flatMap(products ->
+            .flatMap(products >>
                 // For each item from the catalog, invoke the inventory service
                 Observable.from(products)
                     .cast(JsonObject.class)
-                    .flatMapSingle(product ->
+                    .flatMapSingle(product >>
                         inventory.get("/api/inventory/" + product.getString("itemId")).as(BodyCodec.jsonObject())
                             .rxSend()
-                            .map(resp -> {
+                            .map(resp >> {
                                 if (resp.statusCode() != 200) {
                                     LOG.warn("Inventory error for {}: status code {}",
                                             product.getString("itemId"), resp.statusCode());
@@ -238,18 +231,18 @@ public class GatewayVerticle extends AbstractVerticle {
                     .toList().toSingle()
             )
             .subscribe(
-                list -> rc.response().end(Json.encodePrettily(list)),
-                error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
+                list >> rc.response().end(Json.encodePrettily(list)),
+                error >> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
             );
     }
 }
-----
+~~~
 
 Let's break down what happens in the above code. The `start` method creates an HTTP 
 server and a REST mapping to map `/api/products` to the `products` Java 
 method. 
 
-Vert.x provides http://vertx.io/docs/vertx-service-discovery/java/[built-in service discovery] 
+Vert.x provides [built-in service discovery](http://vertx.io/docs/vertx-service-discovery/java) 
 for finding where dependent services are deployed 
 and accessing their endpoints. Vert.x service discovery can seamlessly integrated with external 
 service discovery mechanisms provided by OpenShift, Kubernetes, Consul, Redis, etc.
@@ -260,31 +253,30 @@ get deployed and undeployed. Since you also want to test the API Gateway locally
 `onErrorReturn()` clause in the the service lookup to fallback on a local service for Inventory 
 and Catalog REST APIs. 
 
-[source,java]
-----
+~~~java
 public void start() {
     Router router = Router.router(vertx);
     router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-    router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
+    router.get("/health").handler(ctx >> ctx.response().end(new JsonObject().put("status", "UP").toString()));
     router.get("/api/products").handler(this::products);
 
-    ServiceDiscovery.create(vertx, discovery -> {
+    ServiceDiscovery.create(vertx, discovery >> {
         // Catalog lookup
         Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("catalog"))
-                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                rec >> rec.getName().equals("catalog"))
+                .onErrorReturn(t >> WebClient.create(vertx, new WebClientOptions()
                         .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
                         .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
         // Inventory lookup
         Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("inventory"))
-                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                rec >> rec.getName().equals("inventory"))
+                .onErrorReturn(t >> WebClient.create(vertx, new WebClientOptions()
                         .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
                         .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
         // Zip all 3 requests
-        Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
+        Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) >> {
             // When everything is done
             catalog = c;
             inventory = i;
@@ -294,7 +286,7 @@ public void start() {
         }).subscribe();
     });
 }
-----
+~~~
 
 The `products` method invokes the Catalog REST endpoint and retrieves the products. It then 
 iterates over the retrieve products and for each product invokes the 
@@ -302,30 +294,29 @@ Inventory REST endpoint to get the inventory status and enrich the product data 
 info. 
 
 Note that instead of making blocking calls to the Catalog and Inventory REST APIs, all calls 
-are non-blocking and handled using http://vertx.io/docs/vertx-rx/java[RxJava]. Due to its non-blocking 
+are non-blocking and handled using [RxJava](http://vertx.io/docs/vertx-rx/java). Due to its non-blocking 
 nature, the `product` method can immediately return without waiting for the Catalog and Inventory 
 REST invocations to complete and whenever the result of the REST calls is ready, the result 
 will be acted upon and update the response which is then sent back to the client.
 
-[source,java]
-----
+~~~java
 private void products(RoutingContext rc) {
     // Retrieve catalog
     catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
-        .map(resp -> {
+        .map(resp >> {
             if (resp.statusCode() != 200) {
                 new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
             }
             return resp.body();
         })
-        .flatMap(products ->
+        .flatMap(products >>
             // For each item from the catalog, invoke the inventory service
             Observable.from(products)
                 .cast(JsonObject.class)
-                .flatMapSingle(product ->
+                .flatMapSingle(product >>
                     inventory.get("/api/inventory/" + product.getString("itemId")).as(BodyCodec.jsonObject())
                         .rxSend()
-                        .map(resp -> {
+                        .map(resp >> {
                             if (resp.statusCode() != 200) {
                                 LOG.warn("Inventory error for {}: status code {}",
                                         product.getString("itemId"), resp.statusCode());
@@ -337,60 +328,51 @@ private void products(RoutingContext rc) {
                 .toList().toSingle()
         )
         .subscribe(
-            list -> rc.response().end(Json.encodePrettily(list)),
-            error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
+            list >> rc.response().end(Json.encodePrettily(list)),
+            error >> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
         );
 }
-----
+~~~
 
 Run the maven build to make sure the code compiles successfully.
 
-[source,bash]
-----
+~~~shell
 $ mvn package
-----
+~~~
 
 Since the API Gateway requires the Catalog and Inventory services to be running, let's run all three 
 services simultaneously and verify that the API Gateway works as expected. 
 
 Open a new terminal window and start the Catalog service:
 
-[source,bash]
-----
+~~~shell
 $ cd catalog-spring-boot
 $ mvn spring-boot:run
-----
+~~~
 
 Open another new terminal window and start the Inventory service:
 
-[source,bash]
-----
+~~~shell
 $ cd inventory-wildfly-swarm
 $ mvn wildfly-swarm:run
-----
+~~~
 
 Now that Catalog and Inventory services are up and running, start the API Gateway service in a new terminal window:
 
-[source,bash]
-----
+~~~shell
 $ cd gateway-vertx
 $ mvn vertx:run 
-----
+~~~
 
-[NOTE]
-====
-You will see the following exception in the logs: 
-`java.io.FileNotFoundException: /.../kubernetes.io/serviceaccount/token`
-
-This is expected and is the result of Vert.x trying to import services form OpenShift. Since you are 
-running the API Gateway on your local machine, the lookup fails and falls back to the local service 
-lookup. It's all good!
-====
+> You will see the following exception in the logs: `java.io.FileNotFoundException: /.../kubernetes.io/serviceaccount/token`
+> 
+> This is expected and is the result of Vert.x trying to import services form OpenShift. Since you are 
+> running the API Gateway on your local machine, the lookup fails and falls back to the local service 
+> lookup. It's all good!
 
 Now you can test the API Gateway by hitting the `/api/products` endpoint using `curl`:
 
-[source,bash]
-----
+~~~shell
 $ curl http://localhost:8080/api/products
 
 [ {
@@ -404,7 +386,7 @@ $ curl http://localhost:8080/api/products
 },
 ...
 ]
-----
+~~~
 
 Note that the inventory info for each product is available within the same JSON object.
 
@@ -414,10 +396,9 @@ Stop all services by pressing `CTRL-C` in the terminal windows.
 
 It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
 
-[source,bash]
-----
+~~~shell
 $ oc project {{COOLSTORE_PROJECT}}
-----
+~~~
 
 Like discussed, Vert.x service discovery integrates into OpenShift service discovery via OpenShift 
 REST API and imports available services to make them available to the Vert.x application. Security 
@@ -425,33 +406,31 @@ in OpenShift comes first and therefore accessing the OpenShift REST API requires
 system (Vert.x in this case) to have sufficient permissions to do so. All containers in 
 OpenShift run with a `serviceaccount` (by default, the project `default` service account) which can 
 be used to grant permissions for operations like accessing the OpenShift REST API. You can read 
-more about service accounts in the {{OPENSHIFT_DOCS_BASE}}/dev_guide/service_accounts.html[OpenShift Documentation] and this 
-https://blog.openshift.com/understanding-service-accounts-sccs/#_service_accounts[blog post]
+more about service accounts in the [OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/dev_guide/service_accounts.html) and this 
+[blog post](https://blog.openshift.com/understanding-service-accounts-sccs/#_service_accounts)
 
 Grant permission to the API Gateway to be able to access OpenShift REST API and discover services.
 
-[source,bash]
-----
+~~~shell
 $ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
-----
+~~~
 
-OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
+OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the supported OpenJDK container image to build the final container 
 image of the API Gateway service by uploading the Vert.x uber-jar from 
 the `target` folder to the OpenShift platform. 
 
-Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin] in order to use OpenShift S2I for building 
+Maven projects can use the [Fabric8 Maven Plugin](https://maven.fabric8.io) in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build a project, deploy it and finally launch a docker process as a pod.
 
 To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
 
-[source,bash]
-----
+~~~shell
 $ mvn fabric8:deploy
-----
+~~~
 
 This will cause the following to happen:
 
@@ -465,57 +444,51 @@ containers for the project.
 
 Let's take a moment and review the OpenShift resources that are created for the Catalog REST API:
 
-* *Build Config*: `gateway-s2i` build config is the configuration for building the Catalog 
+* **Build Config**: `gateway-s2i` build config is the configuration for building the Catalog 
 container image from the gateway source code or JAR archive
-* *Image Stream*: `gateway` image stream is the virtual view of all gateway container 
+* **Image Stream**: `gateway` image stream is the virtual view of all gateway container 
 images built and pushed to the OpenShift integrated registry.
-* *Deployment Config*: `gateway` deployment config deploys and redeploys the Catalog container 
+* **Deployment Config**: `gateway` deployment config deploys and redeploys the Catalog container 
 image whenever a new Catalog container image becomes available
-* *Service*: `gateway` service is an internal load balancer which identifies a set of 
+* **Service**: `gateway` service is an internal load balancer which identifies a set of 
 pods (containers) in order to proxy the connections it receives to them. Backing pods can be 
 added to or removed from a service arbitrarily while the service remains consistently available, 
 enabling anything that depends on the service to refer to it at a consistent address (service name 
 or IP).
-* *Route*: `gateway` route registers the service on the built-in external load-balancer 
+* **Route**: `gateway` route registers the service on the built-in external load-balancer 
 and assigns a public DNS name to it so that it can be reached from outside OpenShift cluster.
 
 You can review the above resources in the OpenShift Web Console or using `oc describe` command:
 
-NOTE: `bc` is the short-form of `buildconfig` and can be interchangeably used instead of it with the
-OpenShift CLI. The same goes for `is` instead of `imagestream`, `dc` instead of`deploymentconfig` 
-and `svc` instead of `service`.
+> `bc` is the short-form of `buildconfig` and can be interchangeably used instead of it with the
+> OpenShift CLI. The same goes for `is` instead of `imagestream`, `dc` instead of`deploymentconfig` 
+> and `svc` instead of `service`.
 
-[source,bash]
-----
+~~~shell
 $ oc describe bc gateway-s2i
 $ oc describe is gateway
 $ oc describe dc gateway
 $ oc describe svc gateway
 $ oc describe route gateway
-----
+~~~
 
 You can see the expose DNS url for the Catalog service in the OpenShift Web Console or using 
-OpenShift CLI:
+OpenShift CLI.
 
-
-Get the route url for the deployed API Gateway either using the OpenShift Web Console or the CLI:
-
-[source,bash]
-----
+~~~shell
 $ oc get routes
 
 NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
 catalog     catalog-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com               catalog     8080                     None
 inventory   inventory-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com             inventory   8080                     None
 gateway     gateway-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com               gateway     8080                     None
-----
+~~~
 
 Copy the route url for API Gateway and verify the API Gateway service works using `curl`:
 
-CAUTION: The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
+> The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
 
-[source,bash]
-----
+~~~shell
 $ curl http://{{API_GATEWAY_ROUTE_HOST}}/api/products
 
 [ {
@@ -529,7 +502,7 @@ $ curl http://{{API_GATEWAY_ROUTE_HOST}}/api/products
 },
 ...
 ]
-----
+~~~
 
 As mentioned earlier, Vert.x built-in service discovery integrated with OpenShift service 
 discovery to lookup the Catalog and Inventory APIs.

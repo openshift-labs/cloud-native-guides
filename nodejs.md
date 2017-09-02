@@ -4,7 +4,7 @@ In this lab you will learn about Node.js and will deploy the Node.js and Angular
 web front+end for the CoolStore online shop which uses the API Gateway services you deployed 
 in previous labs. 
 
-image::coolstore-arch.png[API Gateway Pattern,width=400,align=center]
+![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/coolstore-arch.png){:width="400px"}
 
 #### What is Node.js?
 
@@ -24,47 +24,43 @@ JavaScript. Let's deploy it on OpenShift using the certified Node.js container i
 in OpenShift. 
 
 In the previous labs, you used the OpenShift 
-{{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)] 
-feature via the https://maven.fabric8.io[Fabric8 Maven Plugin] to build a container image from the 
+[Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
+feature via the [Fabric8 Maven Plugin](https://maven.fabric8.io) to build a container image from the 
 source code on your laptop. In this lab, you will still use S2I but instead instruct OpenShift 
 to obtain the application code directly from the source repository and build and deploy a 
 container image of it.
 
 The source code for the the Node.js Web front-end is available in this Git repository: 
 
-{{WEB_NODEJS_GIT_REPO}}
+<{{WEB_NODEJS_GIT_REPO}}>
 
 First, make sure you are on the  `{{COOLSTORE_PROJECT}}` project:
 
-[source,bash]
-----
+~~~shell
 $ oc project {{COOLSTORE_PROJECT}}
-----
+~~~
 
 Use the OpenShift CLI command to create a new build and deployment for the Web component:
 
-TIP: Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
-instead. To give you a hint, start by clicking on *Add to project* within the 
-*{{COOLSTORE_PROJECT}}* project and pick *JavaScript* and then *Node.js* in the service 
-catalog. Don't forget to click on *advanced options* and set *Context Dir* to `web-nodejs` 
-which is the sub-folder of the Git repository where the source code for Web resides.
+> Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
+> instead. To give you a hint, start by clicking on **Add to project** within the 
+> **{{COOLSTORE_PROJECT}}** project and pick **JavaScript** and then **Node.js** in the service 
+> catalog. Don't forget to click on **advanced options** and set **Context Dir** to `web-nodejs` 
+> which is the sub-folder of the Git repository where the source code for Web resides.
 
-
-[source,bash]
-----
+~~~shell
 $ oc new-app nodejs~{{LABS_GIT_REPO}} \
         --context-dir=web-nodejs \
         --name=web \
         --labels=app=coolstore,microservice=web
-----
+~~~
 
 A build gets created and starts building the Node.js Web UI container image. You can see the build 
 logs using OpenShift Web Console or OpenShift CLI:
 
-[source,bash]
-----
+~~~shell
 $ oc logs -f bc/web
-----
+~~~
 
 The `-f` option is to follow the logs as the build progresses. After the building the Node.s Web UI 
 completes, it gets pushed into the internal image registry in OpenShift and then deployed within 
@@ -74,31 +70,30 @@ In order to access the Web UI from outside (e.g. from a browser), it needs to ge
 balancer. Run the following command to add the Web UI service to the built-in HAProxy load balancer 
 in OpenShift.
 
-[source,bash]
-----
+~~~shell
 $ oc expose svc/web
 
 route "web" exposed
-----
+~~~
 
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.
 
-TIP: You can see the Web route url in the OpenShift Web Console or via the `oc get routes` command.
+> You can see the Web route url in the OpenShift Web Console or via the `oc get routes` command.
 
-image::coolstore-web.png[CoolStore Shop,width=800,align=center]
+![CoolStore Shop](/api/workshops/roadshow/content/assets/images/coolstore-web.png){:width="800px"}
 
 Currently the `fabric8-maven-plugin` has a 
-https://github.com/fabric8io/fabric8-maven-plugin/issues/742[bug] 
+[bug](https://github.com/fabric8io/fabric8-maven-plugin/issues/742)
 that prevents grouping the pods properly. Run the following 
 tweak to assign an `app` label to deployment configs and group them 
 together in the OpenShift Web Console
 
-[source,bash]
-----
-$ oc label dc app=coolstore --all --overwrite
-----
 
-image::coolstore-pods-nodb.png[CoolStore Pods,width=900,align=center]
+~~~shell
+$ oc label dc app=coolstore --all --overwrite
+~~~
+
+![CoolStore Pods](/api/workshops/roadshow/content/assets/images/coolstore-pods-nodb.png){:width="900px"}
 
 Well done! You are ready to move on to the next lab.
