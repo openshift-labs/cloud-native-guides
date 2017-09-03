@@ -107,7 +107,7 @@ source code into this Git repository.
 
 Go the `inventory-wildfly-swarm` folder, initialize it as a Git working copy and add 
 the GitHub repository as the remote repository for your working copy. Make sure you 
-replace `GIT-REPO` with the Git repository url in the following commands:
+replace `GIT-REPO-URL` with the Git repository url in the following commands:
 
 > Paste the Git repository url from the clipboard which you have copied in the 
 > previous steps. 
@@ -115,7 +115,7 @@ replace `GIT-REPO` with the Git repository url in the following commands:
 ~~~shell
 $ cd inventory-wildfly-swarm
 $ git init
-$ git remote add origin https://GIT-REPO/inventory-wildfly-swarm.git
+$ git remote add origin GIT-REPO-URL
 ~~~
 
 Commit and push the existing code to the GitHub repository.

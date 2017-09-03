@@ -1,4 +1,4 @@
-##  Application Configuration
+##  Managing Application Configuration
 
 In this lab you will learn how to manage application configuration and how to provide environment 
 specific configuration to the services.
@@ -125,7 +125,7 @@ $ oc create configmap inventory --from-file=./project-stages.yml
 > 
 > * Name: `inventory`
 > * Key: `project-stages.yml`
-> * Value: *Copy-paste the content of the above project-stages.yml excluding the first and last lines (the lines that contain EOF)*
+> * Value: *copy-paste the content of the above project-stages.yml excluding the first and last lines (the lines that contain EOF)*
 
 Config maps hold key-value pairs and in the above command an `inventory` config map 
 is created with `project-stages.yml` as the key and the content of the `./project-stages.yml` as the 
@@ -189,7 +189,8 @@ $ exit
 > 
 >     $ oc rsh dc/inventory cat /app/config/project-stages.yml
 
-Also verify that the PostgreSQL database is actually used. You can either the Inventory pod logs:
+Also verify that the PostgreSQL database is actually used by the Inventory service. You 
+can either check the Inventory pod logs.
 
 ~~~shell
 $ oc logs dc/inventory | grep hibernate.dialect
@@ -197,7 +198,8 @@ $ oc logs dc/inventory | grep hibernate.dialect
 2017-08-10 16:55:44,657 INFO  [org.hibernate.dialect.Dialect] (ServerService Thread Pool -- 15) HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
 
-You can also connect to Inventory PostgreSQL database and check if the seed data is loaded:
+You can also connect to Inventory PostgreSQL database and check if the seed data is 
+loaded into the database.
 
 ~~~shell
 $ oc rsh dc/inventory-postgresql
@@ -267,7 +269,7 @@ $ oc create configmap catalog --from-file=./application.properties
 > 
 > * Name: `catalog`
 > * Key: `application.properties`
-> * Value: *Copy-paste the content of the above application.properties excluding the first and last lines (the lines that contain EOF)*
+> * Value: *copy-paste the content of the above application.properties excluding the first and last lines (the lines that contain EOF)*
 
 The [Spring Cloud Kubernetes](https://github.com/spring-cloud-incubator/spring-cloud-kubernetes) plug-in implements 
 the integration between Kubernetes and Spring Boot and is already added as a dependency to the Catalog Maven 
@@ -314,18 +316,6 @@ Once connected to the PostgreSQL container, run the following:
 
 ~~~shell
 $ psql -U catalog -c "select item_id, name, price from product"
-
- itemid | quantity
-------------------
- 329299 |       35
- 329199 |       12
- 165613 |       45
- 165614 |       87
- 165954 |       43
- 444434 |       32
- 444435 |       53
- 444436 |       42
-(8 rows)
 
  item_id |            name             | price
 ----------------------------------------------

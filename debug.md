@@ -119,7 +119,7 @@ Developer Studio (Eclipse) and IntelliJ IDEA.
 
 {% if REMOTE_DEBUGGER_JDB == true %}
 
-#### Debug Remotely Using JDB (The Java Debugger)
+#### Debug Remotely Using JDB (Java Debugger)
 
 The [Java Debugger (JDB)](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jdb.html) 
 is a simple command-line debugger for Java. The `jdb` command is included by default in 
@@ -142,7 +142,7 @@ Initializing jdb ...
 
 Now that you are connected to the JVM running inside the Inventory pod on OpenShift, add 
 a breakpoint to pause the code execution when it reaches the Java method handling the 
-REST API `/api/inventory`. Review the `InventoryResource.java` class and note that the 
+REST API `/api/inventory`. Review `com/redhat/cloudnative/inventory/InventoryResource.java` and note that the 
 `getAvailability()` is the method where you should add the breakpoint.
 
 Add the breakpoint.

@@ -102,8 +102,8 @@ allowed to consume which will act as a guideline for OpenShift to know when to s
 down. Since the deployment config starts the application pods, the application pod resource 
 (cpu and memory) containers should also be defined on the deployment config.
 
-When allocating compute resources to application pods, each container may specify a*request*
-and a*limit*value each for CPU and memory. The 
+When allocating compute resources to application pods, each container may specify a *request*
+and a *limit*value each for CPU and memory. The 
 [*request*]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests) 
 values define how much resources should be dedicated to an application pod so that it can run. It's 
 the minimum resources needed in other words. The 
@@ -189,7 +189,7 @@ You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to th
 When the load on Web UI disappears, after a while OpenShift scales the Web UI pods down to the minimum 
 or whatever this needed to cope with the load at that point.
 
-#### Auto-healing Failed Application Pods
+#### Self-healing Failed Application Pods
 
 We looked at how to build more resilience into the applications through scaling in the 
 previous sections. In this section, you will learn how to recover application pods when 
@@ -234,9 +234,7 @@ catalog-3-xf111   1/1       Running   0          42m
 The `-l` options tells the command to list pods that have the `microservice=catalog` label 
 assigned to them. You can see pods labels using `oc get pods --show-labels` command.
 
-Delete the Catalog pod.
-
-> Replace `CATALOG-POD-NAME` with the name of the Catalog pod in your project
+Delete the Catalog pod. Replace `CATALOG-POD-NAME` with the name of the Catalog pod in your project
 
 ~~~shell
 $ oc delete pod CATALOG-POD-NAME
@@ -247,13 +245,12 @@ You need to be fast for this one! List the Catalog pods again immediately:
 ~~~shell
 $ oc get pods -l microservice=catalog
 
-NAME          READY     STATUS              RESTARTS   AGE
 NAME              READY     STATUS              RESTARTS   AGE
 catalog-3-5dx5d   0/1       ContainerCreating   0          1s
 catalog-3-xf111   0/1       Terminating         0          4m
 ~~~
 
-As the pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Catalog 
+As the Catalog pod is being deleted, OpenShift notices the lack of 1 pod and starts a new Catalog 
 pod automatically.
 
 #### Preventing Cascading Failures with Circuit Breakers
