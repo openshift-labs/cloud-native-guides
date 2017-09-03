@@ -76,7 +76,7 @@ Here is what happens in the above code:
 3. An HTTP Server is created which listens on port 8080
 
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
-in the logs, otherwise the build has failed.
+in the build logs, otherwise the build has failed.
 
 > Make sure to run the `package` Maven goal and not `install`. The latter would 
 > download a lot more dependencies and do things you don't need yet!
@@ -131,7 +131,7 @@ feedback to the developer.
 
 Now that the project is ready, let's get coding!
 
-#### Create the API Gateway
+#### Create an API Gateway
 
 In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
 web front contacting each of these backend services, you can create an API Gateway which is an entry 
@@ -388,7 +388,8 @@ $ curl http://localhost:8080/api/products
 ]
 ~~~
 
-Note that the inventory info for each product is available within the same JSON object.
+Note that the JSON response aggregates responses fro Catalog and Inventory services and 
+the inventory info for each product is available within the same JSON object.
 
 Stop all services by pressing `CTRL-C` in the terminal windows.
 
@@ -504,7 +505,7 @@ $ curl http://{{API_GATEWAY_ROUTE_HOST}}/api/products
 ]
 ~~~
 
-As mentioned earlier, Vert.x built-in service discovery integrated with OpenShift service 
+As mentioned earlier, Vert.x built-in service discovery is integrated with OpenShift service 
 discovery to lookup the Catalog and Inventory APIs.
 
 Well done! You are ready to move on to the next lab.

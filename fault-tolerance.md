@@ -5,7 +5,7 @@ the applications both at the infrastructure level using OpenShift capabilities a
 at the application level using circuit breakers to prevent cascading failures when 
 downstream dependencies fail.
 
-#### Running Multiple Instances of Applications
+#### Scaling Up Applications
 
 Applications capacity for serving clients is bounded by the amount of computing power 
 allocated to them and although it's possible to increase the computing power per instance, 

@@ -58,7 +58,7 @@ and note that an in-memory H2 database is used in this lab for local development
 with a PostgreSQL database in the following labs. Be patient! More on that later.
 
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
-in the logs, otherwise the build has failed.
+in the build logs, otherwise the build has failed.
 
 > Make sure to run the `package` Maven goal and not `install`. The latter would 
 > download a lot more dependencies and do things you don't need yet!
@@ -338,7 +338,7 @@ catalog     catalog-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com     catalog
 inventory   inventory-{{COOLSTORE_PROJECT}}.roadshow.openshiftapps.com   inventory  8080            None
 ~~~
 
-Copy the route url for the Catalog service and verify the Catalog service works using 'curl':
+Copy the route url for the Catalog service and verify the Catalog service works using `curl`:
 
 > The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
 

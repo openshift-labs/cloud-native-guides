@@ -55,6 +55,11 @@ $ oc new-app nodejs~{{LABS_GIT_REPO}} \
         --labels=app=coolstore,microservice=web
 ~~~
 
+The `--context-dir` option specifies the sub-directly of the Git repository which contains 
+the source code for the application to be built and deployed. The `--labels` allows 
+assigning arbitrary key-value labels to the application objects in order to make it easier to 
+find them later on when you have many applications in the same project.
+
 A build gets created and starts building the Node.js Web UI container image. You can see the build 
 logs using OpenShift Web Console or OpenShift CLI:
 
@@ -72,14 +77,11 @@ in OpenShift.
 
 ~~~shell
 $ oc expose svc/web
-
-route "web" exposed
+$ oc get route web
 ~~~
 
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.
-
-> You can see the Web route url in the OpenShift Web Console or via the `oc get routes` command.
 
 ![CoolStore Shop](/api/workshops/roadshow/content/assets/images/coolstore-web.png){:width="840px"}
 

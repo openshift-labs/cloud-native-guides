@@ -42,7 +42,7 @@ start listening until initialization is complete.
  
 Let's add health probes to the microservices deployed so far.
 
-####  Review Health REST Endpoints
+####  Explore Health REST Endpoints
 
 Spring Boot, WildFly Swarm and Vert.x all provide out-of-the-box support for creating RESTful endpoints that
 provide details on the health of the application. These endpoints by default provide basic data about the 
