@@ -169,6 +169,8 @@ Review the `Product` domain model and note the JPA annotations on this class. `@
 class as a JPA entity, `@Table` customizes the table creation process by defining a table 
 name and database constraint and `@Id` marks the primary key for the table
 
+#### Create a Data Repository
+
 Spring Data repository abstraction simplifies dealing with data models in Spring applications by 
 reducing the amount of boilerplate code required to implement data access layers for various 
 persistence stores. [Repository and its sub-interfaces](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#repositories.core-concepts) 
