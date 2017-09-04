@@ -272,10 +272,9 @@ $ curl -sL -o projects.zip {{LABS_DOWNLOAD_URL}}
 
 Unzip the `projects.zip` file in your home directory.
 
-> You can use `unzip` or any other archiving utility with `zip` format support 
-you have available on your machine.
+> You can use archiving utility with `zip` format support you have available on your machine.
 
-* Windows: `Expand-Archive -Path projects.zip -DestinationPath C:\Labs`
+* Windows: `Expand-Archive -Path .\projects.zip ; Move-Item .\projects\cloud-native-labs-master\* .`
 * Linux: `unzip projects.zip && mv cloud-native-labs-master/* .`
 * Mac: `tar xvfz projects.zip --strip-components 1`
 
