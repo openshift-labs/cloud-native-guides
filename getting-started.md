@@ -129,7 +129,7 @@ You should see the OpenShift version.
 
 #### Download and Install OpenShift CLI on Mac
 
-Download the the OpenShift CLI tool for [Apple OS X]({{DOWNLOAD_CLIENT_MAC}})
+Download the the OpenShift CLI tool for [Mac]({{DOWNLOAD_CLIENT_MAC}})
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
@@ -275,8 +275,13 @@ Unzip the `projects.zip` file in your home directory.
 > You can use `unzip` or any other archiving utility with `zip` format support 
 you have available on your machine.
 
-~~~shell
-$ tar xvfz projects.zip --strip-components 1
+* Windows: `Expand-Archive -Path projects.zip -DestinationPath C:\Labs`
+* Linux: `unzip projects.zip && mv cloud-native-labs-master/* .`
+* Mac: `tar xvfz projects.zip --strip-components 1`
+
+After unzipping the projects, you should see these folders.
+
+~~~
 $ ls -l
 
 -rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
