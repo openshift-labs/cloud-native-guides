@@ -180,7 +180,7 @@ Spring finds all interfaces marked as repositories and for each interface found,
 configures the required persistent technologies and provides an implementation for the repository interface.
 
 Create a new Java interface named `ProductRepository.java` in `com.redhat.cloudnative.catalog` package 
-and extend `CrudRepository` interface in order to indicate to Spring that you want to expose a 
+and extend [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) interface in order to indicate to Spring that you want to expose a 
 complete set of methods to manipulate the entity.
 
 ~~~java
@@ -235,7 +235,7 @@ public class CatalogController {
 The above REST services defines an endpoint that is accessible via `HTTP GET` at `/api/catalog`. Notice 
 the `repository` field on the controller class which is used to retrieve the list of products. Spring Boot 
 automatically provides an implementation for `ProductRepository` at runtime and 
-[it into the controller using the `@Autowire` annotation](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html).
+[injects it into the controller using the `@Autowire` annotation](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html).
 
 Build and package the Catalog service using Maven.
 
@@ -249,7 +249,7 @@ Using Spring Boot maven plugin, you can conveniently run the application locally
 $ mvn spring-boot:run
 ~~~
 
-When you see `Started CatalogApplication in 4.609 seconds` in the logs, you can access the 
+When you see `Started CatalogApplication` in the logs, you can access the 
 Catalog REST API. Let’s test it out using `curl` in a new terminal window:
 
 ~~~shell
@@ -272,7 +272,7 @@ $ oc project {{COOLSTORE_PROJECT}}
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
-S2I uses the supported OpenJDK container image to build the final container image 
+S2I uses the [supported OpenJDK container image](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift) to build the final container image 
 of the Catalog service by uploading the Spring Boot uber-jar from the `target` 
 folder to the OpenShift platform. 
 

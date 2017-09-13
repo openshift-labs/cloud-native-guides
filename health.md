@@ -51,7 +51,7 @@ database connection health, backoffice system availability, etc).
 
 [Spring Boot Actuator](http://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#production-ready) is a 
 sub-project of Spring Boot which adds health and management HTTP endpoints to the application. Enabling Spring Boot 
-Actuator is done via adding `org.springframework.boot:spring-boot-starter-actuator` to the Maven project 
+Actuator is done via adding `org.springframework.boot:spring-boot-starter-actuator` dependency to the Maven project 
 dependencies which is already done for the Catalog services.
 
 Verify that the health endpoint works for the Catalog service using `curl`, replacing `{{CATALOG_ROUTE_HOST}}` 
@@ -140,7 +140,7 @@ The `--get-url` defines the HTTP endpoint to use for check the liveness of the c
 syntax is a convenient way to define the endpoint without having to worry about the hostname for the running 
 container. 
 
-> It is possible to customize to probes even further using for example `--initial-delay-seconds` to specify how long 
+> It is possible to customize the probes even further using for example `--initial-delay-seconds` to specify how long 
 > to wait after the container starts and before to begin checking the probes. Run `oc set probe --help` to get 
 > a list of all available options.
 
@@ -155,8 +155,8 @@ the liveness probe.
 $ oc set probe dc/catalog --readiness --get-url=http://:8080/health
 ~~~
 
-Viola! OpenShift automatically [restarts]({{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers) 
-the Catalog pod and as soon as the health probes succeed, it is ready to receive traffic. 
+Viola! OpenShift automatically restarts the Catalog pod and as soon as the 
+health probes succeed, it is ready to receive traffic. 
 
 > Fabric8 Maven Plugin can also be configured to automatically set the health probes when running `fabric8:deploy` 
 > goal. Read more on [Fabric8 docs](https://maven.fabric8.io/#enrichers) under 

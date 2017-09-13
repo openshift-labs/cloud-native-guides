@@ -217,12 +217,7 @@ corporate-standard CA that you already have installed on your system.
 
 Enter the username and password provided to you by the instructor
 
-Congratulations, you are now authenticated to the OpenShift server. The
-OpenShift master includes a built-in OAuth server. Developers and administrators
-obtain OAuth access tokens to authenticate themselves to the API. By default
-your authorization token will last for 24 hours. There is more information about
-the login command and its configuration in the 
-[OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/cli_reference/get_started_cli.html#basic-setup-and-login).
+Congratulations, you are now authenticated to the OpenShift server.
 
 [Projects]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/projects_and_users.html#projects) 
 are a top level concept to help you organize your deployments. An

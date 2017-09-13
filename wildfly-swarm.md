@@ -250,7 +250,7 @@ $ oc project {{COOLSTORE_PROJECT}}
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
-S2I uses the supported OpenJDK container image to build the final container image of the 
+S2I uses the [supported OpenJDK container image](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift) to build the final container image of the 
 Inventory service by uploading the WildFly Swam uber-jar from the `target` folder to 
 the OpenShift platform. 
 
