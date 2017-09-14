@@ -128,7 +128,7 @@ $ oc create configmap inventory --from-file=./project-stages.yml
 > * Value: *copy-paste the content of the above project-stages.yml excluding the first and last lines (the lines that contain EOF)*
 
 Config maps hold key-value pairs and in the above command an `inventory` config map 
-is created with `project-stages.yml` as the key and the content of the `./project-stages.yml` as the 
+is created with `project-stages.yml` as the key and the content of the `project-stages.yml` as the 
 value. Whenever a config map is injected into a container, it would appear as a file with the same 
 name as the key, at path on the filesystem.
 
