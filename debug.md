@@ -66,24 +66,30 @@ looking into the code that is being executed somewhere else on a different machi
 execute the code line-by-line to help investigate bugs and issues. Remote debugging is 
 part of  Java SE standard debugging architecture which you can learn more about it in [Java SE docs](https://docs.oracle.com/javase/8/docs/technotes/guides/jpda/architecture.html).
 
+
 The Java image on OpenShift has built-in support for remote debugging and it can be enabled 
 by setting the `JAVA_DEBUG=true` environment variables on the deployment config for the pod 
 that you want to remotely debug.
 
+An easier approach would be to use the fabric8 maven plugin to enable remote debugging on 
+the Inventory pod.
+
 Enable remote debugging on the `inventory` deployment config:
 
 ~~~shell
-$ oc env dc/inventory -e JAVA_DEBUG=true 
-~~~
+$ cd inventory-wildfly-swarm
+$ mvn fabric8:debug
+~~~~
 
-The default port for remoting debugging is `5005` however you can change this port by setting 
-the `JAVA_DEBUG_PORT` environment variable. You can read more about all the supported environment 
+> If you want to use environment variables instead, you can enable debugging 
+> using this command: `oc env dc/inventory -e JAVA_DEBUG=true`
+
+The default port for remoting debugging is `5005` but you can change the default port 
+via environment variables. You can read more about all the supported environment 
 variables for changing the Java image behavior in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
 
-As soon as you set the environment variable, a new Inventory pod gets started with the new 
-configurations (environment variables).
-
-You can now use the OpenShift CLI to forward a local port to the remote debugging port on the Inventory 
+As soon as you enable remote debugging, a new Inventory pod gets started. You can now use 
+the OpenShift CLI to forward a local port to the remote debugging port on the Inventory 
 pod and treat it as if the JVM was running locally on your machine. Find out the name of the 
 Inventory pod using `oc get` command:
 
@@ -131,7 +137,6 @@ Go to the `inventory-wildfly-swarm` project folder and start JDB by pointing it 
 containing the Java source code for the application under debug:
 
 ~~~shell
-$ cd inventory-wildfly-swarm
 $ jdb -attach 5005 -sourcepath :src/main/java/
 
 Set uncaught java.lang.Throwable
