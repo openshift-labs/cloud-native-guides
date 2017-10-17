@@ -190,10 +190,17 @@ $ exit
 >     $ oc rsh dc/inventory cat /app/config/project-stages.yml
 
 Also verify that the PostgreSQL database is actually used by the Inventory service. You 
-can either check the Inventory pod logs.
+can check the Inventory pod logs by looking up the Inventory pod name:
 
 ~~~shell
-$ oc logs dc/inventory | grep hibernate.dialect
+oc get pods -l microservice=inventory
+~~~
+
+And then check the Inventory pod logs:
+> Replace **INVENTORY-POD-NAME** with the Inventory pod name in your project.
+
+~~~shell
+oc logs INVENTORY-POD-NAME | grep hibernate.dialect`
 
 2017-08-10 16:55:44,657 INFO  [org.hibernate.dialect.Dialect] (ServerService Thread Pool -- 15) HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
@@ -296,10 +303,18 @@ Delete the Catalog container to make it start again and look for the config maps
 $ oc delete pod -l app=catalog
 ~~~
 
-When the Catalog container is ready, verify that the PostgreSQL database is being used:
+When the Catalog container is ready, verify that the PostgreSQL database is being used. Look 
+up the Catalog pod name:
 
 ~~~shell
-$ oc logs dc/catalog | grep hibernate.dialect
+oc get pods -l microservice=catalog
+~~~
+
+And then check the Catalog pod logs:
+> Replace **CATALOG-POD-NAME** with the Inventory pod name in your project.
+
+~~~shell
+oc logs CATALOG-POD-NAME | grep hibernate.dialect
 
 2017-08-10 21:07:51.670  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
