@@ -394,6 +394,6 @@ Go to the **{{COOLSTORE_PROJECT}}** in the OpenShift Web Console and click on th
 deployment (blue text under the title **Deployment**) and then on the **Environment**. Notice the values 
 from the secret are defined as env vars on the deployment:
 
-![Secrets as Env Vars](/api/workshops/roadshow/content/assets/images/config-psql-secret.png){:width="900px"}
+![Secrets as Env Vars](/api/workshops/roadshow/content/assets/images/ocp-3.6/config-psql-secret.png){:width="900px"}
 
 That's all for this lab! You are ready to move on to the next lab.

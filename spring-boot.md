@@ -91,7 +91,7 @@ application with `java -jar`.
 Now that the project is ready, let's get coding and create a domain model, data repository, and a  
 RESTful endpoint to create the Catalog service:
 
-![Catalog RESTful Service](/api/workshops/roadshow/content/assets/images/springboot-catalog-arch.png){:width="640px"}
+![Catalog RESTful Service](/api/workshops/roadshow/content/assets/images/ocp-3.6/springboot-catalog-arch.png){:width="640px"}
 
 #### Create the Domain Model
 

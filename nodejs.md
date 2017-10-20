@@ -4,7 +4,7 @@ In this lab you will learn about Node.js and will deploy the Node.js and Angular
 web front+end for the CoolStore online shop which uses the API Gateway services you deployed 
 in previous labs. 
 
-![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/coolstore-arch.png){:width="400px"}
+![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-arch.png){:width="400px"}
 
 #### What is Node.js?
 
@@ -83,7 +83,7 @@ $ oc get route web
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.
 
-![CoolStore Shop](/api/workshops/roadshow/content/assets/images/coolstore-web.png){:width="840px"}
+![CoolStore Shop](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-web.png){:width="840px"}
 
 Currently the `fabric8-maven-plugin` has a 
 [bug](https://github.com/fabric8io/fabric8-maven-plugin/issues/742)
@@ -96,6 +96,6 @@ together in the OpenShift Web Console
 $ oc label dc app=coolstore --all --overwrite
 ~~~
 
-![CoolStore Pods](/api/workshops/roadshow/content/assets/images/coolstore-pods-nodb.png){:width="900px"}
+![CoolStore Pods](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-pods-nodb.png){:width="900px"}
 
 Well done! You are ready to move on to the next lab.

@@ -8,7 +8,7 @@ look into line-by-line code execution as the code runs inside a container on Ope
 CoolStore application seem to have a bug that causes the inventory status for one of the 
 products not be displayed in the web interface. 
 
-![Inventory Status Bug](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug.png){:width="800px"}
+![Inventory Status Bug](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-coolstore-bug.png){:width="800px"}
 
 This is not an expected behavior! In previous labs, you added a circuit breaker to 
 protect the coolstore application from failures and in case the Inventory API is not 
@@ -244,7 +244,7 @@ Start JBDS.
 If the `inventory-wildfly-swarm` project is not already imported into your 
 workspace, click on **File >> Import... >> Existing Maven Projects** and then **Next**.
 
-![Import Maven Project](/api/workshops/roadshow/content/assets/images/debug-jbds-import-maven.png){:width="600px"}
+![Import Maven Project](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-import-maven.png){:width="600px"}
 
 Click on **Browse**, select `inventory-wildfly-swarm` folder and click on 
 **Finish**.
@@ -254,7 +254,7 @@ on the editor sidebar near the first line of the `getAvailability()`
 method to add a breakpoint to that line. A circle appears near the line to show a breakpoint 
 is set.
 
-![Add Breakpoint](/api/workshops/roadshow/content/assets/images/debug-jbds-add-breakpoint.png){:width="500px"}
+![Add Breakpoint](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-add-breakpoint.png){:width="500px"}
 
 Now you are ready to connect to the Inventory pod. 
 
@@ -265,7 +265,7 @@ configuration for Java remote debugging.
 Set the port field to `5005` as it was forwarded to your local machine on and 
 leave the rest of the fields with default values. Click on **Debug** button.
 
-![Add Breakpoint](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-config.png){:width="800px"}
+![Add Breakpoint](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-debug-config.png){:width="800px"}
 
 JBDS connects to the Inventory pod and it's ready for debugging. Use `curl` to invoke the 
 Inventory API with the suspect product id in order to pause the 
@@ -280,7 +280,7 @@ $ curl -v http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 
 JBDS switches to the *Debug Perspective* and pauses on the breakpoint.
 
-![JBDS Debug](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-view.png){:width="900px"}
+![JBDS Debug](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-debug-view.png){:width="900px"}
 
 Click on the step over icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
@@ -289,12 +289,12 @@ Can you spot the bug now?
 
 Look at the **Variables** window. The retrieved inventory object is `null`. 
 
-![Debug Variables](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-vars.png){:width="600px"}
+![Debug Variables](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-debug-vars.png){:width="600px"}
 
 You can also verify that by hovering your mouse over the `inventory` variable in the code 
 editor.
 
-![Debug Variables](/api/workshops/roadshow/content/assets/images/debug-jbds-debug-hover.png){:width="600px"}
+![Debug Variables](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-jbds-debug-hover.png){:width="600px"}
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
@@ -326,17 +326,17 @@ Open `com.redhat.cloudnative.inventory.InventoryResource` in the editor. Click o
 sidebar near the first line of the `getAvailability()` method to add a breakpoint to that line. 
 A circle appears near the line to show a breakpoint is set.
 
-![Add Breakpoint](/api/workshops/roadshow/content/assets/images/debug-idea-add-breakpoint.png){:width="650px"}
+![Add Breakpoint](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-idea-add-breakpoint.png){:width="650px"}
 
 From the menu, click on **Run >> Edit Configurations...** to create a new Java remote debug 
 configuration. Click on the plus icon and then from the drop down list click on **Remote**
 
-![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-edit-config.png){:width="840px"}
+![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-idea-edit-config.png){:width="840px"}
 
 In the debug configuration, specify `inventory` as name, make sure the port is `5005` and click 
 on **OK**.
 
-![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/debug-idea-debug-config.png){:width="840px"}
+![Add Debug Configuration](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-idea-debug-config.png){:width="840px"}
 
 Now you are ready to connect to the Inventory pod. From the menu, click on 
 **Run >> Debug 'inventory'** to connect to the Inventory pod.
@@ -353,14 +353,14 @@ $ curl -v http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 
 IDEA pauses on the breakpoint.
 
-![IntelliJS IDEA Debug](/api/workshops/roadshow/content/assets/images/debug-idea-debug-view.png){:width="900px"}
+![IntelliJS IDEA Debug](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-idea-debug-view.png){:width="900px"}
 
 Click on the step over icon to execute one line and retrieve the inventory object for the 
 given product id from the database.
 
 Could you spot the bug now? The retrieved inventory object is `null`. 
 
-![Variables](/api/workshops/roadshow/content/assets/images/debug-idea-debug-vars.png){:width="700px"}
+![Variables](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-idea-debug-vars.png){:width="700px"}
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
@@ -413,6 +413,6 @@ When the pipeline completes successfully, point your browser at the Web route an
 that the inventory status is visible for all products. The suspect product should show 
 the inventory status as _Not in Stock_.
 
-![Inventory Status Bug Fixed](/api/workshops/roadshow/content/assets/images/debug-coolstore-bug-fixed.png){:width="800px"}
+![Inventory Status Bug Fixed](/api/workshops/roadshow/content/assets/images/ocp-3.6/debug-coolstore-bug-fixed.png){:width="800px"}
 
 Well done and congratulations for completing all the labs.
