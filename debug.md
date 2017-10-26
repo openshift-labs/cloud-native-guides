@@ -72,55 +72,26 @@ by setting the `JAVA_DEBUG=true` environment variables on the deployment config 
 that you want to remotely debug.
 
 An easier approach would be to use the fabric8 maven plugin to enable remote debugging on 
-the Inventory pod.
+the Inventory pod. It also forwards the default remote debugging port, 5005, from the 
+Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on the `inventory` deployment config:
+Enable remote debugging on Inventory:
 
 ~~~shell
 $ cd inventory-wildfly-swarm
 $ mvn fabric8:debug
 ~~~~
 
-> If you want to use environment variables instead, you can enable debugging 
-> using this command: `oc env dc/inventory -e JAVA_DEBUG=true`
-
-The default port for remoting debugging is `5005` but you can change the default port 
-via environment variables. You can read more about all the supported environment 
-variables for changing the Java image behavior in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
-
-As soon as you enable remote debugging, a new Inventory pod gets started. You can now use 
-the OpenShift CLI to forward a local port to the remote debugging port on the Inventory 
-pod and treat it as if the JVM was running locally on your machine. Find out the name of the 
-Inventory pod using `oc get` command:
-
-> The `--show-all=false` option makes the OpenShift CLI to list only pods that are running excluding 
-> pods that are stopped.
-
-~~~shell
-$ oc get pods --show-all=false
-
-NAME                           READY     STATUS    RESTARTS   AGE
-...
-inventory-7-wkg6x              1/1       Running   0          26m
-...
-~~~
-
-And forward a local port to the Inventory pod port `5005`:
-
-> The pod name would be different in your project. Replace `INVENTORY-POD-NAME` with 
-> the pod name from your project.
-
-~~~shell
-$ oc port-forward INVENTORY-POD-NAME 5005
-
-Forwarding from 127.0.0.1:5005 >> 5005
-Forwarding from [::1]:5005 >> 5005
-~~~
+> The default port for remoting debugging is `5005` but you can change the default port 
+> via environment variables. Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
 
 You are all set now to start debugging using the tools of you choice. 
 
-Remote debugging can be done 
-using the prevalently available Java Debugger command line or any modern IDE like JBoss 
+Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded 
+port open so that you can start debugging remotely.
+
+Remote debugging can be done using the prevalently available
+Java Debugger command line or any modern IDE like JBoss 
 Developer Studio (Eclipse) and IntelliJ IDEA.
 
 {% if REMOTE_DEBUGGER_JDB == true %}
@@ -133,7 +104,8 @@ Java SE and provides inspection and debugging of a local or remote JVM. Although
 the most convenient way to debug Java code, it's a handy tool since it can be run on any environment 
 that Java SE is available.
 
-Go to the `inventory-wildfly-swarm` project folder and start JDB by pointing it at the folder 
+In a new terminal window, go to the `inventory-wildfly-swarm` project folder 
+and start JDB by pointing at the folder 
 containing the Java source code for the application under debug:
 
 ~~~shell
@@ -156,8 +128,8 @@ Add the breakpoint.
 > stop in com.redhat.cloudnative.inventory.InventoryResource.getAvailability
 ~~~
 
-Use `curl` to invoke the Inventory API with the suspect product id in order to pause the 
-code execution at the defined breakpoint.
+Use `curl` to invoke the Inventory API with the suspect product id in a 
+a new terminal window in order to pause the code execution at the defined breakpoint.
 
 > You can find out the Inventory route url using `oc get routes`. Replace 
 > `{{INVENTORY_ROUTE_HOST}}` with the Inventory route url from your project.
