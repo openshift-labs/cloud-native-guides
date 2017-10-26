@@ -1,10 +1,7 @@
 ## Enterprise Microservices with WildFly Swarm
 {:.no_toc}
 
-In this lab you will learn about building microservices using a subset of Java EE 
-technologies which are driven via the MicroProfile standard. Furthermore you will create a 
-microservice called Inventory using WildFly Swarm to expose a REST API for 
-checking product inventory status:
+In this lab you will learn about building microservices using WildFly Swarm.
 
 #### What is WildFly Swarm?
 
@@ -39,13 +36,8 @@ the WildFly Swarm project laid out in different subdirectories according to Mave
         └── resources  # The static resource files and configurations
 ~~~
 
-> WildFly Swarm projects can also be managed using other tools besides Maven, such as
-> Gradle, JBoss Forge, or SwarmTool. Refer to 
-> [WildFly Swarm Documentation](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/getting-started/tooling/forge-addon.html) 
-> for more details.
-
 This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
-to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE specifications that uses Java programming language annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/tutorial/partpersist.htm) is another Java EE specification that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
+to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE standard that uses Java annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/tutorial/partpersist.htm) is another Java EE standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
 
 This project currently contains no code other than the main class for exposing a single 
 RESTful application defined in `InventoryApplication.java`. 

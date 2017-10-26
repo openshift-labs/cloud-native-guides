@@ -126,7 +126,7 @@ $ curl http://localhost:8080
 ~~~
 
 Note that while the application is running using `mvn vertx:run`, you can make changes in the code
-and they would immediately be compiled and updated in the running application to provide the fast
+and they would immediately be compiled and updated in the running application to provide fast
 feedback to the developer.
 
 Now that the project is ready, let's get coding!
