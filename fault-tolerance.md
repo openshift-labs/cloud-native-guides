@@ -225,25 +225,25 @@ All of the above comes out-of-the-box and don't need any extra configuration. Re
 pod to verify how OpenShift starts the pod again. First, check the Catalog pod that is running:
 
 ~~~shell
-$ oc get pods -l microservice=catalog
+$ oc get pods -l app=catalog
 
 NAME              READY     STATUS    RESTARTS   AGE
 catalog-3-xf111   1/1       Running   0          42m
 ~~~
 
-The `-l` options tells the command to list pods that have the `microservice=catalog` label 
+The `-l` options tells the command to list pods that have the `app=catalog` label 
 assigned to them. You can see pods labels using `oc get pods --show-labels` command.
 
-Delete the Catalog pod. Replace `CATALOG-POD-NAME` with the name of the Catalog pod in your project
+Delete the Catalog pod. 
 
 ~~~shell
-$ oc delete pod CATALOG-POD-NAME
+oc delete pods -l app=catalog
 ~~~
 
 You need to be fast for this one! List the Catalog pods again immediately:
 
 ~~~shell
-$ oc get pods -l microservice=catalog
+$ oc get pods -l app=catalog
 
 NAME              READY     STATUS              RESTARTS   AGE
 catalog-3-5dx5d   0/1       ContainerCreating   0          1s

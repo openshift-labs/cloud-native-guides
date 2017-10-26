@@ -57,7 +57,7 @@ $ oc new-app postgresql-persistent \
     --param=POSTGRESQL_DATABASE=inventory \
     --param=POSTGRESQL_USER=inventory \
     --param=POSTGRESQL_PASSWORD=inventory \
-    --labels=app=coolstore,microservice=inventory
+    --labels=app=inventory
 ~~~
 
 > The `--param` parameter provides a value for the given parameters. The recommended approach is 
@@ -73,7 +73,7 @@ $ oc new-app postgresql-persistent \
     --param=POSTGRESQL_DATABASE=catalog \
     --param=POSTGRESQL_USER=catalog \
     --param=POSTGRESQL_PASSWORD=catalog \
-    --labels=app=coolstore,microservice=catalog
+    --labels=app=catalog
 ~~~
 
 Now you can move on to configure the Inventory and Catalog service to use these PostgreSQL databases.
@@ -156,51 +156,20 @@ WildFly Swarm configuration, using the `JAVA_OPTIONS` environment variable.
 $ oc set env dc/inventory JAVA_OPTIONS="-Dswarm.project.stage=prod -Dswarm.project.stage.file=file:///app/config/project-stages.yml"
 ~~~
 
+
 The Inventory pod gets restarted automatically due to the configuration changes. Wait till it's ready, 
-and then verify that the config map is in fact injected into the container by opening a remote shell into the 
-Inventory container:
+and then verify that the config map is in fact injected into the container by running 
+a shell command inside the Inventory container:
 
 ~~~shell
-$ oc rsh dc/inventory
+$ oc rsh dc/inventory cat /app/config/project-stages.yml
 ~~~
 
-When connected to the container, check if the YAML file is there
-
-> Run this command inside the Inventory container, after opening a remote shell to it.
-
-~~~shell
-$ cat /app/config/project-stages.yml
-
-project:
-  stage: prod
-swarm:
-  datasources:
-    data-sources:
-      InventoryDS:
-        driver-name: postgresql
-        connection-url: jdbc:postgresql://inventory-postgresql:5432/inventory
-        user-name: inventory
-        password: inventory
-
-$ exit
-~~~
-
-> You can run a command remotely on a container using `oc rsh`:
-> 
->     $ oc rsh dc/inventory cat /app/config/project-stages.yml
-
-Also verify that the PostgreSQL database is actually used by the Inventory service. You 
-can check the Inventory pod logs by looking up the Inventory pod name:
+Also verify that the PostgreSQL database is actually used by the Inventory service. Check the 
+Inventory pod logs:
 
 ~~~shell
-oc get pods -l microservice=inventory
-~~~
-
-And then check the Inventory pod logs:
-> Replace **INVENTORY-POD-NAME** with the Inventory pod name in your project.
-
-~~~shell
-oc logs INVENTORY-POD-NAME | grep hibernate.dialect`
+oc logs dc/inventory | grep hibernate.dialect
 
 2017-08-10 16:55:44,657 INFO  [org.hibernate.dialect.Dialect] (ServerService Thread Pool -- 15) HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
@@ -303,18 +272,11 @@ Delete the Catalog container to make it start again and look for the config maps
 $ oc delete pod -l app=catalog
 ~~~
 
-When the Catalog container is ready, verify that the PostgreSQL database is being used. Look 
-up the Catalog pod name:
+When the Catalog container is ready, verify that the PostgreSQL database is being 
+used. Check the Catalog pod logs:
 
 ~~~shell
-oc get pods -l microservice=catalog
-~~~
-
-And then check the Catalog pod logs:
-> Replace **CATALOG-POD-NAME** with the Inventory pod name in your project.
-
-~~~shell
-oc logs CATALOG-POD-NAME | grep hibernate.dialect
+oc logs dc/catalog | grep hibernate.dialect
 
 2017-08-10 21:07:51.670  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~

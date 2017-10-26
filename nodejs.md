@@ -51,8 +51,7 @@ Use the OpenShift CLI command to create a new build and deployment for the Web c
 ~~~shell
 $ oc new-app nodejs~{{LABS_GIT_REPO}} \
         --context-dir=web-nodejs \
-        --name=web \
-        --labels=app=coolstore,microservice=web
+        --name=web 
 ~~~
 
 The `--context-dir` option specifies the sub-directly of the Git repository which contains 
