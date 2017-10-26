@@ -109,7 +109,7 @@ and start JDB by pointing at the folder
 containing the Java source code for the application under debug:
 
 ~~~shell
-$ jdb -attach 5005 -sourcepath :src/main/java/
+$ jdb -attach localhost:5005 -sourcepath :src/main/java/
 
 Set uncaught java.lang.Throwable
 Set deferred uncaught java.lang.Throwable
