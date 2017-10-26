@@ -101,7 +101,7 @@ Developer Studio (Eclipse) and IntelliJ IDEA.
 The [Java Debugger (JDB)](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jdb.html) 
 is a simple command-line debugger for Java. The `jdb` command is included by default in 
 Java SE and provides inspection and debugging of a local or remote JVM. Although `jdb` is not 
-the most convenient way to debug Java code, it's a handy tool since it can be run on any environment 
+the most convenient way to debug Java code, it is a handy tool since it can be run on any environment 
 that Java SE is available.
 
 In a new terminal window, go to the `inventory-wildfly-swarm` project folder 
