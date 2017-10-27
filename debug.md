@@ -100,7 +100,7 @@ Developer Studio (Eclipse) and IntelliJ IDEA.
 
 The [Java Debugger (JDB)](http://docs.oracle.com/javase/8/docs/technotes/tools/windows/jdb.html) 
 is a simple command-line debugger for Java. The `jdb` command is included by default in 
-Java SE and provides inspection and debugging of a local or remote JVM. Although `jdb` is not 
+Java SE and provides inspection and debugging of a local or remote JVM. Although JDB is not 
 the most convenient way to debug Java code, it is a handy tool since it can be run on any environment 
 that Java SE is available.
 
@@ -122,7 +122,7 @@ a breakpoint to pause the code execution when it reaches the Java method handlin
 REST API `/api/inventory`. Review `com/redhat/cloudnative/inventory/InventoryResource.java` and note that the 
 `getAvailability()` is the method where you should add the breakpoint.
 
-Add the breakpoint.
+Add a breakpoint.
 
 ~~~shell
 > stop in com.redhat.cloudnative.inventory.InventoryResource.getAvailability

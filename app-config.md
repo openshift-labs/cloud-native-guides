@@ -60,12 +60,12 @@ $ oc new-app postgresql-persistent \
     --labels=app=inventory
 ~~~
 
-> The `--param` parameter provides a value for the given parameters. The recommended approach is 
+> The `--param` parameter provides a value for the template parameters. The recommended approach is 
 > not to provide any value for username and password and allow the template to generate a random value for 
 > you due to security reasons. In this lab in order to reduce typos, a fixed value is provided for username and 
 > password.
 
-And another one for the Catalog service:
+Deploy another PostgreSQL database for the Catalog service:
 
 ~~~shell
 $ oc new-app postgresql-persistent \
@@ -142,10 +142,10 @@ a config map into the Inventory container:
 $ oc volume dc/inventory --add --configmap-name=inventory --mount-path=/app/config
 ~~~
 
-The above command mounts the content of the `inventory` config map into the Inventory container 
-at `/app/config/project-stages.yaml`.
+The above command mounts the content of the `inventory` config map as a file inside the Inventory container 
+at `/app/config/project-stages.yaml`
 
-The last step is the [beforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties) on the Inventory container to overlay the 
+The last step is the [aforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties) on the Inventory container to overlay the 
 WildFly Swarm configuration, using the `JAVA_OPTIONS` environment variable. 
 
 > The Java runtime on OpenShift can be configured using 
