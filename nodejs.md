@@ -84,17 +84,4 @@ products and their inventory status.
 
 ![CoolStore Shop](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-web.png){:width="840px"}
 
-Currently the `fabric8-maven-plugin` has a 
-[bug](https://github.com/fabric8io/fabric8-maven-plugin/issues/742)
-that prevents grouping the pods properly. Run the following 
-tweak to assign an `app` label to deployment configs and group them 
-together in the OpenShift Web Console
-
-
-~~~shell
-$ oc label dc app=coolstore --all --overwrite
-~~~
-
-![CoolStore Pods](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-pods-nodb.png){:width="900px"}
-
 Well done! You are ready to move on to the next lab.

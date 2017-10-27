@@ -225,25 +225,25 @@ All of the above comes out-of-the-box and don't need any extra configuration. Re
 pod to verify how OpenShift starts the pod again. First, check the Catalog pod that is running:
 
 ~~~shell
-$ oc get pods -l app=catalog
+$ oc get pods -l deploymentconfig=catalog
 
 NAME              READY     STATUS    RESTARTS   AGE
 catalog-3-xf111   1/1       Running   0          42m
 ~~~
 
-The `-l` options tells the command to list pods that have the `app=catalog` label 
+The `-l` options tells the command to list pods that have the `deploymentconfig=catalog` label 
 assigned to them. You can see pods labels using `oc get pods --show-labels` command.
 
 Delete the Catalog pod. 
 
 ~~~shell
-oc delete pods -l app=catalog
+oc delete pods -l deploymentconfig=catalog
 ~~~
 
 You need to be fast for this one! List the Catalog pods again immediately:
 
 ~~~shell
-$ oc get pods -l app=catalog
+$ oc get pods -l deploymentconfig=catalog
 
 NAME              READY     STATUS              RESTARTS   AGE
 catalog-3-5dx5d   0/1       ContainerCreating   0          1s
@@ -418,34 +418,12 @@ public class GatewayVerticle extends AbstractVerticle {
 
 The above code is quite similar to the previous code however it wraps the calls to the Inventory 
 service in a `CircuitBreaker` using the built-in circuit breaker in Vert.x. The circuit breaker 
-is configured (using `CircuitBreakerOptions`) to flip open after 3 failures and time out on the 
+is configured to flip open after 3 failures and time out on the 
 calls after 1 second. 
-
-~~~java
-circuit = CircuitBreaker.create("inventory-circuit-breaker", vertx,
-    new CircuitBreakerOptions()
-        .setFallbackOnFailure(true)
-        .setMaxFailures(3)
-        .setResetTimeout(10000)
-        .setTimeout(1000)
-);
-~~~
 
 The `circuit.rxExecuteCommandWithFallback(...)` method, defines the fallback logic for 
 when the circuit is open and logs an error without calling the Inventory service in those 
 scenarios.
-
-~~~java
-circuit.rxExecuteCommandWithFallback(
-    future ->
-        // call inventory service 
-        ...
-    error -> {
-        // log and error
-        ...
-    }
-)
-~~~
 
 Build the API Gateway using Maven and trigger a new continuer image build on OpenShift using 
 the `oc start-build` command which allows you to build container images directly from the application 

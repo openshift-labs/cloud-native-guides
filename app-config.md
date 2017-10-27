@@ -334,7 +334,7 @@ $ oc describe secret catalog-postgresql
 
 Name:           catalog-postgresql
 Namespace:      coolstore
-Labels:         app=postgresql-persistent
+Labels:         app=catalog
                 template=postgresql-persistent-template
 Annotations:    openshift.io/generated-by=OpenShiftNewApp
                 template.openshift.io/expose-password={.data['database-password']}
