@@ -113,7 +113,7 @@ on the node available than what the pod has request. This is to allow various qu
 tiers with regards to compute resources. You can read more about these quality of service tiers 
 in [OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#quality-of-service-tiers).
 
-Set resource containers on the Web UI pod using `oc set resource` to the following:
+Set the following resource constraints on the Web UI pod:
 
 * Memory Request: 256 MB
 * Memory Limit: 512 MB
