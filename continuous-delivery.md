@@ -106,11 +106,9 @@ Now that you have a Git repository for the Inventory service, you should push th
 source code into this Git repository.
 
 Go the `inventory-wildfly-swarm` folder, initialize it as a Git working copy and add 
-the GitHub repository as the remote repository for your working copy. Make sure you 
-replace `GIT-REPO-URL` with the Git repository url in the following commands:
+the GitHub repository as the remote repository for your working copy. 
 
-> Paste the Git repository url from the clipboard which you have copied in the 
-> previous steps. 
+> Replace `GIT-REPO-URL` with the Git repository url copied in the previous steps
 
 ~~~shell
 $ cd inventory-wildfly-swarm
@@ -152,11 +150,13 @@ and is created using a [scripted or declarative syntax](https://jenkins.io/doc/b
 
 Create a file called `Jenkinsfile` in the root the `inventory-wildfly-swarm`:
 
+> Replace `GIT-REPO-URL` with the Git repository url copied in the previous steps
+
 ~~~shell
 cat <<EOF > Jenkinsfile
 node("maven") {
   stage("Build JAR") {
-    git url: "INVENTORY-GIT-URL"
+    git url: "GIT-REPO-URL"
     sh "mvn clean package"
     stash name:"jar", includes:"target/inventory-1.0-SNAPSHOT-swarm.jar"
   }
