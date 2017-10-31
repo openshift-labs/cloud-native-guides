@@ -168,7 +168,7 @@ node("maven") {
   }
 
   stage("Deploy") {
-    openshiftDeploy deploymentConfig: inventory
+    openshiftDeploy deploymentConfig: "inventory"
   }
 }
 EOF
