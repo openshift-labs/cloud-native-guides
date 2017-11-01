@@ -171,7 +171,7 @@ looks in the internal image registry and then in defined upstream registries
 [Docker Hub](https://hub.docker.com) by default) to find and pull this image. After `--`, you 
 can override the container entry point to whatever command you want to run in that container.
 
-As you the `ab` container generates the load, you will notice that it will create a spike in the 
+As you the load is generated, you will notice that it will create a spike in the 
 Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
