@@ -42,7 +42,7 @@ is important that the code in a Verticle does not block. This asynchronous archi
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
 
-![Vert.x Event Loop](/api/workshops/roadshow/content/assets/images/ocp-3.6/vertx-event-loop.jpg){:width="440px"}
+![Vert.x Event Loop](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/vertx-event-loop.jpg){:width="440px"}
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. 
 
@@ -139,7 +139,7 @@ point for for the web front to access all backend services from a single place. 
 called [API Gateway](http://microservices.io/patterns/apigateway.html) and is a common practice in Microservices 
 architecture.
 
-![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-arch.png){:width="400px"}
+![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/coolstore-arch.png){:width="400px"}
 
 Replace the content of `src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java` class with the following:
 

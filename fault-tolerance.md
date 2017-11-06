@@ -17,7 +17,7 @@ more cpu and memory (vertical scaling). Cloud-native apps however are stateless 
 easily scaled up by spinning up more application instances and load-balancing requests 
 between those instances (horizontal scaling).
 
-![Scaling Up vs Scaling Out](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-scale-up-vs-out.png){:width="500px"}
+![Scaling Up vs Scaling Out](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-scale-up-vs-out.png){:width="500px"}
 
 In previous labs, you learned how to build container images from your application code and 
 deploy them on OpenShift. Container images on OpenShift follow the 
@@ -59,7 +59,7 @@ The `--replicas` option specified the number of Web UI pods that should be runni
 at the OpenShift Web Console, you can see a new pod is being started for the Web UI and as soon 
 as the health probes pass, it will be automatically added to the load-balancer.
 
-![Scaling Up Pods](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-scale-up.png){:width="740px"}
+![Scaling Up Pods](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-scale-up.png){:width="740px"}
 
 You can verify that the new pod is added to the load balancer by checking the details of the 
 Web UI service object:
@@ -179,12 +179,12 @@ on the deployment config) to cope with the load.
 > the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
 > the load by specifying a higher number of requests (e.g. 80K) using `ab -n` flag.
 
-![Web UI Automatically Scaled](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-autoscale-web.png){:width="740px"}
+![Web UI Automatically Scaled](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-autoscale-web.png){:width="740px"}
 
 You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
 **Monitoring** and then the arrow (**>**) on the left side of **web-n** under **Deployments**.
 
-![Web UI Aggregated CPU Metrics](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-autoscale-metrics.png){:width="740px"}
+![Web UI Aggregated CPU Metrics](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-autoscale-metrics.png){:width="740px"}
 
 When the load on Web UI disappears, after a while OpenShift scales the Web UI pods down to the minimum 
 or whatever this needed to cope with the load at that point.
@@ -271,7 +271,7 @@ without making the call to the unresponsive API. After a certain period, the cir
 to the downstream service to test the waters. If the call success, the circuit breaker closes and would call 
 the downstream service on consequent calls.
 
-![Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-circuit-breaker.png){:width="300px"}
+![Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-circuit-breaker.png){:width="300px"}
 
 Spring Boot and WildFly Swarm provide convenient integration with [Hystrix](https://github.com/Netflix/Hystrix) 
 which is a framework that provides circuit breaker functionality. Eclipse Vert.x, in addition to integration 
@@ -288,7 +288,7 @@ Now point your browser at the Web UI route url.
 > You can find the Web UI route url in the OpenShift Web Console above the `web` pod or 
 > using the `oc get routes` command.
 
-![CoolStore Without Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-coolstore-no-cb.png){:width="840px"}
+![CoolStore Without Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-coolstore-no-cb.png){:width="840px"}
 
 Although only the Inventory service is down, there are no products displayed in the online store because 
 the Inventory service call failure propagates and causes the entire API Gateway to blow up! 
@@ -441,7 +441,7 @@ defined on the `gateway` deployment config.
 
 Let's try the Web UI again in the browser while the Inventory service is still down.
 
-![CoolStore With Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-3.6/fault-coolstore-with-cb.png){:width="840px"}
+![CoolStore With Circuit Breaker](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/fault-coolstore-with-cb.png){:width="840px"}
 
 It looks better now! The Inventory service failure is contained and the inventory status is removed from the 
 user interface and allows the CoolStore online shop to continue functioning and accept orders. Selling an 

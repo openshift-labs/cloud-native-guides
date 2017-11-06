@@ -88,7 +88,7 @@ that could be deployed to any Java EE app server (for example, JBoss EAP, or its
 
 Now let's write some code and create a domain model and a RESTful endpoint to create the Inventory service:
 
-![Inventory RESTful Service](/api/workshops/roadshow/content/assets/images/ocp-3.6/wfswarm-inventory-arch.png){:width="500px"}
+![Inventory RESTful Service](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/wfswarm-inventory-arch.png){:width="500px"}
 
 #### Create a Domain Model
 

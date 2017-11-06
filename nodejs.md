@@ -4,7 +4,7 @@ In this lab you will learn about Node.js and will deploy the Node.js and Angular
 web front+end for the CoolStore online shop which uses the API Gateway services you deployed 
 in previous labs. 
 
-![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-arch.png){:width="400px"}
+![API Gateway Pattern](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/coolstore-arch.png){:width="400px"}
 
 #### What is Node.js?
 
@@ -82,6 +82,6 @@ $ oc get route web
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
 products and their inventory status.
 
-![CoolStore Shop](/api/workshops/roadshow/content/assets/images/ocp-3.6/coolstore-web.png){:width="840px"}
+![CoolStore Shop](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/coolstore-web.png){:width="840px"}
 
 Well done! You are ready to move on to the next lab.
