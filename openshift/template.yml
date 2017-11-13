@@ -255,9 +255,9 @@ objects:
       vars:
         OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.6"
         COOLSTORE_PROJECT: "coolstore"
-        DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/windows/oc.zip
-        DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/macosx/oc.tar.gz
-        DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.5/linux/oc.tar.gz
+        DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.21/windows/oc.zip
+        DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.21/macosx/oc.tar.gz
+        DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.6.173.0.21/linux/oc.tar.gz
         LABS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs.git
         LABS_DOWNLOAD_URL: https://github.com/openshift-roadshow/cloud-native-labs/archive/master.zip
         WEB_NODEJS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs/tree/master/web-nodejs
@@ -269,6 +269,7 @@ objects:
         INVENTORY_ROUTE_HOST: INVENTORY-ROUTE-HOST
         CATALOG_ROUTE_HOST: CATALOG-ROUTE-HOST
         API_GATEWAY_ROUTE_HOST: API-GATEWAY-ROUTE-HOST
+        OCP_VERSION: "3.6"
       modules:
         activate:
         - getting-started
