@@ -276,7 +276,7 @@ When the Catalog container is ready, verify that the PostgreSQL database is bein
 used. Check the Catalog pod logs:
 
 ~~~shell
-oc logs dc/catalog | grep hibernate.dialect
+$ oc logs dc/catalog | grep hibernate.dialect
 
 2017-08-10 21:07:51.670  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
@@ -332,20 +332,22 @@ the database credentials in a secret in the project it's being created:
 ~~~shell
 $ oc describe secret catalog-postgresql
 
-Name:           catalog-postgresql
-Namespace:      coolstore
-Labels:         app=catalog
-                template=postgresql-persistent-template
-Annotations:    openshift.io/generated-by=OpenShiftNewApp
-                template.openshift.io/expose-password={.data['database-password']}
-                template.openshift.io/expose-username={.data['database-user']}
+Name:            catalog-postgresql
+Namespace:       coolstore
+Labels:          app=catalog
+                 template=postgresql-persistent-template
+Annotations:     openshift.io/generated-by=OpenShiftNewApp
+                 template.openshift.io/expose-database_name={.data['database-name']}
+                 template.openshift.io/expose-password={.data['database-password']}
+                 template.openshift.io/expose-username={.data['database-user']}
 
-Type:	Opaque
+Type:     Opaque
 
 Data
 ====
-database-password:  9 bytes
-database-user:      9 bytes
+database-name:        7 bytes
+database-password:    7 bytes
+database-user:        7 bytes
 ~~~
 
 This secret has two encrypted properties defined as `database-user` and `database-password` which hold 

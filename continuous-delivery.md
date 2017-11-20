@@ -116,6 +116,16 @@ $ git init
 $ git remote add origin GIT-REPO-URL
 ~~~
 
+
+Before you commit the source code to the Git repository, configure your name and 
+email so that the commit owner can be seen on the repository. If you want, you can 
+replace the name and the email with your own in the following commands:
+
+~~~shell
+git config --global user.name "Developer"
+git config --global user.email "developer@os.com"
+~~~
+
 Commit and push the existing code to the GitHub repository.
 
 ~~~shell
@@ -150,25 +160,40 @@ and is created using a [scripted or declarative syntax](https://jenkins.io/doc/b
 
 Create a file called `Jenkinsfile` in the root the `inventory-wildfly-swarm`:
 
-> Replace `GIT-REPO-URL` with the Git repository url copied in the previous steps
-
 ~~~shell
 cat <<EOF > Jenkinsfile
-node("maven") {
-  stage("Build JAR") {
-    git url: "GIT-REPO-URL"
-    sh "mvn clean package"
-    stash name:"jar", includes:"target/inventory-1.0-SNAPSHOT-swarm.jar"
+pipeline {
+  agent {
+      label 'maven'
   }
-
-  stage("Build Image") {
-    unstash name:"jar"
-    sh "oc start-build inventory-s2i --from-file=target/inventory-1.0-SNAPSHOT-swarm.jar"
-    openshiftVerifyBuild bldCfg: "inventory-s2i", waitTime: '20', waitUnit: 'min'
-  }
-
-  stage("Deploy") {
-    openshiftDeploy deploymentConfig: "inventory"
+  stages {
+    stage('Build JAR') {
+      steps {
+        sh "mvn package"
+        stash name:"jar", includes:"target/inventory-1.0-SNAPSHOT-swarm.jar"
+      }
+    }
+    stage('Build Image') {
+      steps {
+        unstash name:"jar"
+        script {
+          openshift.withCluster() {
+            openshift.startBuild("inventory-s2i", "--from-file=target/inventory-1.0-SNAPSHOT-swarm.jar", "--wait")
+          }
+        }
+      }
+    }
+    stage('Deploy') {
+      steps {
+        script {
+          openshift.withCluster() {
+            def dc = openshift.selector("dc", "inventory")
+            dc.rollout().latest()
+            dc.rollout().status()
+          }
+        }
+      }
+    }
   }
 }
 EOF
@@ -178,7 +203,7 @@ This pipeline has three stages:
 
 * *Build JAR*: to build and test the jar file using Maven
 * *Build Image*: to build a container image from the Inventory JAR archive using OpenShift S2I
-* *Deploy Image*: to deploy the Inventory container image in the current project
+* *Deploy*: to deploy the Inventory container image in the current project
 
 Note that the pipeline definition is fully integrated with OpenShift and you can 
 perform operations like image build, image deploy, etc directly from within the `Jenkinsfile`.
@@ -201,7 +226,18 @@ this `Jenkinsfile`.
 
 Like mentioned, [OpenShift Pipelines]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#pipeline-build) enable creating deployment pipelines using the widely popular `Jenkinsfile` format.
 
-Create a deployment pipeline.
+OpenShift automates deployments using [deployment triggers]({{OPENSHIFT_DOCS_BASE}}/dev_guide/deployments/basic_deployment_operations.html#triggers) that react to changes to the container image or configuration. Since you want to control the deployments instead 
+from the pipeline, you should remove the Inventory deploy triggers so that building a new 
+Inventory container image wouldn't automatically result in a new deployment. That would 
+allow the pipeline to decide when a deployment should occur.
+
+Remove the Inventory deployment triggers:
+
+~~~shell
+$ oc set triggers dc/inventory --remove-all
+~~~
+
+Now create the deployment pipeline:
 
 > Make sure to run the `oc new-app` command from within the `inventory-widlfly-swarm` folder.
 
@@ -214,18 +250,6 @@ configured to fetch the `Jenkinsfile` from the Git repository of the current fol
 (`inventory-wildfly-swarm` Git repository) and execute it on Jenkins. As soon as the 
 pipeline is created, OpenShift auto-provisions a Jenkins server in your project, using 
 the certified Jenkins image that is available in OpenShift image registry.
-
-
-{% if OCP_VERSION == "3.6" %}
-There is currently a bug in OpenShift 3.6 that prevents the pipeline from getting started 
-when it's just created via command line. The issue is already resolved upstream. To get around 
-this issue, restart the pipeline:
-
-~~~shell
-$ oc cancel-build bc/inventory-pipeline --restart
-~~~
-
-{% endif %}
 
 Go OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
 click on **Builds >> Pipelines**
