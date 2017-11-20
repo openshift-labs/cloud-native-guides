@@ -10,7 +10,7 @@ parameters:
 - displayName: Workshopper Image Version
   name: WORKSHOPPER_VERSION
   required: true
-  value: ruby
+  value: latest
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
