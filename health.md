@@ -218,7 +218,7 @@ click in order to add them. Click **Add health checks** now.
 > Instead of **Configuration** tab, you can directly click on **Actions** button on the top-right 
 > and then **Edit Health Checks**
 
-![Health Probes](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-web-details.png){:width="900px"}
+![Health Probes]({% image_path health-web-details.png %}){:width="900px"}
 
 You will want to click both **Add Readiness Probe** and **Add Liveness Probe** and
 then fill them out as follows:
@@ -235,16 +235,16 @@ then fill them out as follows:
 * Initial Delay: `180`
 * Timeout: `1`
 
-![Readiness Probe](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-readiness.png){:width="700px"}
+![Readiness Probe]({% image_path health-readiness.png %}){:width="700px"}
 
-![Readiness Probe](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-liveness.png){:width="700px"}
+![Readiness Probe]({% image_path health-liveness.png %}){:width="700px"}
 
 Click **Save** and then click the **Overview** button in the left navigation. You
 will notice that Web UI pod is getting restarted and it stays light blue
 for a while. This is a sign that the pod(s) have not yet passed their readiness
 checks and it turns blue when it's ready!
 
-![Web Redeploy](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-web-redeploy.png){:width="740px"}
+![Web Redeploy]({% image_path health-web-redeploy.png %}){:width="740px"}
 
 #### Monitoring Metrics
 
@@ -255,11 +255,11 @@ OpenShift provides container metrics out-of-the-box and displays how much memory
 each container has been consuming over time. In the project overview, you can see three charts 
 near each pod that shows the resource consumption by that pod.
 
-![Container Metrics](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-metrics-brief.png){:width="740px"}
+![Container Metrics]({% image_path health-metrics-brief.png %}){:width="740px"}
 
 Click on any of the pods (blue circle) which takes you to the pod details. Click on the **Metrics** tab 
 to see a more detailed view of the metrics charts.
 
-![Container Metrics](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/health-metrics-detailed.png){:width="900px"}
+![Container Metrics]({% image_path health-metrics-detailed.png %}){:width="900px"}
 
 Well done! You are ready to move on to the next lab.

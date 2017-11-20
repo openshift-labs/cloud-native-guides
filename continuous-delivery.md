@@ -47,25 +47,25 @@ Click on **Register** to register a new user with the following details and then
 * Email: *your email*  (Don't worry! Gogs won't send you any emails)
 * Password: `developer`
 
-![Sign Up Gogs](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-signup.png){:width="900px"}
+![Sign Up Gogs]({% image_path cd-gogs-signup.png %}){:width="900px"}
 
 You will be redirected to the sign in page. Sign in using the above username and password.
 
 Click on the plus icon on the top navigation bar and then on **New Repository**.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-plus-icon.png){:width="900px"}
+![Create New Repository]({% image_path cd-gogs-plus-icon.png %}){:width="900px"}
 
 Give `inventory-wildfly-swarm` as **Repository Name** and click on **Create Repository** 
 button, leaving the rest with default values.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-new-repo.png){:width="700px"}
+![Create New Repository]({% image_path cd-gogs-new-repo.png %}){:width="700px"}
 
 The Git repository is created now. 
 
 Click on the copy-to-clipboard icon to near the 
 HTTP Git url to copy it to the clipboard which you will need in a few minutes.
 
-![Empty Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-empty-repo.png){:width="900px"}
+![Empty Repository]({% image_path cd-gogs-empty-repo.png %}){:width="900px"}
 
 Although you can use the `-n` or `--namespace` flag to specify the project when using 
 OpenShift CLI, it's just easier to change the active project back to the 
@@ -86,17 +86,17 @@ lab. If you don't already have an account on GitHub, you really should now! Head
 
 Click on the plus icon on the top navigation bar and then on *New Repository*.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-plus-icon.png){:width="900px"}
+![Create New Repository]({% image_path cd-github-plus-icon.png %}){:width="900px"}
 
 Give `inventory-wildfly-swarm` as **Repository name** and click on **Create repository** 
 button, leaving the rest with default values.
 
-![Create New Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-new-repo.png){:width="700px"}
+![Create New Repository]({% image_path cd-github-new-repo.png %}){:width="700px"}
 
 The Git repository is created now. Click on the copy-to-clipboard icon to near the 
 HTTPS Git url to copy it to the clipboard which you will need in a few minutes.
 
-![Empty Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-empty-repo.png){:width="900px"}
+![Empty Repository]({% image_path cd-github-empty-repo.png %}){:width="900px"}
 
 {% endif %}
 
@@ -129,9 +129,9 @@ to your `inventory-wildfly-swarm` repository web interface and refresh the page.
 see the project files in the repository.
 
 {% if MINISHIFT == true %}
-![Inventory Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-inventory-repo.png){:width="900px"}
+![Inventory Repository]({% image_path cd-gogs-inventory-repo.png %}){:width="900px"}
 {% else %}
-![Inventory Repository](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-inventory-repo.png){:width="900px"}
+![Inventory Repository]({% image_path cd-github-inventory-repo.png %}){:width="900px"}
 {% endif %}
 
 #### Define the Deployment Pipeline
@@ -230,7 +230,7 @@ $ oc cancel-build bc/inventory-pipeline --restart
 Go OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
 click on **Builds >> Pipelines**
 
-![OpenShift Pipeline](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-pipeline-inprogress.png){:width="900px"}
+![OpenShift Pipeline]({% image_path cd-pipeline-inprogress.png %}){:width="900px"}
 
 Pipeline syntax allows creating complex deployment scenarios with the possibility of defining 
 checkpoint for manual interaction and approval process using 
@@ -276,7 +276,7 @@ Copy the Generic webhook url which you will need in the next steps.
 
 Go to Gogs and your **inventory-wildfly-swarm** Git repository, then click on **Settings**.
 
-![Repository Settings](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-settings-link.png){:width="900px"}
+![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
 
 On the left menu, click on **Webhooks** and then on **Add Webhook** button and then **Gogs**. 
 
@@ -287,7 +287,7 @@ Create a webhook with the following details:
 
 Click on **Add Webhook**. 
 
-![Repository Webhook](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-gogs-webhook-add.png){:width="660px"}
+![Repository Webhook]({% image_path cd-gogs-webhook-add.png %}){:width="660px"}
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
 Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
@@ -300,7 +300,7 @@ Copy the GitHub webhook url which you will need in the next steps.
 
 Go to GitHub and your **inventory-wildfly-swarm** Git repository, then click on **Settings**.
 
-![GitHub Settings](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-settings-link.png){:width="900px"}
+![GitHub Settings]({% image_path cd-github-settings-link.png %}){:width="900px"}
 
 On the left menu, click on **Webhooks** and then on **Add webhook** button. Enter your password 
 once more if you are ask to do so.
@@ -322,7 +322,7 @@ in this lab environment which cannot be verified by GitHub.
 
 Click on **Add webhook**
 
-![GitHub Webhook](/api/workshops/roadshow/content/assets/images/ocp-{{OCP_VERSION}}/cd-github-webhook-add.png){:width="660px"}
+![GitHub Webhook]({% image_path cd-github-webhook-add.png %}){:width="660px"}
 
 All done. You can click on the newly defined webhook to see the list of **Recent Delivery**. 
 Clicking on a delivery, allows you to manually trigger the webhook for testing purposes by 
