@@ -29,11 +29,10 @@ which you will use in the rest of this lab as your Git server.
 
 ~~~shell
 $ oc new-project gogs
-$ oc process -f http://bit.ly/openshift-gogs-persistent-template \
-  --param=HOSTNAME=gogs-gogs.$(minishift ip).nip.io \
-  --param=GOGS_VERSION=0.9.113 \
-  --param=SKIP_TLS_VERIFY=true \
-  | oc create -f -
+$ oc new-app -f http://bit.ly/openshift-gogs-persistent-template \
+    --param=HOSTNAME=gogs-gogs.$(minishift ip).nip.io \
+    --param=GOGS_VERSION=0.9.113 \
+    --param=SKIP_TLS_VERIFY=true 
 ~~~
 
 After Gogs Git Server is ready, go the Gogs route url.

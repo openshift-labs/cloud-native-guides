@@ -43,7 +43,7 @@ $ oc expose svc/guides
 Deploy on OpenShift with GitHub Content
 ===
 ```
-$ oc process -f openshift/template.yml | oc create -f -
+$ oc new-app -f openshift/template.yml
 ```
 
 Run Locally
