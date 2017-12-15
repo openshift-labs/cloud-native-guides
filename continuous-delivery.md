@@ -122,7 +122,7 @@ replace the name and the email with your own in the following commands:
 
 ~~~shell
 git config --global user.name "Developer"
-git config --global user.email "developer@os.com"
+git config --global user.email "developer@me.com"
 ~~~
 
 Commit and push the existing code to the GitHub repository.
