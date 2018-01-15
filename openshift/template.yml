@@ -128,7 +128,7 @@ objects:
         containers:
         - env:
           - name: CONTENT_URL_PREFIX
-            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/master
+            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/${GIT_REF}
           - name: WORKSHOPS_URLS
             value: file:///app/config/cloud-native-roadshow-cdk.yml
           - name: CACHE_PRELOAD
