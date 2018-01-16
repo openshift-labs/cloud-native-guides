@@ -236,9 +236,15 @@ Remove the Inventory deployment triggers:
 $ oc set triggers dc/inventory --remove-all
 ~~~
 
-Now create the deployment pipeline:
+Deploy a Jenkins server using the provided template and container image that 
+comes out-of-the-box with OpenShift:
 
-> Make sure to run the `oc new-app` command from within the `inventory-widlfly-swarm` folder.
+```
+oc new-app jenkins-ephemeral
+```
+
+After Jenkins is deployed and is running (verify in web console), then create a 
+deployment pipeline by running the following command within the `inventory-widlfly-swarm` folder:
 
 ~~~shell
 $ oc new-app . --name=inventory-pipeline --strategy=pipeline
@@ -246,9 +252,7 @@ $ oc new-app . --name=inventory-pipeline --strategy=pipeline
 
 The above command creates a new build config of type pipeline which is automatically 
 configured to fetch the `Jenkinsfile` from the Git repository of the current folder 
-(`inventory-wildfly-swarm` Git repository) and execute it on Jenkins. As soon as the 
-pipeline is created, OpenShift auto-provisions a Jenkins server in your project, using 
-the certified Jenkins image that is available in OpenShift image registry.
+(`inventory-wildfly-swarm` Git repository) and execute it on Jenkins.
 
 Go OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
 click on **Builds >> Pipelines**
