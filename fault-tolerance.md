@@ -162,7 +162,7 @@ it's not needed anymore, use the `oc run --rm` command to run the container and 
 after it's done running:
 
 ~~~shell
-$ oc run web-load --rm --attach --image=jordi/ab -- ab -n 50000 -c 10 http://web:8080/
+$ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- ab -n 50000 -c 10 http://web:8080/
 ~~~
 
 In the above, `--image` specified which container image should be deployed. OpenShift will first 
