@@ -388,7 +388,7 @@ $ curl http://localhost:8080/api/products
 ]
 ~~~
 
-Note that the JSON response aggregates responses fro Catalog and Inventory services and 
+Note that the JSON response aggregates responses from Catalog and Inventory services and 
 the inventory info for each product is available within the same JSON object.
 
 Stop all services by pressing `CTRL-C` in the terminal windows.
@@ -435,7 +435,7 @@ $ mvn fabric8:deploy
 
 This will cause the following to happen:
 
-* The API Gateway uber-jar is built using WildFly Swarm
+* The API Gateway uber-jar is built using Vert.x
 * A container image is built on OpenShift containing the API Gateway uber-jar and JDK
 * All necessary objects are created within the OpenShift project to deploy the API Gateway service
 
@@ -443,14 +443,14 @@ Once this completes, your project should be up and running. OpenShift runs the d
 the project in one or more pods which are the unit of runtime deployment and consists of the running 
 containers for the project. 
 
-Let's take a moment and review the OpenShift resources that are created for the Catalog REST API:
+Let's take a moment and review the OpenShift resources that are created for the API Gateway:
 
-* **Build Config**: `gateway-s2i` build config is the configuration for building the Catalog 
+* **Build Config**: `gateway-s2i` build config is the configuration for building the Gateway 
 container image from the gateway source code or JAR archive
 * **Image Stream**: `gateway` image stream is the virtual view of all gateway container 
 images built and pushed to the OpenShift integrated registry.
-* **Deployment Config**: `gateway` deployment config deploys and redeploys the Catalog container 
-image whenever a new Catalog container image becomes available
+* **Deployment Config**: `gateway` deployment config deploys and redeploys the Gateway container 
+image whenever a new Gateway container image becomes available
 * **Service**: `gateway` service is an internal load balancer which identifies a set of 
 pods (containers) in order to proxy the connections it receives to them. Backing pods can be 
 added to or removed from a service arbitrarily while the service remains consistently available, 
@@ -473,7 +473,7 @@ $ oc describe svc gateway
 $ oc describe route gateway
 ~~~
 
-You can see the expose DNS url for the Catalog service in the OpenShift Web Console or using 
+You can see the expose DNS url for the Gateway service in the OpenShift Web Console or using 
 OpenShift CLI.
 
 ~~~shell
