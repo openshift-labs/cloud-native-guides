@@ -425,7 +425,7 @@ The `circuit.rxExecuteCommandWithFallback(...)` method, defines the fallback log
 when the circuit is open and logs an error without calling the Inventory service in those 
 scenarios.
 
-Build the API Gateway using Maven and trigger a new continuer image build on OpenShift using 
+Build the API Gateway using Maven and trigger a new container image build on OpenShift using 
 the `oc start-build` command which allows you to build container images directly from the application 
 archives (`jar`, `war`, etc) without the need to have access to the source code for example by downloading 
 the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
