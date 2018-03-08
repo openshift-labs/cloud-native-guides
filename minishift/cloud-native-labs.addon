@@ -6,7 +6,7 @@
 #  INVENTORY_ROUTE_HOST=inventory-coolstore.#{routting-suffix}
 #  CATALOG_ROUTE_HOST=catalog-coolstore.#{routting-suffix}
 #  API-GATEWAY-ROUTE-HOST=gateway-coolstore.#{routting-suffix}
-# Url: https://github.com/openshift-roadshow/cloud-native-guides
+# Url: https://github.com/openshift-labs/cloud-native-guides
 
 echo Installing this addon will take some time as it will pull down docker images
 
@@ -18,7 +18,7 @@ docker pull redhat-openjdk-18/openjdk18-openshift:latest
 echo Images have already been pulled. Now let's intall the guide
 
 oc adm new-project cloud-native-labs
-oc new-app osevg/workshopper -e CONTENT_URL_PREFIX=https://raw.githubusercontent.com/simamaksade/cloud-native-guides/master -e WORKSHOPS_URLS=https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/master/_cloud-native-roadshow.yml -e OPENSHIFT_CONSOLE_URL=#{ip}:8443 -e COOLSTORE_PROJECT=coolstore -e INVENTORY_ROUTE_HOST=inventory-coolstore.#{routting-suffix} -e CATALOG_ROUTE_HOST=catalog-coolstore.#{routting-suffix} -e API-GATEWAY-ROUTE-HOST=gateway-coolstore.#{routting-suffix} -e ROUTER_ADDRESS=#{routing-suffix} -e USER_NAME=developer -e USER_PASSWORD=developer --name guides -n cloud-native-labs
+oc new-app osevg/workshopper -e CONTENT_URL_PREFIX=https://raw.githubusercontent.com/simamaksade/cloud-native-guides/master -e WORKSHOPS_URLS=https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/master/_cloud-native-roadshow.yml -e OPENSHIFT_CONSOLE_URL=#{ip}:8443 -e COOLSTORE_PROJECT=coolstore -e INVENTORY_ROUTE_HOST=inventory-coolstore.#{routting-suffix} -e CATALOG_ROUTE_HOST=catalog-coolstore.#{routting-suffix} -e API-GATEWAY-ROUTE-HOST=gateway-coolstore.#{routting-suffix} -e ROUTER_ADDRESS=#{routing-suffix} -e USER_NAME=developer -e USER_PASSWORD=developer --name guides -n cloud-native-labs
 # Cancel is required as I want to add a probe
 sleep 2
 oc rollout cancel dc/guides -n cloud-native-labs

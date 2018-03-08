@@ -1,5 +1,5 @@
 # Cloud Native Labs for OpenShift Roadshow Add-on for CDK and Minishift
-An addon to install [OpenShift's Roadshow Cloud Native Labs](https://github.com/openshift-roadshow/cloud-native-labs) and [guide](https://github.com/openshift-roadshow/cloud-native-guides).
+An addon to install [OpenShift's Roadshow Cloud Native Labs](https://github.com/openshift-labs/cloud-native-labs) and [guide](https://github.com/openshift-labs/cloud-native-guides).
 
 Verify you have installed these addons, by following the [General Readme](https://github.com/minishift/minishift-addons#download-and-use-community-add-ons).
 

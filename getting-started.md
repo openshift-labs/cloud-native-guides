@@ -260,7 +260,7 @@ Download the project skeletons to your local machine:
 
 ~~~shell
 $ cd ~
-$ curl -sL -o projects.zip {{LABS_DOWNLOAD_URL}}
+$ curl -skL -o projects.zip {{LABS_DOWNLOAD_URL}}
 ~~~
 
 > You can choose any directory, these instructions use `$HOME` as an example.

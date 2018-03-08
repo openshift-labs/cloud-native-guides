@@ -44,7 +44,7 @@ objects:
         containers:
         - env:
           - name: CONTENT_URL_PREFIX
-            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/${GIT_REF}
+            value: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/${GIT_REF}
           - name: WORKSHOPS_URLS
             value: file:///app/config/cloud-native-roadshow.yml
           - name: CACHE_PRELOAD
@@ -128,7 +128,7 @@ objects:
         containers:
         - env:
           - name: CONTENT_URL_PREFIX
-            value: https://raw.githubusercontent.com/openshift-roadshow/cloud-native-guides/${GIT_REF}
+            value: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/${GIT_REF}
           - name: WORKSHOPS_URLS
             value: file:///app/config/cloud-native-roadshow-cdk.yml
           - name: CACHE_PRELOAD
@@ -262,9 +262,9 @@ objects:
         DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/windows/oc.zip
         DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/macosx/oc.tar.gz
         DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/linux/oc.tar.gz
-        LABS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs.git
-        LABS_DOWNLOAD_URL: https://github.com/openshift-roadshow/cloud-native-labs/archive/master.zip
-        WEB_NODEJS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs/tree/master/web-nodejs
+        LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git
+        LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/master.zip
+        WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/master/web-nodejs
         REMOTE_DEBUGGER_JDB: true
         REMOTE_DEBUGGER_JBDS: true
         REMOTE_DEBUGGER_IDEA: true
@@ -294,9 +294,9 @@ objects:
         DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/windows/oc.zip
         DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/macosx/oc.tar.gz
         DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.7.14/linux/oc.tar.gz
-        LABS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs.git
-        LABS_DOWNLOAD_URL: https://github.com/openshift-roadshow/cloud-native-labs/archive/master.zip
-        WEB_NODEJS_GIT_REPO: https://github.com/openshift-roadshow/cloud-native-labs/tree/master/web-nodejs
+        LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git
+        LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/master.zip
+        WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/master/web-nodejs
         REMOTE_DEBUGGER_JDB: true
         REMOTE_DEBUGGER_JBDS: true
         REMOTE_DEBUGGER_IDEA: true
