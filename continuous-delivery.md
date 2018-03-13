@@ -233,7 +233,7 @@ allow the pipeline to decide when a deployment should occur.
 Remove the Inventory deployment triggers:
 
 ~~~shell
-$ oc set triggers dc/inventory --remove-all
+$ oc set triggers dc/inventory --manual
 ~~~
 
 Deploy a Jenkins server using the provided template and container image that 
