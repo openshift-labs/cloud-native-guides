@@ -162,7 +162,7 @@ it's not needed anymore, use the `oc run --rm` command to run the container and 
 after it's done running:
 
 ~~~shell
-$ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- ab -n 50000 -c 10 http://web:8080/
+$ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- -n 50000 -c 10 http://web:8080/
 ~~~
 
 In the above, `--image` specified which container image should be deployed. OpenShift will first 
@@ -177,7 +177,7 @@ on the deployment config) to cope with the load.
 
 > Depending on the resources available on the OpenShift cluster in the lab environment, 
 > the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
-> the load by specifying a higher number of requests (e.g. 80K) using `ab -n` flag.
+> the load by specifying a higher number of requests (e.g. 80K) using `-n` flag.
 
 ![Web UI Automatically Scaled]({% image_path fault-autoscale-web.png %}){:width="740px"}
 
