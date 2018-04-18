@@ -13,32 +13,10 @@ Agenda
 * Configuration Management 
 * Continuous Delivery 
 * Debugging Services
-* OpenShift.io (demo)
 
-
-Deploy on OpenShift with Embedded Content
+Prepare OpenShift Cluster for Workshop
 ===
-```
-$ oc new-build . --name=guides
-$ oc start-build guides --from-dir=.
-$ oc new-app --name=guides --image-stream=guides
-$ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
-$ oc expose svc/guides
-```
-
-Deploy on OpenShift Online with Embedded Content
-===
-```
-$ oc new-project roadshow
-
-$ docker login -u USERNAME -p $(oc whoami -t) https://registry.CLUSTER-ID.openshift.com
-$ docker build -t registry.CLUSTER-ID.openshift.com/roadshow/guides .
-$ docker push registry.CLUSTER-ID.openshift.com/roadshow/guides
-
-$ oc new-app --name=guides --image-stream=guides
-$ oc set probe dc/guides --readiness --liveness --get-url=http://:8080/ --failure-threshold=5 --initial-delay-seconds=15
-$ oc expose svc/guides
-```
+An [Ansible playbook](ansible/) is provided for preparing an OpenShift cluster
 
 Deploy on OpenShift with GitHub Content
 ===
