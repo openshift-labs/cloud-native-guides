@@ -1,0 +1,96 @@
+---
+- name: Deploy Cloud-Native Workshop
+  hosts: localhost
+  gather_facts: true
+  run_once: true
+  vars:
+    lab_infra_project: lab-infra
+    user_gogs_admin: gogs
+    user_gogs_user: developer
+    user_gogs_password: openshift
+    openshift_cli: oc
+    github_account: openshift-labs
+    github_ref: ocp-3.9
+    user_count: 60
+    user_format: user%02d
+    project_suffix: "-XX"
+    clean_init: false
+  tasks:
+    - include_role:
+        name: openshift_common_facts
+      vars:
+        project_suffix: ""
+      tags: always
+
+    - set_fact:
+        gogs_hostname: gogs-{{ lab_infra_project }}.{{ apps_hostname_suffix }}
+      tags: always
+
+    - name: clean up lab environment
+      shell: "{{ openshift_cli }} delete project {{ lab_infra_project }}"
+      when: clean_init|bool
+      ignore_errors: true
+      tags: always
+
+    - name: wait for clean up
+      pause:
+        seconds: 60
+      when: clean_init|bool
+      tags: always
+
+    - name: create lab infra project
+      shell: "{{ openshift_cli }} new-project {{ lab_infra_project }}"
+      ignore_errors: true
+      tags: always
+
+    # deploy nexus
+    - import_role:
+        name: openshift_sonatype_nexus
+      vars:
+        project_name: "{{ lab_infra_project }}"
+        nexus_image_version: 3.7.1
+        nexus_max_memory: 6Gi
+      tags: nexus
+
+    # deploy gogs
+    - import_role:
+        name: openshift_gogs
+      vars:
+        project_name: "{{ lab_infra_project }}"
+        gogs_route: "{{ gogs_hostname }}"
+        gogs_image_version: 0.11.34
+        gogs_admin_user: "{{ user_gogs_admin }}"
+        gogs_admin_password: "{{ user_gogs_password }}"
+        gogs_user: "{{ user_gogs_user }}"
+        gogs_password: "{{ user_gogs_password }}"
+        clean_deploy: true
+      tags: gogs
+
+    # deploy guides
+    - import_role:
+        name: openshift_workshopper
+      vars:
+        project_name: "{{ lab_infra_project }}"
+        workshopper_content_url_prefix: "https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/{{ github_ref }}"
+        workshopper_workshop_urls: "https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/{{ github_ref }}/_cloud-native-roadshow.yml"
+        workshopper_env_vars:
+          PROJECT_SUFFIX: "{{ project_suffix }}"
+          COOLSTORE_PROJECT: coolstore{{ project_suffix }}
+          GOGS_URL: http://{{ gogs_hostname }}
+      tags: guides
+
+    # validate cluster
+    - name: check openjdk image stream installed
+      shell: "{{ openshift_cli }} get is redhat-openjdk18-openshift -n openshift"
+      register: jdk_imagestream_result
+      ignore_errors: true
+      tags: validate
+
+    - name: display instructions to install openjdk image stream
+      debug:
+        msg:
+          - '### WARNING ###'
+          - 'OpenJDK image stream is not installed. Run the following as cluster admin:'
+          - '{{ openshift_cli }} create -n openshift -f https://raw.githubusercontent.com/openshift/openshift-ansible/release-3.9/roles/openshift_examples/files/examples/v3.9/xpaas-streams/jboss-image-streams.json'
+      when: jdk_imagestream_result|failed   
+      tags: validate     

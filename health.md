@@ -152,7 +152,7 @@ the liveness probe.
 > would  manually investigate the issue. 
 
 ~~~shell
-$ oc set probe dc/catalog --readiness --get-url=http://:8080/health
+$ oc set probe dc/catalog --liveness --readiness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/health 
 ~~~
 
 Viola! OpenShift automatically restarts the Catalog pod and as soon as the 
@@ -172,7 +172,7 @@ and parameters for both liveness and readiness probes.
 Add liveness and readiness probes to the Inventory service:
 
 ~~~shell
-$ oc set probe dc/inventory --liveness --readiness --get-url=http://:8080/node
+$ oc set probe dc/inventory --liveness --readiness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/node
 ~~~
 
 OpenShift automatically restarts the Inventory pod and as soon as the health probes succeed, it is ready to receive traffic. 
@@ -199,7 +199,7 @@ Namespace:  {{COOLSTORE_PROJECT}}
 You are an expert in health probes by now! Add liveness and readiness probes to the API Gateway service:
 
 ~~~shell
-$ oc set probe dc/gateway --liveness --readiness --get-url=http://:8080/health
+$ oc set probe dc/gateway --liveness --readiness --initial-delay-seconds=15 --failure-threshold=3 --get-url=http://:8080/health
 ~~~
 
 OpenShift automatically restarts the Inventory pod and as soon as the health probes succeed, it is 
