@@ -127,7 +127,7 @@ web         1          1         1         config,image(web:latest)
 Add a liveness probe on the catalog deployment config using `oc set probe`:
 
 ~~~shell
-$ oc set probe dc/catalog --liveness --get-url=http://:8080/health
+$ oc set probe dc/catalog --liveness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/health
 ~~~
 
 > OpenShift automates deployments using 
@@ -152,7 +152,7 @@ the liveness probe.
 > would  manually investigate the issue. 
 
 ~~~shell
-$ oc set probe dc/catalog --liveness --readiness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/health 
+$ oc set probe dc/catalog --readiness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/health 
 ~~~
 
 Viola! OpenShift automatically restarts the Catalog pod and as soon as the 
