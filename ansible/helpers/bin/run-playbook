@@ -1,0 +1,17 @@
+#!/bin/sh
+
+export USER_ID=$(id -u)
+export GROUP_ID=$(id -g)
+
+grep -v ^ansible /etc/passwd > "$HOME/passwd"
+echo "ansible:x:${USER_ID}:${GROUP_ID}:ansible user:${HOME}:/bin/bash" >> "$HOME/passwd"
+
+export LD_PRELOAD=libnss_wrapper.so
+export NSS_WRAPPER_PASSWD=${HOME}/passwd
+export NSS_WRAPPER_GROUP=/etc/group
+
+# Install Dependencies
+ansible-galaxy install -r requirements.yml -f
+
+# Run playbook
+ansible-playbook "$@"

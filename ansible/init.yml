@@ -14,6 +14,7 @@
     user_count: 60
     user_format: user%02d
     project_suffix: "-XX"
+    install_eclipse_che: false
     clean_init: false
   tasks:
     - include_role:
@@ -22,21 +23,37 @@
         project_suffix: ""
       tags: always
 
-    - set_fact:
-        gogs_hostname: gogs-{{ lab_infra_project }}.{{ apps_hostname_suffix }}
-      tags: always
+    # check user 
+    - name: check to be logged in as cluster admin
+      shell: "{{ openshift_cli }} get project default"
+      ignore_errors: true
+      register: loggedin_as_admin
 
+    - name: check the loggined in user
+      shell: "{{ openshift_cli }} whoami"
+      register: loggedin_user
+
+    - name: fail if not admin or logged in as system:admin
+      fail:
+        msg: "Eclipse Che multi-user installation requires you to be logged-in as a cluster admin user (not 'system:admin')"
+      when:
+        - install_eclipse_che|bool
+        - loggedin_as_admin is failed or loggedin_user == "system:admin"
+
+    # create infra project
     - name: clean up lab environment
       shell: "{{ openshift_cli }} delete project {{ lab_infra_project }}"
       when: clean_init|bool
       ignore_errors: true
       tags: always
 
-    - name: wait for clean up
-      pause:
-        seconds: 60
-      when: clean_init|bool
-      tags: always
+    - name: wait for {{ lab_infra_project }} project to get removed
+      shell: "{{ openshift_cli }} get project {{ lab_infra_project }}"
+      ignore_errors: true
+      register: result
+      until: result is failed
+      retries: 30
+      delay: 30
 
     - name: create lab infra project
       shell: "{{ openshift_cli }} new-project {{ lab_infra_project }}"
@@ -53,6 +70,10 @@
       tags: nexus
 
     # deploy gogs
+    - set_fact:
+        gogs_hostname: gogs-{{ lab_infra_project }}.{{ apps_hostname_suffix }}
+      tags: always
+
     - import_role:
         name: openshift_gogs
       vars:
@@ -65,6 +86,41 @@
         gogs_password: "{{ user_gogs_password }}"
         clean_deploy: true
       tags: gogs
+
+    # deploy eclipse che
+    - import_role:
+        name: openshift_eclipse_che
+      vars:
+        project_name: "{{ lab_infra_project }}"
+        che_version: "6.4.0"
+        multi_user: true
+        route_suffix: "{{ apps_hostname_suffix }}"
+      when: install_eclipse_che|bool
+      tags: eclipse-che
+
+    - name: get auth token from keycloak
+      uri:
+        url: http://keycloak-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/auth/realms/che/protocol/openid-connect/token
+        method: POST
+        body: "username=admin&password=admin&grant_type=password&client_id=admin-cli"
+        status_code: 200
+        headers:
+          Content-Type: "application/x-www-form-urlencoded"
+      register: access_token_result
+      when: install_eclipse_che|bool
+      tags: eclipse-che
+    
+    - name: create custom stack for jdk and openshift cli
+      uri:
+        url: http://che-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/api/stack
+        method: POST
+        body: "{{ lookup('file','files/che-stack.json') }}"
+        body_format: json
+        status_code: 200,201
+        headers:
+          Authorization: "Bearer {{ access_token_result.json | json_query('access_token') }}"
+      when: install_eclipse_che|bool
+      tags: eclipse-che
 
     # deploy guides
     - import_role:

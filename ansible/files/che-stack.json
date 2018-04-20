@@ -1,0 +1,115 @@
+{
+  "name": "Java with OpenShift CLI",
+  "description": "Java JDK Stack with OpenShift CLI",
+  "scope": "general",
+  "workspaceConfig": {
+    "environments": {
+      "default": {
+        "recipe": {
+          "type": "dockerimage",
+          "content": "siamaksade/che-centos-jdk8"
+        },
+        "machines": {
+          "dev-machine": {
+            "env": {},
+            "servers": {
+              "8080/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8080"
+              },
+              "8000/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8000"
+              }
+            },
+            "volumes": {},
+            "installers": [
+              "org.eclipse.che.exec",
+              "org.eclipse.che.terminal",
+              "org.eclipse.che.ws-agent"
+            ],
+            "attributes": {
+              "memoryLimitBytes": "2147483648"
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "commandLine": "mvn install -f ${current.project.path}",
+        "name": "build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn clean install -f ${current.project.path}",
+        "name": "clean build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn spring-boot:run -f ${current.project.path}",
+        "name": "run",
+        "type": "custom",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.8080/tcp}"
+        }
+      },
+      {
+        "commandLine": "mvn spring-boot:run -f ${current.project.path} -Drun.jvmArguments=\"-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005\"",
+        "name": "debug",
+        "type": "custom",
+        "attributes": {
+          "goal": "Debug",
+          "previewUrl": "${server.8080/tcp}"
+        }
+      }
+    ],
+    "projects": [],
+    "defaultEnv": "default",
+    "name": "default",
+    "links": []
+  },
+  "components": [
+    {
+      "version": "---",
+      "name": "CentOS"
+    },
+    {
+      "version": "1.8.0_45",
+      "name": "JDK"
+    },
+    {
+      "version": "3.2.2",
+      "name": "Maven"
+    },
+    {
+      "version": "2.4",
+      "name": "Ansible"
+    },
+    {
+      "version": "3.9.14",
+      "name": "OpenShift CLI"
+    }
+  ],
+  "creator": "ide",
+  "tags": [
+    "Java",
+    "JDK",
+    "Maven",
+    "Ansible",
+    "CentOS",
+    "Git"
+  ],
+  "id": "java-centos-jdk8-oc"
+}

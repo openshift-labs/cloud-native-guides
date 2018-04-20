@@ -1,0 +1,26 @@
+env:
+  global:
+  - REPO=siamaksade/workshop-cloudnative-init
+
+sudo: required
+language: python
+python: "2.7"
+
+services:
+  - docker
+
+before_install:
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+
+install:
+  - pip install ansible
+  - ansible-galaxy install -r ansible/requirements.yml -f
+  - ansible-playbook ansible/init.yml --syntax-check
+
+script:
+  - docker build -f Dockerfile -t $REPO:dev .
+
+after_success:
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker tag $REPO:dev $REPO:$TAG
+  - docker push $REPO:$TAG
