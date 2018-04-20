@@ -8,7 +8,7 @@ ADD helpers/bin/fix-permissions /usr/bin/fix-permissions
 ADD helpers/bin/run-playbook /usr/bin/run-playbook
 ADD files /ansible/files
 ADD ansible.cfg /ansible
-ADD *.yml /ansible
+ADD *.yml /ansible/
 
 RUN yum -y install nss_wrapper unzip && \
     yum clean all && \
