@@ -18,7 +18,7 @@ install:
   - ansible-playbook ansible/init.yml --syntax-check
 
 script:
-  - docker build -f Dockerfile -t $REPO:dev .
+  - cd ansible && docker build -f Dockerfile -t $REPO:dev .
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
