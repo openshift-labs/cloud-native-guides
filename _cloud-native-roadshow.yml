@@ -1,6 +1,9 @@
 id: "cloudnative"
 name: "OpenShift Cloud-Native Roadshow"
 
+content:
+  url: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9
+
 vars:
   OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.9"
   COOLSTORE_PROJECT: "coolstore"

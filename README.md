@@ -16,12 +16,14 @@ Agenda
 
 Prepare OpenShift Cluster for Workshop
 ===
-An [Ansible playbook](ansible/) is provided for preparing an OpenShift cluster
+An [Ansible playbook](ansible/) is provided for preparing an OpenShift cluster.
 
-Deploy on OpenShift with GitHub Content
+Deploy on OpenShift
 ===
 ```
-$ oc new-app -f openshift/template.yml
+$ oc new-app osevg/workshopper:latest --name=guides \
+    -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9/_cloud-native-roadshow.yml"
+$ oc expose svc/guides
 ```
 
 Run Locally

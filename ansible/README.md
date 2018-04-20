@@ -18,12 +18,25 @@ Playbook Variables
 |`clean_init`           | `false`       | Clean the environment and remove projects before init |
 
 
-How To Run
+How To Run 
 ------------
 
 Log in to OpenShift and then use the provided playbook:
 
 ```
+oc login -u admin
 ansible-galaxy install -r requirements.yml
 ansible-playbook init.yml -e install_eclipse_che=true
+```
+
+How To Run without Ansible
+------------ 
+
+```
+oc login -u admin
+docker run --rm siamaksade/workshop-cloudnative-init:ocp-3.9 init.yml \
+    -e openshift_master=https://master.sto1.openshiftworkshop.com \
+    -e oc_token=$(oc whoami -t) \
+    -e install_eclipse_che=true \
+    -e clean_init=true
 ```
