@@ -95,6 +95,8 @@
         che_version: "6.4.0"
         multi_user: true
         route_suffix: "{{ apps_hostname_suffix }}"
+        keycloak_admin_user: admin
+        keycloak_admin_pwd: admin
       when: install_eclipse_che|bool
       tags: eclipse-che
 
