@@ -97,57 +97,58 @@
         route_suffix: "{{ apps_hostname_suffix }}"
         keycloak_admin_user: admin
         keycloak_admin_pwd: admin
+        install_java_oc_stack: true
       when: install_eclipse_che|bool
       tags: eclipse-che
 
-    - name: get auth token from keycloak
-      uri:
-        url: http://keycloak-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/auth/realms/che/protocol/openid-connect/token
-        method: POST
-        body: "username=admin&password=admin&grant_type=password&client_id=admin-cli"
-        status_code: 200
-        headers:
-          Content-Type: "application/x-www-form-urlencoded"
-      register: access_token_result
-      when: install_eclipse_che|bool
-      tags: eclipse-che
+    # - name: get auth token from keycloak
+    #   uri:
+    #     url: http://keycloak-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/auth/realms/che/protocol/openid-connect/token
+    #     method: POST
+    #     body: "username=admin&password=admin&grant_type=password&client_id=admin-cli"
+    #     status_code: 200
+    #     headers:
+    #       Content-Type: "application/x-www-form-urlencoded"
+    #   register: access_token_result
+    #   when: install_eclipse_che|bool
+    #   tags: eclipse-che
     
-    - name: create custom stack for jdk and openshift cli
-      uri:
-        url: http://che-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/api/stack
-        method: POST
-        body: "{{ lookup('file','files/che-stack.json') }}"
-        body_format: json
-        status_code: 200,201
-        headers:
-          Authorization: "Bearer {{ access_token_result.json | json_query('access_token') }}"
-      register: stack_json
-      when: install_eclipse_che|bool
-      tags: eclipse-che
+    # - name: create custom stack for jdk and openshift cli
+    #   uri:
+    #     url: http://che-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/api/stack
+    #     method: POST
+    #     body: "{{ lookup('file','files/che-stack.json') }}"
+    #     body_format: json
+    #     status_code: 200,201
+    #     headers:
+    #       Authorization: "Bearer {{ access_token_result.json | json_query('access_token') }}"
+    #   register: stack_json
+    #   when: install_eclipse_che|bool
+    #   tags: eclipse-che
 
-    - set_fact:
-        stack_id: "{{ stack_json.json|json_query('id') }}"
-      when: install_eclipse_che|bool
-      tags: eclipse-che
+    # - set_fact:
+    #     stack_id: "{{ stack_json.json|json_query('id') }}"
+    #   when: install_eclipse_che|bool
+    #   tags: eclipse-che
 
-    - name: process che permission json
-      template:
-        src: files/che-permissions.json.j2
-        dest: "/tmp/che-permissions.json"
-      when: install_eclipse_che|bool
-      tags: eclipse-che
+    # - name: process che permission json
+    #   template:
+    #     src: files/che-permissions.json.j2
+    #     dest: "/tmp/che-permissions.json"
+    #   when: install_eclipse_che|bool
+    #   tags: eclipse-che
 
-    - name: give all users access to the stack
-      uri:
-        url: http://che-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/api/permissions
-        method: POST
-        body: "{{ lookup('file','/tmp/che-permissions.json') }}"
-        body_format: json
-        status_code: 204
-        headers:
-          Authorization: "Bearer {{ access_token_result.json | json_query('access_token') }}"
-      when: install_eclipse_che|bool
-      tags: eclipse-che
+    # - name: give all users access to the stack
+    #   uri:
+    #     url: http://che-{{ lab_infra_project }}.{{ apps_hostname_suffix }}/api/permissions
+    #     method: POST
+    #     body: "{{ lookup('file','/tmp/che-permissions.json') }}"
+    #     body_format: json
+    #     status_code: 204
+    #     headers:
+    #       Authorization: "Bearer {{ access_token_result.json | json_query('access_token') }}"
+    #   when: install_eclipse_che|bool
+    #   tags: eclipse-che
 
     # deploy guides
     - import_role:
