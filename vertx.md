@@ -42,7 +42,7 @@ is important that the code in a Verticle does not block. This asynchronous archi
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
 
-![Vert.x Event Loop](/api/workshops/roadshow/content/assets/images/vertx-event-loop.jpg){:width="440px"}
+![Vert.x Event Loop]({% image_path vertx-event-loop.jpg %}){:width="440px"}
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. 
 
