@@ -11,7 +11,7 @@ before_install:
 
 install:
   - pip install ansible
-  - ansible-galaxy install -r apb/requirements.yml
+  - ansible-galaxy install -r apb/requirements-travis.yml
   - ansible-playbook apb/playbooks/provision.yml --syntax-check
 
 script:
