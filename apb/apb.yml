@@ -1,0 +1,70 @@
+version: 1.0
+name: cloudnative-workshop-apb
+description: APB to deploy required infra components for the Cloud-Native Workshop on an OpenShift cluster
+bindable: False
+async: optional
+tags:
+- workshop
+metadata:
+  dependencies: []
+  displayName: "Cloud-Native Workshop Installer (APB)"
+  longDescription: "Installs the required components (Git server, Nexus, Eclipse Che, etc) for running the Cloud-Native Workshop"
+  console.openshift.io/iconClass: icon-openshift
+  providerDisplayName: "Red Hat, Inc."
+plans:
+  - name: default
+    description: Deploys Cloud-Native Workshop Infrastructure
+    free: True
+    metadata:
+      displayName: Default
+    parameters:
+    - name: admin_user
+      title: Admin Username
+      description: Admin user is required for creating cluster-wide resources
+      type: string
+      required: true
+      display_group: OpenShift Admin
+    - name: admin_password
+      title: Admin Password
+      description: Admin password is required for creating cluster-wide resources
+      type: string
+      required: true
+      display_type: password
+      display_group: OpenShift Admin
+    - name: github_ref
+      title: Guides GitHub Reference
+      description: The GitHub reference for the Cloud-Native workshop lab guide
+      type: enum
+      enum: ["ocp-3.9", "ocp-3.7"]
+      default: ocp-3.9
+      required: true
+      display_type: select
+      display_group: Lab Guide
+    - name: project_suffix
+      title: User Project Suffix
+      description: The pattern used in the lab guide to show the user projects e.g. coolstore-XX 
+      type: string
+      default: "-XX"
+      required: true
+      display_group: Lab Guide
+    - name: gogs_admin
+      title: Gogs Admin User
+      description: Admin user for Gogs Git Server
+      type: string
+      default: "gogs"
+      required: true
+      display_group: Git Server
+    - name: gogs_user
+      title: Gogs User
+      description: User for Gogs Git Server
+      type: string
+      default: "developer"
+      required: true
+      display_group: Git Server
+    - name: gogs_password
+      title: Gogs Password
+      description: Password for Gogs admin user and normal user
+      type: string
+      default: "openshift"
+      required: true
+      display_group: Git Server

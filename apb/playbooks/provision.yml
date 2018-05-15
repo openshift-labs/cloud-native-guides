@@ -1,0 +1,78 @@
+- name: cloudnative-workshop-apb playbook to provision the application
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: ansibleplaybookbundle.asb-modules
+
+  tasks:
+  - name: login as super user
+    command: "oc login -u {{ admin_user }} -p {{ admin_password }} --insecure-skip-tls-verify=true"
+          
+  - name: dreate dummy route
+    openshift_v1_route:
+      name: dummy
+      namespace: "{{ namespace }}"
+      state: present
+      spec_to_kind: Service
+      spec_to_name: dummy
+      spec_port_target_port: 8080
+    register: dummy_route
+
+  - name: set routes hostname fact
+    set_fact:
+      apps_hostname_suffix: "{{ dummy_route.route.spec.host|regex_replace('^dummy-' + namespace + '\\.(.*)$', '\\1') }}"
+
+  - name: delete dummy route
+    openshift_v1_route:
+      name: dummy
+      namespace: "{{ namespace }}"
+      state: absent
+
+  - import_role:
+      name: openshift_sonatype_nexus
+    vars:
+      project_name: "{{ namespace }}"
+      nexus_image_version: 3.11.0
+      nexus_max_memory: 6Gi
+
+  - import_role:
+      name: openshift_gogs
+    vars:
+      project_name: "{{ namespace }}"
+      gogs_route: "gogs-{{ namespace }}.{{ apps_hostname_suffix }}"
+      gogs_image_version: 0.11.34
+      gogs_admin_user: "{{ gogs_admin }}"
+      gogs_admin_password: "{{ gogs_password }}"
+      gogs_user: "{{ gogs_user }}"
+      gogs_password: "{{ gogs_password }}"
+      clean_deploy: true
+
+  # deploy eclipse che
+  - import_role:
+      name: openshift_eclipse_che
+    vars:
+      project_name: "{{ namespace }}"
+      che_version: "6.5.0"
+      multi_user: true
+      route_suffix: "{{ apps_hostname_suffix }}"
+      keycloak_admin_user: admin
+      keycloak_admin_pwd: admin
+      install_java_oc_stack: true
+
+  # deploy guides
+  - import_role:
+      name: openshift_workshopper
+    vars:
+      project_name: "{{ namespace }}"
+      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}"
+      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}/_cloud-native-roadshow.yml"
+      workshopper_env_vars:
+        PROJECT_SUFFIX: "{{ project_suffix }}"
+        COOLSTORE_PROJECT: coolstore{{ project_suffix }}
+        GOGS_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
+    tags: guides
+
+
