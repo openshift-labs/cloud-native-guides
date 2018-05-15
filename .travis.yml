@@ -15,7 +15,7 @@ install:
   - ansible-playbook apb/playbooks/provision.yml --syntax-check
 
 script:
-  - docker build -f apb/Dockerfile -t openshiftapb/cloudnative-workshop-apb:$TRAVIS_COMMIT .
+  - cd apb && docker build -t openshiftapb/cloudnative-workshop-apb:$TRAVIS_COMMIT .
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
