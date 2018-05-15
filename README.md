@@ -14,19 +14,40 @@ Agenda
 * Continuous Delivery 
 * Debugging Services
 
-Prepare OpenShift Cluster for Workshop
-===
-An [Ansible playbook](ansible/) is provided for preparing an OpenShift cluster.
 
-Deploy on OpenShift
+Install Workshop Infrastructure
 ===
+
+An [APB](https://hub.docker.com/r/openshiftapb/cloudnative-workshop-apb) is provided for 
+deploying the Cloud-Native Workshop infra (lab instructions, Nexus, Gogs, Eclipse Che, etc) on an 
+OpenShift cluster via the service catalog. [Read more in the docs](https://docs.openshift.com/container-platform/3.9/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub) 
+on how to add an APB from DockerHub to the service catalog.
+
+Note that if you are using the _OpenShift Workshop_ in RHPDS, this APB is already available in your service catalog.
+
+![](images/service-catalog.png?raw=true)
+
+As an alternative, you can also run the APB directly in a pod on OpenShift to install the workshop infra:
+
+```
+oc login
+oc new-project lab-infra
+oc run apb --restart=Never --image="openshiftapb/cloudnative-workshop-apb:ocp-3.9" \
+    -- provision -vvv -e namespace=$(oc project -q) -e openshift_token=$(oc whoami -t)
+```
+
+Lab Instructions on OpenShift
+===
+
+Note that if you have used the above workshop installer, the lab instructions are already deployed.
+
 ```
 $ oc new-app osevg/workshopper:latest --name=guides \
     -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9/_cloud-native-roadshow.yml"
 $ oc expose svc/guides
 ```
 
-Run Locally
+Local Lab Instructions
 ===
 ```
 $ docker run -p 8080:8080 \
