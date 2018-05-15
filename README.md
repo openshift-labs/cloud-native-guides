@@ -1,4 +1,4 @@
-Cloud-Native Roadshow
+Cloud-Native Roadshow [![Build Status](https://travis-ci.org/openshift-labs/cloud-native-guides.svg?branch=ocp-3.9)](https://travis-ci.org/openshift-labs/cloud-native-guides)
 ===
 This one day hands-on cloud-native workshops provides developers and introduction to cloud-natives applications and gives them an experience of building cloud-native applications using OpenShift, Spring Boot, WildFly Swarm, Vert.xt and more.
 
