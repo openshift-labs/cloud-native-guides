@@ -19,8 +19,8 @@ Install Workshop Infrastructure
 ===
 
 An [APB](https://hub.docker.com/r/openshiftapb/cloudnative-workshop-apb) is provided for 
-deploying the Cloud-Native Workshop infra (lab instructions, Nexus, Gogs, Eclipse Che, etc) on an 
-OpenShift cluster via the service catalog. [Read more in the docs](https://docs.openshift.com/container-platform/3.9/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub) 
+deploying the Cloud-Native Workshop infra (lab instructions, Nexus, Gogs, Eclipse Che, etc) in a project 
+on an OpenShift cluster via the service catalog. [Read more in the docs](https://docs.openshift.com/container-platform/3.9/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub) 
 on how to add an APB from DockerHub to the service catalog.
 
 Note that if you are using the _OpenShift Workshop_ in RHPDS, this APB is already available in your service catalog.
