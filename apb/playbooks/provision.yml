@@ -33,7 +33,7 @@
       openshift_token is none or
       openshift_token|trim() == ""
           
-  - name: extrat app route suffix
+  - name: extract app route suffix
     block:
       - openshift_v1_route:
           name: dummy
@@ -63,8 +63,8 @@
       project_name: "{{ namespace }}"
       gogs_route: "gogs-{{ namespace }}.{{ apps_hostname_suffix }}"
       gogs_image_version: 0.11.34
-      gogs_openshift_user: "{{ gogs_adm_user }}"
-      gogs_openshift_password: "{{ gogs_pwd }}"
+      gogs_admin_user: "{{ gogs_adm_user }}"
+      gogs_admin_password: "{{ gogs_pwd }}"
       gogs_user: "{{ gogs_dev_user }}"
       gogs_password: "{{ gogs_pwd }}"
 
