@@ -43,3 +43,5 @@ modules:
     name:  Debugging Applications
     requires:
       - nodejs
+  env-info:
+    name: "Appendix: Lab Env Info"
