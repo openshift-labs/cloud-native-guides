@@ -24,6 +24,7 @@ $ oc logs dc/gateway | grep -i error
 
 ...
 WARNING: Inventory error for 444436: status code 204
+SEVERE: Inventory error for 444436: null
 ...
 ~~~
 
