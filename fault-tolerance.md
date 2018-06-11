@@ -97,19 +97,19 @@ holiday season coming up or a good deal on a product, OpenShift would automatica
 handle the increase load on the application and after the load goes, the application is automatically 
 scaled down to free up compute resources.
 
-In order the define auto-scaling for a pod, we should first define how much cpu and memory a pod is 
+In order to define auto-scaling for a pod, we should first define how much cpu and memory a pod is 
 allowed to consume which will act as a guideline for OpenShift to know when to scale the pod up or 
-down. Since the deployment config starts the application pods, the application pod resource 
+down. Since the deployment config is used when starting the application pods, the application pod resource 
 (cpu and memory) containers should also be defined on the deployment config.
 
 When allocating compute resources to application pods, each container may specify a *request*
 and a *limit*value each for CPU and memory. The 
 [*request*]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests) 
-values define how much resources should be dedicated to an application pod so that it can run. It's 
+values define how much resource should be dedicated to an application pod so that it can run. It's 
 the minimum resources needed in other words. The 
 [*limit*]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-limits) values 
-defines how much resources an application pod is allowed to consume, if there is more resources 
-on the node available than what the pod has request. This is to allow various quality of service 
+defines how much resource an application pod is allowed to consume, if there is more resources 
+on the node available than what the pod has requested. This is to allow various quality of service 
 tiers with regards to compute resources. You can read more about these quality of service tiers 
 in [OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#quality-of-service-tiers).
 
@@ -165,13 +165,13 @@ after it's done running:
 $ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- -n 50000 -c 10 http://web:8080/
 ~~~
 
-In the above, `--image` specified which container image should be deployed. OpenShift will first 
+In the above, `--image` specified which container image should be deployed. OpenShift first 
 looks in the internal image registry and then in defined upstream registries 
 ([Red Hat Container Catalog](https://access.redhat.com/search/#/container-images) and 
 [Docker Hub](https://hub.docker.com) by default) to find and pull this image. After `--`, you 
 can override the container entry point to whatever command you want to run in that container.
 
-As you the load is generated, you will notice that it will create a spike in the 
+As the load is generated, you will notice that it will create a spike in the 
 Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
@@ -204,17 +204,17 @@ There are three auto-healing scenarios that OpenShift handles automatically:
 [liveness health probe]({{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes),  
 OpenShift restarts the pod in order to give the application a chance to recover and start functioning 
 again. Issues such as deadlocks, memory leaks, network disturbance and more are all examples of issues 
-than can most likely be resolved by restarting the application despite the potential bug remaining in the 
+that can most likely be resolved by restarting the application despite the potential bug remaining in the 
 application.
 
 * Application Pod Permanent Failure: when an application pod fails and does not pass its 
 [readiness health probe]({{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes), 
-it signals that the failure is more severe and restart does not help to mitigate the issue. OpenShift then 
+it signals that the failure is more severe and restart is unlikely to help to mitigate the issue. OpenShift then 
 removes the application pod from the load-balancer to prevent sending traffic to it.
 
-* Application Pod Removal: if an instance of the application pod get removed, OpenShift automatically 
+* Application Pod Removal: if an instance of the application pods gets removed, OpenShift automatically 
 starts new identical application pods based on the same container image and configuration so that the 
-specified number of instances all running at all times. An example of a removed pod is when an entire 
+specified number of instances are running at all times. An example of a removed pod is when an entire 
 node (virtual or physical machine) crashes and is removed from the cluster.
 
 > OpenShift is quite orderly in this regard and if extra instances of the application pod would start running, 
@@ -255,20 +255,20 @@ pod automatically.
 
 #### Preventing Cascading Failures with Circuit Breakers
 
-In this lab so far you have been looking how to make sure the application pod is running, can scale to accommodate 
+In this lab so far you have been looking at how to make sure the application pod is running, can scale to accommodate 
 user load and recovers from failures. However failures also happen in the downstream services that an application 
 is dependent on. It's not uncommon that the whole application fails or slows down because one of the downstream 
 services consumed by the application is not responsive or responds slowly.
 
 [Circuit Breaker](https://martinfowler.com/bliki/CircuitBreaker.html) is a pattern to address this issue and while 
-became popular with microservice architecture, it's a useful pattern for all applications that depend on other 
+it became popular with microservice architecture, it's a useful pattern for all applications that depend on other 
 services.
 
 The idea behind the circuit breaker is that you wrap the API calls to downstream services in a circuit breaker 
-object, which monitors for failures. Once the service invocation fails certain number of times, the circuit 
+object, which monitors for failures. Once the service invocation fails a certain number of times, the circuit 
 breaker flips open, and all further calls to the circuit breaker return with an error or a fallback logic 
-without making the call to the unresponsive API. After a certain period, the circuit breaker for allow a call 
-to the downstream service to test the waters. If the call success, the circuit breaker closes and would call 
+without making the call to the unresponsive API. After a certain period, the circuit breaker will allow a call 
+to the downstream service to test the waters. If the call is successful, the circuit breaker closes and would call 
 the downstream service on consequent calls.
 
 ![Circuit Breaker]({% image_path fault-circuit-breaker.png %}){:width="300px"}
