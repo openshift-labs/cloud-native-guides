@@ -240,7 +240,7 @@ Deploy a Jenkins server using the provided template and container image that
 comes out-of-the-box with OpenShift:
 
 ```
-oc new-app jenkins-ephemeral
+ oc new-app jenkins-ephemeral -p MEMORY_LIMIT=1Gi
 ```
 
 After Jenkins is deployed and is running (verify in web console), then create a 
