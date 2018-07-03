@@ -56,7 +56,7 @@
       name: openshift_sonatype_nexus
     vars:
       project_name: "{{ namespace }}"
-      nexus_image_version: 3.11.0
+      nexus_image_version: 3.12.1
       nexus_max_memory: 6Gi
 
   - import_role:
@@ -75,7 +75,7 @@
       name: openshift_eclipse_che
     vars:
       project_name: "{{ namespace }}"
-      che_version: "6.5.0"
+      che_version: "6.7.1"
       multi_user: true
       route_suffix: "{{ apps_hostname_suffix }}"
       keycloak_openshift_user: admin
