@@ -13,8 +13,8 @@ applications using JavaScript. Node.js has an event-driven architecture capable 
 non-blocking I/O. These design choices aim to optimize throughput and scalability in 
 Web applications with many input/output operations, as well as for real-time web applications.
 
-Node.js non-blocking architectures allows applications to process large number of 
-requests (tens of thousands) using a single thread which makes ia desirable choice for building 
+Node.js non-blocking architecture allows applications to process large number of 
+requests (tens of thousands) using a single thread which makes it desirable choice for building 
 scalable web applications.
 
 #### Deploy Web UI on OpenShift

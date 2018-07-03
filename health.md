@@ -10,15 +10,15 @@ are running at all times, and when they don't there are automatic actions trigge
 the issues. 
 
 OpenShift, using Kubernetes health probes, offers a solution for monitoring application 
-health and try to automatically heal faulty containers through restarting them to fix issues such as
+health and trying to automatically heal faulty containers through restarting them to fix issues such as
 a deadlock in the application which can be resolved by restarting the container. Restarting a container 
 in such a state can help to make the application more available despite bugs.
 
 Furthermore, there are of course a category of issues that can't be resolved by restarting the container. 
 In those scenarios, OpenShift would remove the faulty container from the built-in load-balancer and send traffic 
-only to the healthy container remained.
+only to the healthy containers that remain.
 
-There are two type of health probes available in OpenShift: [liveness probes and readiness probes]({{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes). 
+There are two types of health probes available in OpenShift: [liveness probes and readiness probes]({{OPENSHIFT_DOCS_BASE}}/dev_guide/application_health.html#container-health-checks-using-probes). 
 *Liveness probes* are to know when to restart a container and *readiness probes* to know when a 
 Container is ready to start accepting traffic.
 
@@ -70,7 +70,7 @@ to the Maven project dependencies.
 This is also already done for the Inventory service.
 
 Verify that the health endpoint works for the Inventory service using `curl`, replacing `{{INVENTORY_ROUTE_HOST}}` 
-with the Catalog route url:
+with the Inventory route url:
 
 > You know this by know! Use `oc get route inventory` to get the Inventory route url 
 

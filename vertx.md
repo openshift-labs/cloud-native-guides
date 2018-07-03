@@ -250,7 +250,7 @@ service discovery mechanisms provided by OpenShift, Kubernetes, Consul, Redis, e
 In this lab, since you will deploy the API Gateway on OpenShift, the OpenShift service discovery 
 bridge is used to automatically import OpenShift services into the Vert.x application as they 
 get deployed and undeployed. Since you also want to test the API Gateway locally, there is an 
-`onErrorReturn()` clause in the the service lookup to fallback on a local service for Inventory 
+`onErrorReturn()` clause in the service lookup to fallback on a local service for Inventory 
 and Catalog REST APIs. 
 
 ~~~java
@@ -289,7 +289,7 @@ public void start() {
 ~~~
 
 The `products` method invokes the Catalog REST endpoint and retrieves the products. It then 
-iterates over the retrieve products and for each product invokes the 
+iterates over the retrieved products and for each product invokes the 
 Inventory REST endpoint to get the inventory status and enrich the product data with availability 
 info. 
 

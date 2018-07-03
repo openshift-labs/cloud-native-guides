@@ -16,7 +16,7 @@ The most common way to provide configurations to applications is using environme
 variables and external configuration files such as properties, JSON or YAML files.
 
 configuration files and command line arguments. These configuration artifacts
-should be externalized form the application and the docker image content in
+should be externalized from the application and the docker image content in
 order to keep the image portable across environments.
 
 OpenShift provides a mechanism called [ConfigMaps]({{OPENSHIFT_DOCS_BASE}}/dev_guide/configmaps.html) 
@@ -33,12 +33,12 @@ different configurations that are provided to the application at runtime.
 #### Create PostgreSQL Databases for Inventory and Catalog
 
 So far Catalog and Inventory services have been using an in-memory H2 database. Although H2 
-is a convenient database to run locally on your laptop, it's in no ways appropriate for production or 
+is a convenient database to run locally on your laptop, it's in no way appropriate for production or 
 even integration tests. Since it's strongly recommended to use the same technology stack (operating 
 system, JVM, middleware, database, etc) that is used in production across all environments, you 
 should modify Inventory and Catalog services to use PostgreSQL instead of the H2 in-memory database.
 
-Fortunately, OpenShfit supports stateful applications such as databases which required access to 
+Fortunately, OpenShfit supports stateful applications such as databases which require access to 
 a persistent storage that survives the container itself. You can deploy databases on OpenShift and 
 regardless of what happens to the container itself, the data is safe and can be used by the next 
 database container.
@@ -130,7 +130,7 @@ $ oc create configmap inventory --from-file=./project-stages.yml
 Config maps hold key-value pairs and in the above command an `inventory` config map 
 is created with `project-stages.yml` as the key and the content of the `project-stages.yml` as the 
 value. Whenever a config map is injected into a container, it would appear as a file with the same 
-name as the key, at path on the filesystem.
+name as the key, at specified path on the filesystem.
 
 > You can see the content of the config map in the OpenShift Web Console or by 
 > using `oc describe cm inventory` command.
@@ -210,7 +210,7 @@ modify the Inventory container image itself.
 #### Externalize Spring Boot (Catalog) Configuration
 
 You should be quite familiar with config maps by now. Spring Boot application configuration is provided 
-via a properties filed called `application.properties` and can be 
+via a properties file called `application.properties` and can be 
 [overriden and overlayed via multiple mechanisms](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html). 
 
 > Check out the default Spring Boot configuration in Catalog Maven project `catalog-spring-boot/src/main/resources/application.properties`.
@@ -313,7 +313,7 @@ $ exit
 
 Config map is a superb mechanism for externalizing application configuration while keeping 
 containers independent of in which environment or on what container platform they are running. 
-Nevertheless, due their clear-text nature, they are not suitable for sensitive data like 
+Nevertheless, due to their clear-text nature, they are not suitable for sensitive data like 
 database credentials, SSH certificates, etc. In the current lab, we used config maps for database 
 credentials to simplify the steps however for production environments, you should opt for a more 
 secure way to handle sensitive data.
@@ -322,7 +322,7 @@ Fortunately, OpenShift already provides a secure mechanism for handling sensitiv
 called [Secrets]({{OPENSHIFT_DOCS_BASE}}/dev_guide/secrets.html). Secret objects act and are used 
 similar to config maps however with the difference that they are encrypted as they travel over the wire 
 and also at rest when kept on a persistent disk. Like config maps, secrets can be injected into 
-containers a environment variables or files on the filesystem using a temporary file-storage 
+containers as environment variables or files on the filesystem using a temporary file-storage 
 facility (tmpfs).
 
 You won't create any secrets in this lab however you have already created 2 secrets when you created 

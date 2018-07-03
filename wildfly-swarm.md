@@ -16,11 +16,11 @@ on the JVM using `java -jar`. For more details on various approaches to packagin
 applications, read [this blog post](https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber).
 
 WildFly Swarm is based on WildFly and it's compatible with 
-MicroProfile, which is a community effort to standardized the subset of Java EE standards 
+MicroProfile, which is a community effort to standardize the subset of Java EE standards 
 such as JAX-RS, CDI and JSON-P that are useful for building microservices applications.
 
 Since WildFly Swarm is based on Java EE standards, it significantly simplifies refactoring 
-existing Java EE application to microservices and allows much of existing code-base to be 
+existing Java EE applications to microservices and allows much of the existing code-base to be 
 reused in the new services.
 
 #### WildFly Swarm Maven Project 
@@ -37,7 +37,7 @@ the WildFly Swarm project laid out in different subdirectories according to Mave
 ~~~
 
 This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
-to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE standard that uses Java annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/tutorial/partpersist.htm) is another Java EE standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
+to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE standards that uses Java annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/tutorial/partpersist.htm) is another Java EE standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
 
 This project currently contains no code other than the main class for exposing a single 
 RESTful application defined in `InventoryApplication.java`. 
@@ -303,7 +303,7 @@ $ oc describe svc inventory
 $ oc describe route inventory
 ~~~
 
-You can see the expose DNS url for the Inventory service in the OpenShift Web Console or using 
+You can see the exposed DNS url for the Inventory service in the OpenShift Web Console or using 
 OpenShift CLI:
 
 ~~~shell
