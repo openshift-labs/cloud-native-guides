@@ -1,0 +1,44 @@
+- name: cloudnative-workshop-apb playbook to provision the application
+  hosts: localhost
+  gather_facts: false
+  connection: local
+  vars:
+    openshift_user: 
+    openshift_password: 
+    openshift_token:
+    openshift_master_url: 
+    openshift_user_password:
+    project_suffix: "-XX"
+    github_account: openshift-labs
+    github_ref: ocp-3.9
+    gogs_adm_user: gogs
+    gogs_dev_user: developer
+    gogs_pwd: openshift
+
+  roles:
+  - role: ansible.kubernetes-modules
+    install_python_requirements: no
+  - role: ansibleplaybookbundle.asb-modules
+
+  tasks:    
+  - name: login as super user with token
+    shell: "oc login --token={{ openshift_token }} --insecure-skip-tls-verify=true"
+    when:
+      - openshift_token is defined
+      - openshift_token is not none
+      - openshift_token|trim() != ""
+
+  - name: login as super user with pwd
+    shell: "oc login -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
+    when: >
+      openshift_token is not defined or
+      openshift_token is none or
+      openshift_token|trim() == ""
+          
+  - name: Delete infrastructyre services from {{ namespace }}
+    command: "oc delete all,cm,secret,pvc,sa -l app={{ item }} -n {{ namespace }}"
+    with_items:
+      - che
+      - gogs
+      - nexus
+      - guides
