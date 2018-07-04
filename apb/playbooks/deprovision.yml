@@ -6,14 +6,6 @@
     openshift_user: 
     openshift_password: 
     openshift_token:
-    openshift_master_url: 
-    openshift_user_password:
-    project_suffix: "-XX"
-    github_account: openshift-labs
-    github_ref: ocp-3.9
-    gogs_adm_user: gogs
-    gogs_dev_user: developer
-    gogs_pwd: openshift
 
   roles:
   - role: ansible.kubernetes-modules
