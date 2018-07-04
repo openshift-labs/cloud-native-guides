@@ -23,14 +23,14 @@ plans:
       description: User is required for creating project admin resources
       type: string
       required: true
-      display_group: OpenShift User
+      display_group: OpenShift Admin User
     - name: openshift_password
       title: Password
       description: Password is required for creating project admin resources
       type: string
       required: true
       display_type: password
-      display_group: OpenShift User
+      display_group: OpenShift Admin User
     - name: openshift_master_url
       title: OpenShift Master URL
       description: The address to OpenShift master URL to be displayed in the lab guide to participants
