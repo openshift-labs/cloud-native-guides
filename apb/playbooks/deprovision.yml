@@ -1,4 +1,4 @@
-- name: cloudnative-workshop-apb playbook to provision the application
+- name: cloudnative-workshop-apb playbook to deprovision the application
   hosts: localhost
   gather_facts: false
   connection: local
