@@ -46,22 +46,6 @@ plans:
       display_type: string
       value: "r3dh4t1!"
       display_group: Lab Guide
-    - name: github_ref
-      title: Guides GitHub Reference
-      description: The GitHub reference for the Cloud-Native workshop lab guide
-      type: enum
-      enum: ["ocp-3.9", "ocp-3.7"]
-      default: ocp-3.9
-      required: true
-      display_type: select
-      display_group: Lab Guide
-    - name: project_suffix
-      title: User Project Suffix
-      description: The pattern used in the lab guide to show the user projects e.g. coolstore-XX 
-      type: string
-      default: "-XX"
-      required: true
-      display_group: Lab Guide
     - name: gogs_adm_user
       title: Gogs Admin User
       description: Admin user for Gogs Git Server
