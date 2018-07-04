@@ -11,9 +11,10 @@
     project_suffix: "-XX"
     github_account: openshift-labs
     github_ref: ocp-3.9
-    gogs_adm_user: gogs
     gogs_dev_user: developer
     gogs_pwd: openshift
+    infrasvcs_adm_user: adminuser
+    infrasvcs_adm_pwd: adminpwd
 
   roles:
   - role: ansible.kubernetes-modules
@@ -65,8 +66,8 @@
       project_name: "{{ namespace }}"
       gogs_route: "gogs-{{ namespace }}.{{ apps_hostname_suffix }}"
       gogs_image_version: 0.11.34
-      gogs_admin_user: "{{ gogs_adm_user }}"
-      gogs_admin_password: "{{ gogs_pwd }}"
+      gogs_admin_user: "{{ infrasvcs_adm_user }}"
+      gogs_admin_password: "{{ infrasvcs_adm_pwd }}"
       gogs_user: "{{ gogs_dev_user }}"
       gogs_password: "{{ gogs_pwd }}"
 
@@ -78,8 +79,8 @@
       che_version: "6.7.1"
       multi_user: true
       route_suffix: "{{ apps_hostname_suffix }}"
-      keycloak_openshift_user: admin
-      keycloak_admin_pwd: admin
+      keycloak_admin_user: "{{ infrasvcs_adm_user }}"
+      keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
       install_java_oc_stack: true
 
   # deploy guides

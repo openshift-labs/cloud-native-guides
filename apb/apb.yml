@@ -46,23 +46,32 @@ plans:
       display_type: string
       value: "r3dh4t1!"
       display_group: Lab Guide
-    - name: gogs_adm_user
-      title: Gogs Admin User
-      description: Admin user for Gogs Git Server
+    - name: infrasvcs_adm_user
+      title: Infra Services Admin User
+      description: Admin user for infrastructure services (Gogs, Che, ...)
       type: string
-      default: "gogs"
+      default: "adminuser"
       required: true
-      display_group: Git Server
+      display_type: text
+      display_group: Workshop Infra Services
+    - name: infrasvcs_adm_pwd
+      title: Infra Services Admin Password
+      description: Admin password for infrastructure services (Gogs, Che, ...)
+      type: string
+      default: "adminpwd"
+      required: true
+      display_type: text
+      display_group: Workshop Infra Services
     - name: gogs_dev_user
       title: Gogs User
-      description: User for Gogs Git Server
+      description: User for Gogs Server
       type: string
       default: "developer"
       required: true
       display_group: Git Server
     - name: gogs_pwd
       title: Gogs Password
-      description: Password for Gogs admin user and normal user
+      description: Password for Gogs user
       type: string
       default: "openshift"
       required: true
