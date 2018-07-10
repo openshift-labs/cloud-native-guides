@@ -62,17 +62,3 @@ plans:
       required: true
       display_type: text
       display_group: Workshop Infra Services
-    - name: gogs_dev_user
-      title: Gogs User
-      description: User for Gogs Server
-      type: string
-      default: "developer"
-      required: true
-      display_group: Git Server
-    - name: gogs_pwd
-      title: Gogs Password
-      description: Password for Gogs user
-      type: string
-      default: "openshift"
-      required: true
-      display_group: Git Server
