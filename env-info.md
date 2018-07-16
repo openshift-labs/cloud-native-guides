@@ -5,22 +5,22 @@ labs in this page. Note that the urls are also embedded inside each lab instruct
 
 **OPENSHIFT**
 
-Address: {{ OPENSHIFT_CONSOLE_URL }}
+{{ OPENSHIFT_CONSOLE_URL }}
 
 **GIT SERVER**
 
-Web: {{ GIT_URL }}
+{{ GIT_URL }}
 
 **NEXUS MAVEN REPOSITORY**
 
-Web: {{ NEXUS_URL }}
+{{ NEXUS_URL }}
 
 **ECLIPSE CHE IDE**
 
 Register an account on Eclipse Che using an email address.
 
-Web: {{ ECLIPSE_CHE_URL }}
+{{ ECLIPSE_CHE_URL }}
 
 **OPENSHIFT DOCS**
 
-Web: {{ OPENSHIFT_DOCS_BASE }}
+{{ OPENSHIFT_DOCS_BASE }}

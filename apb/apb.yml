@@ -44,7 +44,7 @@ plans:
       type: string
       required: true
       display_type: string
-      value: "r3dh4t1!"
+      value: "openshift"
       display_group: Lab Guide
     - name: infrasvcs_adm_user
       title: Infra Services Admin User
