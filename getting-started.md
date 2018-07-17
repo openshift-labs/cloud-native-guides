@@ -3,30 +3,101 @@
 In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
 and get ready for the Cloud Native Roadshow labs.
 
-#### Prerequisites
+For completing the following labs, you can either use your own workstation or as an 
+alternative, Eclipse Che web IDE. The advantage of your own workstation is that you use the 
+environment that you are familiar with while the advantage of Eclipse Che is that all 
+tools needed (Maven, Git, OpenShift CLI, etc ) are pre-installed in it (not on your workstation!) and all interactions 
+takes place within the browser which removes possible internet speed issues and version incompatibilities 
+on your workstation.
 
-In order to perform the labs, you will need the following installed in your workstation:
+The choice is yours but whatever you pick, like most things in life, stick with it for all the labs. We 
+ourselves are in love with Eclipse Che and highly recommend it.
+
+## Setup Eclipse Che
+
+Follow these instructions to setup the development environment on Eclipse Che. Note that if you'd rather 
+to use your own workstation, you can skip this section and move to **Setup Your Own Workstation**.
+
+You might be familiar with the Eclipse IDE which is one of the most popoular IDEs for Java and other
+programming languages. [Eclipse Che](https://www.eclipse.org/che/) is the next-generation Eclipse IDE which is web-based
+and gives you a full-featured IDE running in the cloud. You have an Eclipse Che instance deployed on your OpenShift cluster
+which you will use during these labs.
+
+Go to the [Eclipse Che url]({{ ECLIPSE_CHE_URL }}) in order to configuration your development workspace: {{ ECLIPSE_CHE_URL }}
+
+A stack is a template of workspace configuration. For example, it includes the programming language and tools needed
+in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
+on-demand. 
+
+For this lab, click on the **Java with OpenShift CLI** stack and then on the **Create** button. 
+
+![Eclipse Che Workspace]({% image_path bootstrap-che-create-workspace.png %})
+
+Click on **Open** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
+
+![Eclipse Che Workspace]({% image_path bootstrap-che-start-workspace.png %})
+
+You can click on the left arrow icon to switch to the wide view:
+
+![Eclipse Che Workspace]({% image_path bootstrap-che-wide.png %})
+
+It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
+Eclipse Che IDE running in your browser.
+
+![Eclipse Che Workspace]({% image_path bootstrap-che-workspace.png %})
+
+Now you can import the project skeletons into your workspace.
+
+In the project explorer pane, click on the **Import Projects...** and enter the following:
+
+  * Type: `ZIP`
+  * URL: `{{LABS_DOWNLOAD_URL}}`
+  * Name: `projects`
+
+![Eclipse Che - Import Project]({% image_path bootstrap-che-import.png %})
+
+Click on **Import**. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
+project skeletons. Click on **Save**
+
+![Eclipse Che - Import Project]({% image_path bootstrap-che-import-save.png %})
+
+The projects are imported now into your workspace and is visible in the project explorer.
+
+![Eclipse Che - Project]({% image_path bootstrap-che-projects.png %})
+
+Eclipse Che is a full featured IDE and provides language specific capabilities for various project types. In order to 
+enable these capabilities, let's convert the imported project skeletons to a Mave and Node.js projects. 
+
+In the project explorer, right-click on **inventory-wildfly-swarm** and then click on **Convert to Project**.
+
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-convert.png %})
+
+Choose **Maven** from the project configurations and then click on **Save**
+
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-maven.png %})
+
+Repeat the above for **catalog-spring-boot** and **gateway-vertx** projects.
+
+Do the same for **web-nodejs** but make sure you choose the **Node.JS** project configuration.
+
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-node.png %})
+
+Note the **Terminal** window in Eclipse Che. For the rest of these labs, anytime you need to run 
+a command in a terminal, you can use the Eclipse Che **Terminal** window.
+
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-terminal.png %})
+
+## Setup Your Own Workstation
+
+Follow these instructions to setup the development environment on your workstation. Note that if you'd rather 
+to use Eclipse Che, you can skip this section and move on to **Explore OpenShift with OpenShift CLI**.
+
+In order to perform the labs on your own workstation, you will need the following installed:
 
 * Java Development Kit 8
 * Apache Maven 3.3.x 
 * Git client
 * A Text Editor (e.g. Atom, Visual Studio Code) or an IDE (JBoss Developer Studio, Eclipse, IntelliJ)
-
-{% if MINISHIFT == true %}
-
-#### Red Hat Container Development Kit (CDK)
-
-[Red Hat Container Development Kit](https://developers.redhat.com/products/cdk/overview)
-provides a pre-built Container Development 
-Environment based on Red Hat Enterprise Linux to help you develop container-based 
-applications quickly on OpenShift. 
-
-CDK configures a pre-built, single-node OpenShift cluster locally, so you can try 
-the latest version of OpenShift Container Platform. 
-
-If you haven't already installed CDK, follow these instructions to install it now: [Installing Container Development Kit](https://access.redhat.com/documentation/en-us/red_hat_container_development_kit/3.1/html/getting_started_guide/getting_started_with_container_development_kit#installing-minishift)
-
-{% else %}
 
 #### OpenShift CLI
 
@@ -163,34 +234,54 @@ $ oc version
 
 You should see the OpenShift version.
 
-{% endif %}
 
-#### Explore OpenShift with OpenShift CLI
+#### Download Lab Projects
+
+In order to get started, you need a few project skeletons to skip building those during 
+the lab. 
+
+Download the project skeletons to your local machine:
+
+~~~shell
+$ cd ~
+$ curl -skL -o projects.zip {{LABS_DOWNLOAD_URL}}
+~~~
+
+> You can choose any directory, these instructions use `$HOME` as an example.
+
+Unzip the `projects.zip` file in your home directory.
+
+> You can use archiving utility with `zip` format support you have available on your machine.
+
+* Windows: `Expand-Archive -Path .\projects.zip ; Move-Item .\projects\cloud-native-labs-master\* .`
+* Linux: `unzip projects.zip && mv cloud-native-labs-master/* .`
+* Mac: `tar xvfz projects.zip --strip-components 1`
+
+After unzipping the projects, you should see these folders.
+
+~~~
+$ ls -l
+
+-rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 catalog-spring-boot
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 gateway-vertx
+drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 inventory-wildfly-swarm
+drwxr-xr-x  9 user  wheel   306 Aug 14 14:50 solutions
+drwxr-xr-x  8 user  wheel   272 Aug 14 14:50 web-nodejs
+~~~
+
+
+## Explore OpenShift with OpenShift CLI
 
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-{% if MINISHIFT == true %}
-
-When CDK starts, it prints the OpenShift Web Console in the logs. Alternatively, 
-you can use the `minishift console --url` to find it out. 
-
-Login to OpenShift.
-
-~~~shell
-$ oc login {{OPENSHIFT_CONSOLE_URL}}
-~~~
-
-{% else %}
-
 Issue the following command and replace `{{OPENSHIFT_CONSOLE_URL}}` 
-with your OpenShift Web Console url:
+with your OpenShift Web Console url. 
 
 ~~~shell
 $ oc login {{OPENSHIFT_CONSOLE_URL}}
 ~~~
-
-{% endif %}
 
 You may see the following output:
 
@@ -250,40 +341,5 @@ Click on the **{{COOLSTORE_PROJECT}}** project to be taken to the project overvi
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
-
-#### Download Lab Projects
-
-In order to get started, you need a few project skeletons to skip building those during 
-the lab. 
-
-Download the project skeletons to your local machine:
-
-~~~shell
-$ cd ~
-$ curl -skL -o projects.zip {{LABS_DOWNLOAD_URL}}
-~~~
-
-> You can choose any directory, these instructions use `$HOME` as an example.
-
-Unzip the `projects.zip` file in your home directory.
-
-> You can use archiving utility with `zip` format support you have available on your machine.
-
-* Windows: `Expand-Archive -Path .\projects.zip ; Move-Item .\projects\cloud-native-labs-master\* .`
-* Linux: `unzip projects.zip && mv cloud-native-labs-master/* .`
-* Mac: `tar xvfz projects.zip --strip-components 1`
-
-After unzipping the projects, you should see these folders.
-
-~~~
-$ ls -l
-
--rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
-drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 catalog-spring-boot
-drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 gateway-vertx
-drwxr-xr-x  6 user  wheel   204 Aug 14 14:50 inventory-wildfly-swarm
-drwxr-xr-x  9 user  wheel   306 Aug 14 14:50 solutions
-drwxr-xr-x  8 user  wheel   272 Aug 14 14:50 web-nodejs
-~~~
 
 Now you are ready to get started with the labs!
