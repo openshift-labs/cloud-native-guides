@@ -1,0 +1,134 @@
+{
+  "name": "Java Cloud-Native",
+  "description": "Java JDK Stack on CentOS for Cloud-Native Workshop",
+  "scope": "general",
+  "workspaceConfig": {
+    "environments": {
+      "default": {
+        "recipe": {
+          "type": "dockerimage",
+          "content": "siamaksade/che-centos-jdk8"
+        },
+        "machines": {
+          "dev-machine": {
+            "env": {
+              "MAVEN_OPTS" : "-Xmx312m"
+            },
+            "servers": {
+              "8080/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8080"
+              },
+              "8000/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "8000"
+              }
+            },
+            "volumes": {},
+            "installers": [
+              "org.eclipse.che.exec",
+              "org.eclipse.che.terminal",
+              "org.eclipse.che.ws-agent"
+            ],
+            "attributes": {
+              "memoryLimitBytes": "2147483648"
+            }
+          }
+        }
+      }
+    },
+    "commands": [
+      {
+        "commandLine": "mvn package -f ${current.project.path}",
+        "name": "build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn clean package -f ${current.project.path}",
+        "name": "clean build",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Build",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn verify -f ${current.project.path}",
+        "name": "test",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Test",
+          "previewUrl": ""
+        }
+      },
+      {
+        "commandLine": "mvn spring-boot:run -f ${current.project.path}",
+        "name": "run spring-boot",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.9000/tcp}"
+        }
+      },
+      {
+        "commandLine": "mvn wildfly-swarm:run -f ${current.project.path}",
+        "name": "run wildfly-swarm",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.9001/tcp}"
+        }
+      },
+      {
+        "commandLine": "mvn vertx:run -f ${current.project.path}",
+        "name": "run vertx",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Run",
+          "previewUrl": "${server.8080/tcp}"
+        }
+      }
+    ],
+    "projects": []
+    "defaultEnv": "default",
+    "name": "default",
+    "links": []
+  },
+  "components": [
+    {
+      "version": "---",
+      "name": "CentOS"
+    },
+    {
+      "version": "1.8.0_45",
+      "name": "JDK"
+    },
+    {
+      "version": "3.2.2",
+      "name": "Maven"
+    },
+    {
+      "version": "2.4",
+      "name": "Ansible"
+    },
+    {
+      "version": "3.9",
+      "name": "OpenShift CLI"
+    }
+  ],
+  "creator": "ide",
+  "tags": [
+    "Java",
+    "JDK",
+    "Maven",
+    "CentOS",
+    "Git"
+  ],
+  "id": "java-oc-centos-cloudnative"
+}

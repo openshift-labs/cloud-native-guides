@@ -76,12 +76,13 @@
       name: openshift_eclipse_che
     vars:
       project_name: "{{ namespace }}"
-      che_version: "6.7.1"
+      che_version: "6.8.0"
       multi_user: true
       route_suffix: "{{ apps_hostname_suffix }}"
       keycloak_admin_user: "{{ infrasvcs_adm_user }}"
       keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
-      install_java_oc_stack: true
+      install_java_oc_stack: false
+      install_custom_stacks_json: [ "{{ lookup('file', 'files/java-stack.json') }}" ]
 
   # deploy guides
   - import_role:

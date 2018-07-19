@@ -99,7 +99,7 @@ Use your favorite code editor (we &hearts; Eclipse Che) to create a new Java cla
 `com.redhat.cloudnative.inventory` package with the below code and 
 following fields: `itemId` and `quantity`
 
-> In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** <br/><br/> ![Eclipse Che - Create Java Class]({% image_path wfswarm-inventory-che-new-class.png %})
+> In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** <br/><br/> ![Eclipse Che - Create Java Class]({% image_path wfswarm-inventory-che-new-class.png %}){:width="700px"}
 
 ~~~java
 package com.redhat.cloudnative.inventory;
@@ -215,6 +215,8 @@ $ mvn package
 ~~~
 
 Using WildFly Swarm maven plugin, you can conveniently run the application locally and test the endpoint.
+
+> In Eclipse Che, click on the commands palette and then on **run > run wildfly-swarm**
 
 ~~~shell
 $ mvn wildfly-swarm:run

@@ -39,7 +39,7 @@ Click on **Open** to open the workspace and then on the **Start** button to star
 
 You can click on the left arrow icon to switch to the wide view:
 
-![Eclipse Che Workspace]({% image_path bootstrap-che-wide.png %})
+![Eclipse Che Workspace]({% image_path bootstrap-che-wide.png %}){:width="600px"}
 
 It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
 Eclipse Che IDE running in your browser.
@@ -54,33 +54,27 @@ In the project explorer pane, click on the **Import Projects...** and enter the 
   * URL: `{{LABS_DOWNLOAD_URL}}`
   * Name: `projects`
 
-![Eclipse Che - Import Project]({% image_path bootstrap-che-import.png %})
+![Eclipse Che - Import Project]({% image_path bootstrap-che-import.png %}){:width="700px"}
 
 Click on **Import**. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
 project skeletons. Click on **Save**
 
-![Eclipse Che - Import Project]({% image_path bootstrap-che-import-save.png %})
+![Eclipse Che - Import Project]({% image_path bootstrap-che-import-save.png %}){:width="700px"}
 
 The projects are imported now into your workspace and is visible in the project explorer.
 
-![Eclipse Che - Project]({% image_path bootstrap-che-projects.png %})
-
 Eclipse Che is a full featured IDE and provides language specific capabilities for various project types. In order to 
-enable these capabilities, let's convert the imported project skeletons to a Mave and Node.js projects. 
+enable these capabilities, let's convert the imported project skeletons to a Maven projects. 
 
-In the project explorer, right-click on **inventory-wildfly-swarm** and then click on **Convert to Project**.
+In the project explorer, right-click on **catalog-spring-boot** and then click on **Convert to Project**.
 
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-convert.png %})
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-convert.png %}){:width="600px"}
 
 Choose **Maven** from the project configurations and then click on **Save**
 
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-maven.png %})
+![Eclipse Che - Convert to Project]({% image_path bootstrap-che-maven.png %}){:width="700px"}
 
-Repeat the above for **catalog-spring-boot** and **gateway-vertx** projects.
-
-Do the same for **web-nodejs** but make sure you choose the **Node.JS** project configuration.
-
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-node.png %})
+Repeat the above for **inventory-wildfly-swarm** and **gateway-vertx** projects.
 
 Note the **Terminal** window in Eclipse Che. For the rest of these labs, anytime you need to run 
 a command in a terminal, you can use the Eclipse Che **Terminal** window.
