@@ -52,7 +52,8 @@ In the project explorer pane, click on the **Import Projects...** and enter the 
 
   * Type: `ZIP`
   * URL: `{{LABS_DOWNLOAD_URL}}`
-  * Name: `projects`
+  * Name: `labs`
+  * Check **Skip the root folder of the archive**
 
 ![Eclipse Che - Import Project]({% image_path bootstrap-che-import.png %}){:width="700px"}
 

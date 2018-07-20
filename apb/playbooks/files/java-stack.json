@@ -12,7 +12,7 @@
         "machines": {
           "dev-machine": {
             "env": {
-              "MAVEN_OPTS" : "-Xmx312m"
+              "MAVEN_OPTS" : "-Xmx512m"
             },
             "servers": {
               "8080/tcp": {
@@ -24,6 +24,16 @@
                 "attributes": {},
                 "protocol": "http",
                 "port": "8000"
+              },
+              "9000/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "9000"
+              },
+              "9001/tcp": {
+                "attributes": {},
+                "protocol": "http",
+                "port": "9001"
               }
             },
             "volumes": {},
@@ -95,7 +105,7 @@
         }
       }
     ],
-    "projects": []
+    "projects": [],
     "defaultEnv": "default",
     "name": "default",
     "links": []
