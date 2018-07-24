@@ -87,7 +87,7 @@
         }
       },
       {
-        "commandLine": "mvn wildfly-swarm:run -f ${current.project.path}",
+        "commandLine": "cd ${current.project.path} && java -jar target/*-swarm.jar",
         "name": "run wildfly-swarm",
         "type": "mvn",
         "attributes": {
