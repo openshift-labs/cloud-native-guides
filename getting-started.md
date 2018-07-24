@@ -275,7 +275,7 @@ Unzip the `projects.zip` file in your home directory.
 
 After unzipping the projects, you should see these folders.
 
-~~~
+~~~shell
 $ ls -l
 
 -rwxr-xr-x  1 user  wheel  1718 Aug 14 14:50 README.md
