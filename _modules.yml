@@ -4,6 +4,8 @@ config:
 modules:
   getting-started:
     name: Getting Started
+  getting-started-che:
+    name: Getting Started
   spring-boot:
     name: Microservices with Spring Boot
     requires:
@@ -12,6 +14,10 @@ modules:
     name: Enterprise Microservices with WildFly Swarm
     requires:
       - getting-started
+  wildfly-swarm-che:
+    name: Enterprise Microservices with WildFly Swarm
+    requires:
+      - getting-started-che
   vertx:
     name: Reactive Microservices with Eclipse Vert.x
     requires:

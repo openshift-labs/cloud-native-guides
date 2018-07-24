@@ -60,6 +60,12 @@ in the build logs, otherwise the build has failed.
 > Make sure to run the `package` Maven goal and not `install`. The latter would 
 > download a lot more dependencies and do things you don't need yet!
 
+In Eclipse Che, click on **inventory-wildfly-swarm** project in the project explorer, 
+and then click on Commands Palette and click on **build**.
+
+![Eclipse Che - Commands Palette]({% image_path wfswarm-inventory-che-build.png %})
+
+
 ~~~shell
 $ cd inventory-wildfly-swarm
 $ mvn package
@@ -91,10 +97,13 @@ Now let's write some code and create a domain model and a RESTful endpoint to cr
 
 #### Create a Domain Model
 
-Use your favorite text-editor (we &hearts; Visual Studio Code and Sublime) or IDE (JBoss Developer 
-Studio is our favorite) to create a new Java class named `Inventory.java` in 
+Use your favorite code editor (we &hearts; Eclipse Che) to create a new Java class named `Inventory.java` in 
 `com.redhat.cloudnative.inventory` package with the below code and 
 following fields: `itemId` and `quantity`
+
+In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** 
+
+![Eclipse Che - Create Java Class]({% image_path wfswarm-inventory-che-new-class.png %}){:width="700px"}
 
 ~~~java
 package com.redhat.cloudnative.inventory;
@@ -210,6 +219,8 @@ $ mvn package
 ~~~
 
 Using WildFly Swarm maven plugin, you can conveniently run the application locally and test the endpoint.
+
+In Eclipse Che, click on the commands palette and then on **run > run wildfly-swarm**
 
 ~~~shell
 $ mvn wildfly-swarm:run

@@ -29,8 +29,8 @@ vars:
   
 modules:
   activate:
-  - getting-started
-  - wildfly-swarm
+  - getting-started-che
+  - wildfly-swarm-che
   - spring-boot
   - vertx
   - nodejs

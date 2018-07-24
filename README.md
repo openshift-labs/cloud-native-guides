@@ -1,4 +1,4 @@
-Cloud-Native Roadshow [![Build Status](https://travis-ci.org/openshift-labs/cloud-native-guides.svg?branch=ocp-3.9)](https://travis-ci.org/openshift-labs/cloud-native-guides)
+Cloud-Native Workshop [![Build Status](https://travis-ci.org/openshift-labs/cloud-native-guides.svg?branch=ocp-3.9)](https://travis-ci.org/openshift-labs/cloud-native-guides)
 ===
 This one day hands-on cloud-native workshops provides developers and introduction to cloud-natives applications and gives them an experience of building cloud-native applications using OpenShift, Spring Boot, WildFly Swarm, Vert.xt and more.
 
@@ -58,7 +58,7 @@ Note that if you have used the above workshop installer, the lab instructions ar
 
 ```
 $ oc new-app osevg/workshopper:latest --name=guides \
-    -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9/_cloud-native-roadshow.yml"
+    -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9/_cloud-native-workshop.yml"
 $ oc expose svc/guides
 ```
 
@@ -68,6 +68,6 @@ Local Lab Instructions
 $ docker run -it -p 8080:8080 \
       -v $(pwd):/app-data \
       -e CONTENT_URL_PREFIX="file:///app-data" \
-      -e WORKSHOPS_URLS="file:///app-data/_cloud-native-roadshow.yml" \
+      -e WORKSHOPS_URLS="file:///app-data/_cloud-native-workshop.yml" \
       osevg/workshopper:latest
 ```
