@@ -27,13 +27,7 @@ reused in the new services.
 The `inventory-wildfly-swarm` project has the following structure which shows the components of 
 the WildFly Swarm project laid out in different subdirectories according to Maven best practices:
 
-~~~shell
-├── pom.xml            # The Maven project file
-└── src
-    └── main
-        └── java       # The source code to the project
-        └── resources  # The static resource files and configurations
-~~~
+![Inventory Project]({% image_path wfswarm-inventory-project.png %}){:width="340px"}
 
 This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
 to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE standards that uses Java annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)](https://docs.oracle.com/javaee/7/tutorial/partpersist.htm) is another Java EE standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
@@ -41,7 +35,7 @@ to a database. [JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is 
 This project currently contains no code other than the main class for exposing a single 
 RESTful application defined in `InventoryApplication.java`. 
 
-Examine `src/main/java/com/redhat/cloudnative/inventory/InventoryApplication.java`
+Examine `com.redhat.cloudnative.inventory.InventoryApplication.java` in the `src` directory:
 
 ~~~java
 package com.redhat.cloudnative.inventory;
@@ -57,34 +51,18 @@ public class InventoryApplication extends Application {
 Run the Maven build to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the build logs, otherwise the build has failed.
 
-> Make sure to run the `package` Maven goal and not `install`. The latter would 
-> download a lot more dependencies and do things you don't need yet!
-
 In Eclipse Che, click on **inventory-wildfly-swarm** project in the project explorer, 
 and then click on Commands Palette and click on **build**.
 
 ![Eclipse Che - Commands Palette]({% image_path wfswarm-inventory-che-build.png %})
 
 
-~~~shell
-$ cd inventory-wildfly-swarm
-$ mvn package
-
-...
-[INFO] ------------------------------------------------------------------------
-[INFO] BUILD SUCCESS
-[INFO] ------------------------------------------------------------------------
-[INFO] Total time: 10.757 s
-[INFO] Finished at: 2017-07-24T10:49:54+07:00
-[INFO] Final Memory: 44M/481M
-[INFO] ------------------------------------------------------------------------
-~~~
-
-Once built, the resulting *jar* is located in the `target/` directory:
+Once built successfully, the resulting *jar* is located in the `target/` directory:
 
 ~~~shell
-$ ls target/*.jar
-target/inventory-1.0-SNAPSHOT-swarm.jar
+$ ls labs/inventory-wildfly-swarm/target/*-swarm.jar
+
+labs/inventory-wildfly-swarm/target/inventory-1.0-SNAPSHOT-swarm.jar
 ~~~
 
 This is an uber-jar with all the dependencies required packaged in the *jar* to enable running the 
@@ -97,8 +75,7 @@ Now let's write some code and create a domain model and a RESTful endpoint to cr
 
 #### Create a Domain Model
 
-Use your favorite code editor (we &hearts; Eclipse Che) to create a new Java class named `Inventory.java` in 
-`com.redhat.cloudnative.inventory` package with the below code and 
+Create a new Java class named `Inventory.java` in `com.redhat.cloudnative.inventory` package with the below code and 
 following fields: `itemId` and `quantity`
 
 In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** 
@@ -181,8 +158,11 @@ labs will be replaced with a PostgreSQL database. Be patient! More on that later
 
 #### Create a RESTful Service
 
-WildFly Swarm uses JAX-RS standard for building REST services. Create a new Java class named 
-`InventoryResource.java` in `com.redhat.cloudnative.inventory` package with the following content:
+WildFly Swarm uses JAX-RS standard for building REST services. In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** 
+
+
+Create a new Java class named  `InventoryResource.java` in the 
+`com.redhat.cloudnative.inventory` package with the following content:
 
 ~~~java
 package com.redhat.cloudnative.inventory;
@@ -212,25 +192,26 @@ The above REST services defines an endpoint that is accessible via `HTTP GET` at
 for example `/api/inventory/329299` with 
 the last path param being the product id which we want to check its inventory status.
 
-Build and package the Inventory service using Maven
+Build and package the Inventory service by clicking on the commands palette and then **BUILD > build**
+
+> Make sure **inventory-wildfly-swarm** project is highlighted in the project explorer
 
 ~~~shell
 $ mvn package
 ~~~
 
-Using WildFly Swarm maven plugin, you can conveniently run the application locally and test the endpoint.
+Using Eclipse Che and WildFly Swarm maven plugin, you can conveniently run the application
+directly in the IDE and test it before deploying it on OpenShift.
 
-In Eclipse Che, click on the commands palette and then on **run > run wildfly-swarm**
+In Eclipse Che, click on the run icon and then on **run wildfly-swarm**. 
 
-~~~shell
-$ mvn wildfly-swarm:run
-~~~
+> You can also run the inventory service in Eclipse Che using the commands palette and then **run > run wildfly-swarm**
 
-> Alternatively, you can run the application using the uber-jar produced during the
-> Maven build: `java -jar target/inventory-1.0-SNAPSHOT-swarm.jar`
+![Run Palette]({% image_path wfswarm-inventory-che-run-palette.png %}){:width="800px"}
+
 
 Once you see `WildFly Swarm is Ready` in the logs, the Inventory service is up and running and you can access the 
-inventory REST API. Let’s test it out using `curl` in a new terminal window:
+inventory REST API. Let’s test it out using `curl` in the **Terminal** window:
 
 ~~~shell
 $ curl http://localhost:9001/api/inventory/329299
@@ -238,13 +219,25 @@ $ curl http://localhost:9001/api/inventory/329299
 {"itemId":"329299","quantity":35}
 ~~~
 
+You can also use the preview url that Eclipse Che has generated for you to be able to test service 
+directly in the browser. Append the path `/api/inventory/329299` at the end of the preview url and try 
+it in your browser in a new tab.
+
+![Preview URL]({% image_path wfswarm-inventory-che-preview-url.png %}){:width="900px"}
+
+![Preview URL]({% image_path wfswarm-inventory-che-preview-browser.png %}){:width="900px"}
+
+
 The REST API returned a JSON object representing the inventory count for this product. Congratulations!
 
-Stop the service by pressing `CTRL-C` in the terminal window.
+Stop the Inventory service by clicking on the stop icon near **run wildfly swarm** in the **Machines** window.
+
+![Preview URL]({% image_path wfswarm-inventory-che-run-stop.png %}){:width="400px"}
 
 #### Deploy WildFly Swarm on OpenShift
 
-It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
+It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project by 
+running the following in the **Terminal** window:
 
 ~~~shell
 $ oc project {{COOLSTORE_PROJECT}}
@@ -262,11 +255,13 @@ the container image of the application from within the project. This maven plugi
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build a project, deploy it and finally launch a docker process as a pod.
 
-To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, run the following Maven command:
+To build and deploy the Inventory service on OpenShift using the `fabric8` maven plugin, 
+which is already configured in Eclipse Che. 
 
-~~~shell
-$ mvn fabric8:deploy
-~~~
+From the commands palette, click on **DEPLOY > fabric8:deploy**
+
+![Preview URL]({% image_path wfswarm-inventory-che-fabric8-deploy.png %}){:width="300px"}
+
 
 During the deployment, you might see that Fabric8 Maven Plugin throws an `java.util.concurrent.RejectedExecutionException` 
 exception. This is due to [a bug](https://github.com/fabric8io/kubernetes-client/issues/1035) in one of Fabric8 Maven Plugin 
