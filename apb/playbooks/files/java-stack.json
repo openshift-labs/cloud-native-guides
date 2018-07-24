@@ -87,7 +87,7 @@
         }
       },
       {
-        "commandLine": "cd ${current.project.path} && java -jar target/*-swarm.jar",
+        "commandLine": "cd ${current.project.path} && java -Dswarm.http.port=9001 -jar target/*-swarm.jar ",
         "name": "run wildfly-swarm",
         "type": "mvn",
         "attributes": {
@@ -102,6 +102,15 @@
         "attributes": {
           "goal": "Run",
           "previewUrl": "${server.8080/tcp}"
+        }
+      },
+      {
+        "commandLine": "cd ${current.project.path} && mvn fabric8:deploy",
+        "name": "fabric8:deploy",
+        "type": "mvn",
+        "attributes": {
+          "goal": "Deploy",
+          "previewUrl": ""
         }
       }
     ],

@@ -15,8 +15,7 @@ ourselves are in love with Eclipse Che and highly recommend it.
 
 ## Setup Your Workspace on Eclipse Che
 
-Follow these instructions to setup the development environment on Eclipse Che. Note that if you'd rather 
-to use your own workstation, you can skip this section and move to **Setup Your Own Workstation**.
+Follow these instructions to setup the development environment on Eclipse Che. 
 
 You might be familiar with the Eclipse IDE which is one of the most popoular IDEs for Java and other
 programming languages. [Eclipse Che](https://www.eclipse.org/che/) is the next-generation Eclipse IDE which is web-based
@@ -80,14 +79,14 @@ Repeat the above for **inventory-wildfly-swarm** and **gateway-vertx** projects.
 Note the **Terminal** window in Eclipse Che. For the rest of these labs, anytime you need to run 
 a command in a terminal, you can use the Eclipse Che **Terminal** window.
 
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-terminal.png %})
+![Eclipse Che - Terminal]({% image_path bootstrap-che-terminal.png %})
 
 ## Explore OpenShift with OpenShift CLI
 
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-Issue the following command and replace `{{OPENSHIFT_CONSOLE_URL}}` 
+Issue the following command in Eclipse Che terminal and replace `{{OPENSHIFT_CONSOLE_URL}}` 
 with your OpenShift Web Console url. 
 
 ~~~shell
