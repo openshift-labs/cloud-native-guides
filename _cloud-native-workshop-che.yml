@@ -31,8 +31,8 @@ modules:
   activate:
   - getting-started-che
   - wildfly-swarm-che
-  - spring-boot
-  - vertx
+  - spring-boot-che
+  - vertx-che
   - nodejs
   - health
   - fault-tolerance

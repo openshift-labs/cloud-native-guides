@@ -10,6 +10,10 @@ modules:
     name: Microservices with Spring Boot
     requires:
       - getting-started
+  spring-boot-che:
+    name: Microservices with Spring Boot
+    requires:
+      - getting-started-che
   wildfly-swarm:
     name: Enterprise Microservices with WildFly Swarm
     requires:
@@ -22,6 +26,10 @@ modules:
     name: Reactive Microservices with Eclipse Vert.x
     requires:
       - getting-started
+  vertx-che:
+    name: Reactive Microservices with Eclipse Vert.x
+    requires:
+      - getting-started-che
   nodejs:
     name: Web UI with Node.js and AngularJS
     requires:
