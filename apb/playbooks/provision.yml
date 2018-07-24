@@ -10,7 +10,7 @@
     openshift_user_password:
     project_suffix: "-XX"
     github_account: openshift-labs
-    github_ref: ocp-3.9
+    github_ref: ocp-3.10
     gogs_dev_user: developer
     gogs_pwd: openshift
     infrasvcs_adm_user: adminuser

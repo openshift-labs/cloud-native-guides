@@ -2,16 +2,16 @@ id: "cloudnative"
 name: "OpenShift Cloud-Native Workshop"
 
 content:
-  url: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9
+  url: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.10
 
 vars:
-  OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.9"
+  OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.10"
   COOLSTORE_PROJECT: "coolstore"
-  DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.9.31/windows/oc.zip
-  DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.9.31/macosx/oc.tar.gz
-  DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.9.31/linux/oc.tar.gz
+  DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/windows/oc.zip
+  DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/macosx/oc.tar.gz
+  DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/linux/oc.tar.gz
   LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git
-  LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/ocp-3.9.zip
+  LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/ocp-3.10.zip
   WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/master/web-nodejs
   REMOTE_DEBUGGER_JDB: true
   REMOTE_DEBUGGER_JBDS: true

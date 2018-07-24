@@ -1,4 +1,4 @@
-Cloud-Native Workshop [![Build Status](https://travis-ci.org/openshift-labs/cloud-native-guides.svg?branch=ocp-3.9)](https://travis-ci.org/openshift-labs/cloud-native-guides)
+Cloud-Native Workshop [![Build Status](https://travis-ci.org/openshift-labs/cloud-native-guides.svg?branch=ocp-3.10)](https://travis-ci.org/openshift-labs/cloud-native-guides)
 ===
 This one day hands-on cloud-native workshops provides developers and introduction to cloud-natives applications and gives them an experience of building cloud-native applications using OpenShift, Spring Boot, WildFly Swarm, Vert.xt and more.
 
@@ -29,13 +29,13 @@ as cluster admin and perform the following in the `openshift-ansible-service-bro
     - name: dh
       type: dockerhub
       org: openshiftapb
-      tag: ocp-3.9
+      tag: ocp-3.10
       white_list: [.*-apb$]
   ```
 
 2. Redeploy the `asb` deployment
 
-You can [read more in the docs](https://docs.openshift.com/container-platform/3.9/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub) 
+You can [read more in the docs](https://docs.openshift.com/container-platform/3.10/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub) 
 on how to configure the service catalog.
 
 Note that if you are using the _OpenShift Workshop_ in RHPDS, this APB is already available in your service catalog.
@@ -47,7 +47,7 @@ As an alternative, you can also run the APB directly in a pod on OpenShift to in
 ```
 oc login
 oc new-project lab-infra
-oc run apb --restart=Never --image="openshiftapb/cloudnative-workshop-apb:ocp-3.9" \
+oc run apb --restart=Never --image="openshiftapb/cloudnative-workshop-apb:ocp-3.10" \
     -- provision -vvv -e namespace=$(oc project -q) -e openshift_token=$(oc whoami -t)
 ```
 
@@ -58,7 +58,7 @@ Note that if you have used the above workshop installer, the lab instructions ar
 
 ```
 $ oc new-app osevg/workshopper:latest --name=guides \
-    -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.9/_cloud-native-workshop.yml"
+    -e WORKSHOPS_URLS="https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.10/_cloud-native-workshop.yml"
 $ oc expose svc/guides
 ```
 
