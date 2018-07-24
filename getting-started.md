@@ -107,7 +107,7 @@ Open up a terminal window and change to the directory where you downloaded the
 file.  Once you are in the directory, enter in the following command:
 
 ~~~shell
-$ tar zxvf oc-linux.tar.gz
+$ tar zxvf oc.tar.gz
 ~~~
 
 The tar.gz file name needs to be replaced by the entire name that was downloaded in the previous step.
@@ -143,7 +143,7 @@ Open up a terminal window and change to the directory where you downloaded the
 file. Once you are in the directory, enter in the following command:
 
 ~~~shell
-$ tar zxvf oc-macosx.tar.gz
+$ tar zxvf oc.tar.gz
 ~~~
 
 The tar.gz file name needs to be replaced by the entire name that was downloaded in the previous step.
