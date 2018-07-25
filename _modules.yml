@@ -45,6 +45,11 @@ modules:
     requires:
       - nodejs
       - health
+  fault-tolerance-che:
+    name: Service Resilience and Fault Tolerance
+    requires:
+      - nodejs
+      - health
   app-config:
     name:  Application Configuration
     requires:
@@ -53,7 +58,15 @@ modules:
     name:  Continuous Delivery
     requires:
       - nodejs
+  continuous-delivery-che:
+    name:  Continuous Delivery
+    requires:
+      - nodejs
   debug:
+    name:  Debugging Applications
+    requires:
+      - nodejs
+  debug-che:
     name:  Debugging Applications
     requires:
       - nodejs

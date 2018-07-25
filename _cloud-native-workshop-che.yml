@@ -35,8 +35,8 @@ modules:
   - vertx-che
   - nodejs
   - health
-  - fault-tolerance
+  - fault-tolerance-che
   - app-config
-  - continuous-delivery
-  - debug
+  - continuous-delivery-che
+  - debug-che
   - env-info
