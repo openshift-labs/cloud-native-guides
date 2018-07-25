@@ -154,30 +154,28 @@ deploymentconfig "web" autoscaled
 ~~~
 
 All set! Now the Web UI can scale automatically to multiple instances if the load on the CoolStore 
-online store increases. You can verify that using for example `ab`, the 
-[Apache HTTP server benchmarking tool](https://httpd.apache.org/docs/2.4/programs/ab.html). Let's 
-deploy the `ab` container image from [Docker Hub](https://hub.docker.com/r/jordi/ab/) and 
-generate some load on the Web UI. Since we want to run this container only once and after it runs 
-it's not needed anymore, use the `oc run --rm` command to run the container and throw it away 
-after it's done running:
+online store increases. You can verify that using for example the `siege` command-line utility, which 
+is a handy tool for running load tests against web endpoints and is already 
+installed within your Eclipse Che workspace. 
 
+Run the following command in the **Terminal** window.
 ~~~shell
-$ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- -n 50000 -c 10 http://web:8080/
+$ siege -c 20 -t 40s http://web.coolstore.svc.cluster.local:8080
 ~~~
 
-In the above, `--image` specified which container image should be deployed. OpenShift first 
-looks in the internal image registry and then in defined upstream registries 
-([Red Hat Container Catalog](https://access.redhat.com/search/#/container-images) and 
-[Docker Hub](https://hub.docker.com) by default) to find and pull this image. After `--`, you 
-can override the container entry point to whatever command you want to run in that container.
+Note that you are using the internal url of the Web UI in this command. Since Eclipse Che is running on 
+the same OpenShift cluster as Web UI, you can choose to use the external URL that is exposed on the load balancer 
+or the internal user which goes directly to the Web UI pod and bypasses the load balancer. You can 
+read more about internal service dns names in 
+[OpenShift Docs]({{OPENSHIFT_DOCS_BASE}}/architecture/networking/networking.html).
 
 As the load is generated, you will notice that it will create a spike in the 
 Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
 > Depending on the resources available on the OpenShift cluster in the lab environment, 
-> the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
-> the load by specifying a higher number of requests (e.g. 80K) using `-n` flag.
+> the Web UI might scale to fewer than 5 pods to handle the extra load. Run the command again 
+> to generate more load.
 
 ![Web UI Automatically Scaled]({% image_path fault-autoscale-web.png %}){:width="740px"}
 
