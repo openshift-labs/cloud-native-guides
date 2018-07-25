@@ -28,6 +28,7 @@
       - openshift_token is defined
       - openshift_token is not none
       - openshift_token|trim() != ""
+    tags: always
 
   - name: login as super user with pwd
     shell: "oc login -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
@@ -35,6 +36,7 @@
       openshift_token is not defined or
       openshift_token is none or
       openshift_token|trim() == ""
+    tags: always  
           
   - name: extract app route suffix
     block:
@@ -52,6 +54,7 @@
           name: dummy
           namespace: "{{ namespace }}"
           state: absent
+    tags: always
 
   - import_role:
       name: openshift_sonatype_nexus
@@ -59,6 +62,7 @@
       project_name: "{{ namespace }}"
       nexus_image_version: 3.12.1
       nexus_max_memory: 6Gi
+    tags: nexus
 
   - import_role:
       name: openshift_gogs
@@ -70,6 +74,7 @@
       gogs_admin_password: "{{ infrasvcs_adm_pwd }}"
       gogs_user: "{{ gogs_dev_user }}"
       gogs_password: "{{ gogs_pwd }}"
+    tags: gogs
 
   # deploy eclipse che
   - import_role:
@@ -83,10 +88,12 @@
       keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
       install_java_oc_stack: false
       install_custom_stacks_json: [ "{{ lookup('file', 'files/java-stack.json') }}" ]
+    tags: eclipse-che
 
   # deploy guides
   - import_role:
       name: openshift_workshopper
+      allow_duplicates: true
     vars:
       workshopper_name: guides
       project_name: "{{ namespace }}"
@@ -99,9 +106,11 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
+    tags: guides
 
   - import_role:
       name: openshift_workshopper
+      allow_duplicates: true
     vars:
       workshopper_name: guides-che
       project_name: "{{ namespace }}"
@@ -114,4 +123,4 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-
+    tags: guides
