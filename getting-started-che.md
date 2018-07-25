@@ -17,14 +17,20 @@ ourselves are in love with Eclipse Che and highly recommend it.
 
 Follow these instructions to setup the development environment on Eclipse Che. 
 
-You might be familiar with the Eclipse IDE which is one of the most popoular IDEs for Java and other
+You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other
 programming languages. [Eclipse Che](https://www.eclipse.org/che/) is the next-generation Eclipse IDE which is web-based
 and gives you a full-featured IDE running in the cloud. You have an Eclipse Che instance deployed on your OpenShift cluster
 which you will use during these labs.
 
-Go to the [Eclipse Che url]({{ ECLIPSE_CHE_URL }}) in order to configuration your development workspace: {{ ECLIPSE_CHE_URL }}
+Go to the [Eclipse Che url]({{ ECLIPSE_CHE_URL }}) in order to configure your development workspace: {{ ECLIPSE_CHE_URL }}
 
-A stack is a template of workspace configuration. For example, it includes the programming language and tools needed
+First, you need to register as a user. Register and choose the same username and password as 
+your OpenShift credentials.
+
+![Eclipse Che - Register]({% image_path bootstrap-che-register.png %}){:width="700px"}
+
+Log into Eclipse Che with your user. You can now create your workspace based on a stack. A 
+stack is a template of workspace configuration. For example, it includes the programming language and tools needed
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
