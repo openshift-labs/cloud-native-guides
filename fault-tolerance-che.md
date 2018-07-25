@@ -425,14 +425,18 @@ The `circuit.rxExecuteCommandWithFallback(...)` method, defines the fallback log
 when the circuit is open and logs an error without calling the Inventory service in those 
 scenarios.
 
-Build the API Gateway using Maven and trigger a new container image build on OpenShift using 
+Build and package the Gateway service using Maven by clicking on **BUILD > build** from the commands palette.
+
+![Maven Build]({% image_path eclipse-che-commands-build.png %}){:width="340px"}
+
+Although you can use the **DEPLOY > fabric8:deploy** from the commands palette, you 
+can also trigger a new container image build on OpenShift using 
 the `oc start-build` command which allows you to build container images directly from the application 
 archives (`jar`, `war`, etc) without the need to have access to the source code for example by downloading 
 the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
 
 ~~~shell
-$ mvn package
-$ oc start-build gateway-s2i --from-file=target/gateway-1.0-SNAPSHOT.jar
+$ oc start-build gateway-s2i --from-file=labs/gateway-vertx/target/gateway-1.0-SNAPSHOT.jar
 ~~~
 
 As soon as the new `gateway` container image is built, OpenShift deploys the new image automatically 
