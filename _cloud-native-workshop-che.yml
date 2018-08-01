@@ -10,9 +10,9 @@ vars:
   DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/windows/oc.zip
   DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/macosx/oc.tar.gz
   DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.10.23/linux/oc.tar.gz
-  LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git
+  LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git#ocp-3.10
   LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/ocp-3.10.zip
-  WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/master/web-nodejs
+  WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/ocp-3.10/web-nodejs
   REMOTE_DEBUGGER_JDB: true
   REMOTE_DEBUGGER_JBDS: true
   REMOTE_DEBUGGER_IDEA: true
