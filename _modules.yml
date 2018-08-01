@@ -8,67 +8,33 @@ modules:
     name: Getting Started
   spring-boot:
     name: Microservices with Spring Boot
-    requires:
-      - getting-started
   spring-boot-che:
     name: Microservices with Spring Boot
-    requires:
-      - getting-started-che
   wildfly-swarm:
     name: Enterprise Microservices with WildFly Swarm
-    requires:
-      - getting-started
   wildfly-swarm-che:
     name: Enterprise Microservices with WildFly Swarm
-    requires:
-      - getting-started-che
   vertx:
     name: Reactive Microservices with Eclipse Vert.x
-    requires:
-      - getting-started
   vertx-che:
     name: Reactive Microservices with Eclipse Vert.x
-    requires:
-      - getting-started-che
   nodejs:
     name: Web UI with Node.js and AngularJS
-    requires:
-      - spring-boot
-      - wildfly-swarm
-      - vertx
   health:
     name: Monitoring Application Health 
-    requires:
-      - nodejs
   fault-tolerance:
     name: Service Resilience and Fault Tolerance
-    requires:
-      - nodejs
-      - health
   fault-tolerance-che:
     name: Service Resilience and Fault Tolerance
-    requires:
-      - nodejs
-      - health
   app-config:
     name:  Application Configuration
-    requires:
-      - nodejs
   continuous-delivery:
     name:  Continuous Delivery
-    requires:
-      - nodejs
   continuous-delivery-che:
     name:  Continuous Delivery
-    requires:
-      - nodejs
   debug:
     name:  Debugging Applications
-    requires:
-      - nodejs
   debug-che:
     name:  Debugging Applications
-    requires:
-      - nodejs
   env-info:
     name: "Appendix: Lab Env Info"
