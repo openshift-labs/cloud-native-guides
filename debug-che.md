@@ -122,7 +122,7 @@ You should see a confirmation that the remote debugger is successfully connected
 ![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="360px"}
 
 Open `com.redhat.cloudnative.inventory.InventoryResource` and double-click 
-on the editor sidebar (left-side of line numbers) near the first line of the `getAvailability()` 
+on the editor sidebar on the line number of the first line of the `getAvailability()` 
 method to add a breakpoint to that line. A start appears near the line to show a breakpoint 
 is set.
 
@@ -148,16 +148,16 @@ breakpoint on `InventoryResource` class.
 
 ![Icons]({% image_path debug-che-breakpoint-stop.png %}){:width="900px"}
 
+Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the 
+given product id from the database.
+
+![Step Over]({% image_path debug-che-step-over.png %}){:width="340px"}
+
 Click on the the plus icon in the **Variables** panel to add the `inventory` variable 
 to the list of watch variables. This would allow you to see the value of `inventory` variable 
 during execution.
 
 ![Watch Variables]({% image_path debug-che-variables.png %}){:width="500px"}
-
-Click on the _Step Over_ icon to execute one line and retrieve the inventory object for the 
-given product id from the database.
-
-![Step Over]({% image_path debug-che-step-over.png %}){:width="340px"}
 
 ![Debug]({% image_path debug-che-breakpoint-values.png %}){:width="900px"}
 

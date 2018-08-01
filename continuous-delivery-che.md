@@ -23,7 +23,9 @@ a source code repository.
 #### Create a Git Repository for Inventory
 
 You can use any Git server (e.g. GitHub, BitBucket, etc) for this lab but we have prepared a 
-Gogs git server which you can access here: {{ GIT_URL }}
+Gogs git server which you can access here: 
+
+{{ GIT_URL }}
 
 Click on **Register** to register a new user with the following details and then click on 
 **Create New Account**: 
