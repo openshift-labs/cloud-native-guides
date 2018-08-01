@@ -34,12 +34,6 @@ The source code for the the Node.js Web front-end is available in this Git repos
 
 <{{WEB_NODEJS_GIT_REPO}}>
 
-First, make sure you are on the  `{{COOLSTORE_PROJECT}}` project:
-
-~~~shell
-$ oc project {{COOLSTORE_PROJECT}}
-~~~
-
 Use the OpenShift CLI command to create a new build and deployment for the Web component:
 
 > Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 

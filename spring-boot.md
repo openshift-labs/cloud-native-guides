@@ -264,11 +264,7 @@ Stop the service by pressing `CTRL-C` in the terminal window.
 
 #### Deploy Spring Boot on OpenShift
 
-It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
-
-~~~shell
-$ oc project {{COOLSTORE_PROJECT}}
-~~~
+It’s time to build and deploy our service on OpenShift. 
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
