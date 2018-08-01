@@ -230,6 +230,9 @@ application services and endpoints you (or your teams) are using for your work.
 For this lab, let's create a project that you will use in the following labs for 
 deploying your applications. 
 
+> Make sure to follow your instructor guidance on the project names in order to 
+> have a unique project name for yourself e.g. appending your username to the project name
+
 ~~~shell
 $ oc new-project {{COOLSTORE_PROJECT}}
 
