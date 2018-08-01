@@ -86,17 +86,15 @@ configuration is however using a [YAML file](https://reference.wildfly-swarm.io/
 which you have already packaged within the Inventory Maven project.
 
 The YAML file can be packaged within the application JAR file and be overladed 
-[using command-line or system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties) which you will do in this lab.
+[using command-line or system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/command_line.html) which you will do in this lab.
 
-> Check out `inventory-wildfly-swarm/src/main/resources/project-stages.yml` which contains the default configuration.
+> Check out `inventory-wildfly-swarm/src/main/resources/project-defaults.yml` which contains the default configuration.
 
 Create a YAML file with the PostgreSQL database credentials. Note that you can give an arbitrary 
 name to this configuration (e.g. `prod`) in order to tell WildFly Swarm which one to use:
 
 ~~~shell
-$ cat <<EOF > ./project-stages.yml
-project:
-  stage: prod
+$ cat <<EOF > ./project-defaults.yml
 swarm:
   datasources:
     data-sources:
@@ -112,11 +110,11 @@ EOF
 > service name published on OpenShift. This name will be resolved by the internal DNS server 
 > exposed by OpenShift and accessible to containers running on OpenShift.
 
-And then create a config map that you will use to overlay on the default `project-stages.yml` which is 
+And then create a config map that you will use to overlay on the default `project-defaults.yml` which is 
 packaged in the Inventory JAR archive:
 
 ~~~shell
-$ oc create configmap inventory --from-file=./project-stages.yml
+$ oc create configmap inventory --from-file=./project-defaults.yml
 ~~~
 
 > If you don't like bash commands, Go to the **{{COOLSTORE_PROJECT}}** 
@@ -124,11 +122,11 @@ $ oc create configmap inventory --from-file=./project-stages.yml
 > on **Create Config Map** button to create a config map with the following info:
 > 
 > * Name: `inventory`
-> * Key: `project-stages.yml`
-> * Value: *copy-paste the content of the above project-stages.yml excluding the first and last lines (the lines that contain EOF)*
+> * Key: `project-defaults.yml`
+> * Value: *copy-paste the content of the above project-defaults.yml excluding the first and last lines (the lines that contain EOF)*
 
 Config maps hold key-value pairs and in the above command an `inventory` config map 
-is created with `project-stages.yml` as the key and the content of the `project-stages.yml` as the 
+is created with `project-defaults.yml` as the key and the content of the `project-defaults.yml` as the 
 value. Whenever a config map is injected into a container, it would appear as a file with the same 
 name as the key, at specified path on the filesystem.
 
@@ -143,17 +141,16 @@ $ oc volume dc/inventory --add --configmap-name=inventory --mount-path=/app/conf
 ~~~
 
 The above command mounts the content of the `inventory` config map as a file inside the Inventory container 
-at `/app/config/project-stages.yaml`
+at `/app/config/project-defaults.yaml`
 
-The last step is the [aforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/project_stages.html#_command_line_switches_system_properties) on the Inventory container to overlay the 
-WildFly Swarm configuration, using the `JAVA_OPTIONS` environment variable. 
+The last step is the [aforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/command_line.html) on the Inventory container to overlay the WildFly Swarm configuration, using the `JAVA_ARGS` environment variable. 
 
 > The Java runtime on OpenShift can be configured using 
 > [a set of environment variables](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables) 
 > to tune the JVM without the need to rebuild a new Java runtime container image every time a new option is needed.
 
 ~~~shell
-$ oc set env dc/inventory JAVA_OPTIONS="-Dswarm.project.stage=prod -Dswarm.project.stage.file=file:///app/config/project-stages.yml"
+$ oc set env dc/inventory JAVA_ARGS="-s /app/config/project-defaults.yml"
 ~~~
 
 
@@ -162,7 +159,7 @@ and then verify that the config map is in fact injected into the container by ru
 a shell command inside the Inventory container:
 
 ~~~shell
-$ oc rsh dc/inventory cat /app/config/project-stages.yml
+$ oc rsh dc/inventory cat /app/config/project-defaults.yml
 ~~~
 
 Also verify that the PostgreSQL database is actually used by the Inventory service. Check the 
