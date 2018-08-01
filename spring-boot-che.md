@@ -80,7 +80,7 @@ RESTful endpoint to create the Catalog service:
 Create a new Java class named `Product` in the `com.redhat.cloudnative.catalog` package with the below code and 
 following fields: `itemId`, `name`, `desc` and `price`
 
-In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > ... > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
+In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
 
 
 ~~~java
@@ -166,6 +166,9 @@ Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative
 and extend [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) interface in order to indicate to Spring that you want to expose a 
 complete set of methods to manipulate the entity.
 
+In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class** and paste the following code:
+
+
 ~~~java
 package com.redhat.cloudnative.catalog;
 
@@ -182,7 +185,8 @@ RESTful service that returns the list of products.
 
 Spring Boot uses Spring Web MVC as the default RESTful stack in Spring applications. Create 
 a new Java class named `CatalogController` in `com.redhat.cloudnative.catalog` package with 
-the following content:
+the following content by right-clicking on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and 
+then clicking on **New > Java Class**:
 
 ~~~java
 package com.redhat.cloudnative.catalog;
@@ -245,12 +249,7 @@ Stop the Inventory service by clicking on the stop icon near **run spring-boot**
 
 #### Deploy Spring Boot on OpenShift
 
-It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project 
-by running the following commands in the **Terminal** window:
-
-~~~shell
-$ oc project {{COOLSTORE_PROJECT}}
-~~~
+It’s time to build and deploy our service on OpenShift. 
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 

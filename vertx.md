@@ -42,7 +42,7 @@ is important that the code in a Verticle does not block. This asynchronous archi
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
 
-![Vert.x Event Loop]({% image_path vertx-event-loop.jpg %}){:width="440px"}
+![Vert.x Event Loop]({% image_path vertx-event-loop.png %}){:width="600px"}
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. 
 
@@ -395,11 +395,7 @@ Stop all services by pressing `CTRL-C` in the terminal windows.
 
 #### Deploy Vert.x on OpenShift
 
-It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project:
-
-~~~shell
-$ oc project {{COOLSTORE_PROJECT}}
-~~~
+It’s time to build and deploy our service on OpenShift. 
 
 Like discussed, Vert.x service discovery integrates into OpenShift service discovery via OpenShift 
 REST API and imports available services to make them available to the Vert.x application. Security 
@@ -411,6 +407,8 @@ more about service accounts in the [OpenShift Documentation]({{OPENSHIFT_DOCS_BA
 [blog post](https://blog.openshift.com/understanding-service-accounts-sccs/#_service_accounts)
 
 Grant permission to the API Gateway to be able to access OpenShift REST API and discover services.
+
+> Make sure to replace the project name with your own unique project name
 
 ~~~shell
 $ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default

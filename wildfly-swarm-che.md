@@ -78,7 +78,7 @@ Now let's write some code and create a domain model and a RESTful endpoint to cr
 Create a new Java class named `Inventory` in `com.redhat.cloudnative.inventory` package with the below code and 
 following fields: `itemId` and `quantity`
 
-In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > ... > com.redhat.cloudnative.inventory** and then on **New > Java Class**. Enter `Inventory` as the Java class name.
+In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java > com.redhat.cloudnative.inventory** and then on **New > Java Class**. Enter `Inventory` as the Java class name.
 
 ![Eclipse Che - Create Java Class]({% image_path wfswarm-inventory-che-new-class.png %}){:width="700px"}
 
@@ -160,11 +160,10 @@ labs will be replaced with a PostgreSQL database. Be patient! More on that later
 
 #### Create a RESTful Service
 
-WildFly Swarm uses JAX-RS standard for building REST services. In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java** and then on **New > Java Class** 
+WildFly Swarm uses JAX-RS standard for building REST services. In the project explorer in Eclipse Che, right-click on **inventory-wildfly-swarm > src > main > java > com.redhat.cloudnative.inventory** and then on **New > Java Class** 
 
 
-Create a new Java class named  `InventoryResource` in the 
-`com.redhat.cloudnative.inventory` package with the following content:
+Create a new Java class named  `InventoryResource` with the following content:
 
 ~~~java
 package com.redhat.cloudnative.inventory;
@@ -197,10 +196,6 @@ the last path param being the product id which we want to check its inventory st
 Build and package the Inventory service by clicking on the commands palette and then **BUILD > build**
 
 > Make sure **inventory-wildfly-swarm** project is highlighted in the project explorer
-
-~~~shell
-$ mvn package
-~~~
 
 Using Eclipse Che and WildFly Swarm maven plugin, you can conveniently run the application
 directly in the IDE and test it before deploying it on OpenShift.
@@ -238,12 +233,7 @@ Stop the Inventory service by clicking on the stop icon near **run wildfly-swarm
 
 #### Deploy WildFly Swarm on OpenShift
 
-It’s time to build and deploy our service on OpenShift. First, make sure you are on the `{{COOLSTORE_PROJECT}}` project by 
-running the following in the **Terminal** window:
-
-~~~shell
-$ oc project {{COOLSTORE_PROJECT}}
-~~~
+It’s time to build and deploy our service on OpenShift. 
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
