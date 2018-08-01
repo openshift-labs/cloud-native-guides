@@ -51,6 +51,18 @@ oc run apb --restart=Never --image="openshiftapb/cloudnative-workshop-apb:ocp-3.
     -- provision -vvv -e namespace=$(oc project -q) -e openshift_token=$(oc whoami -t)
 ```
 
+Or if you have Ansible installed locally, you can also run the Ansilbe playbooks directly on your machine:
+
+```
+oc login
+oc new-project lab-infra
+
+ansible-playbook -vvv playbooks/provision.yml \
+       -e namespace=$(oc project -q) \
+       -e openshift_token=$(oc whoami -t) \
+       -e openshift_master_url=$(oc whoami --show-server)
+``` 
+
 Lab Instructions on OpenShift
 ===
 

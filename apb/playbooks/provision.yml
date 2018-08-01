@@ -124,3 +124,15 @@
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
     tags: guides
+
+  # install openjdk imagestream
+  - name: get openjdk image stream
+    shell: "oc get is java -n openshift"
+    register: java_imagestream_result
+    ignore_errors: true
+    tags: jdk
+
+  - name: install java image stream
+    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/openjdk/openjdk18-image-stream.json"
+    when: java_imagestream_result is failed
+    tags: jdk

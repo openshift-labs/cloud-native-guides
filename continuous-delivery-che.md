@@ -230,22 +230,8 @@ In order to automate triggering the pipeline, you can define a webhook on your G
 to notify OpenShift on every commit that is made to the Git repository and trigger a pipeline 
 execution.
 
-You can get see the webhook links for your `inventory-pipeline` using the `describe` command.
-
-~~~shell
-$ oc describe bc inventory-pipeline
-
-....
-Webhook GitHub:
-	URL:	https://10.2.2.15:8443/oapi/v1/namespaces/coolstore/buildconfigs/inventory-pipeline/webhooks/V7l7DtTdDOaU3eioZb97/github
-Webhook Generic:
-	URL:		https://10.2.2.15:8443/oapi/v1/namespaces/coolstore/buildconfigs/inventory-pipeline/webhooks/KyDr2_YFsWMsOjaWuzw_/generic
-	AllowEnv:	false
-....
-~~~
-
-> You can also see the webhooks in the OpenShift Web Console by going to **Build >> Pipelines**, 
-> click on the pipeline and go to the **Configurations** tab.
+You can get see the webhook links in the OpenShift Web Console by going to **Build >> Pipelines**, clicking 
+on the pipeline and going to the **Configurations** tab.
 
 Copy the Generic webhook url which you will need in the next steps.
 
