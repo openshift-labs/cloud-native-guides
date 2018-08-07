@@ -87,7 +87,7 @@
       keycloak_admin_user: "{{ infrasvcs_adm_user }}"
       keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
       install_java_oc_stack: false
-      install_custom_stacks_json: [ "{{ lookup('file', 'files/java-stack.json') }}" ]
+      install_custom_stacks_json: [ "{{ lookup('file', '{{ playbook_dir }}/files/java-stack.json') }}" ]
     tags: eclipse-che
 
   # deploy guides
