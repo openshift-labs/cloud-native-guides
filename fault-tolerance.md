@@ -154,16 +154,16 @@ deploymentconfig "web" autoscaled
 ~~~
 
 All set! Now the Web UI can scale automatically to multiple instances if the load on the CoolStore 
-online store increases. You can verify that using for example `ab`, the 
-[Apache HTTP server benchmarking tool](https://httpd.apache.org/docs/2.4/programs/ab.html). Let's 
-deploy the `ab` container image from [Docker Hub](https://hub.docker.com/r/jordi/ab/) and 
-generate some load on the Web UI. Since we want to run this container only once and after it runs 
-it's not needed anymore, use the `oc run --rm` command to run the container and throw it away 
-after it's done running:
+online store increases. You can verify that using for example `siege` the 
+[http load testing and benchmarking utility](https://www.joedog.org/siege-manual/). Let's 
+deploy the `siege` container image from [Docker Hub](https://hub.docker.com/r/siamaksade/siege/) 
+as a [Kubernetes job](https://docs.openshift.com/container-platform/3.10/dev_guide/jobs.html) and 
+generate some load on the Web UI:
 
 ~~~shell
-$ oc run web-load --rm --attach --restart='Never' --image=jordi/ab -- -n 50000 -c 10 http://web:8080/
+oc run web-load --restart='OnFailure' --image=siamaksade/siege -- -c80 -d2 -t5M  http://web:8080/
 ~~~
+
 
 In the above, `--image` specified which container image should be deployed. OpenShift first 
 looks in the internal image registry and then in defined upstream registries 
@@ -175,9 +175,11 @@ As the load is generated, you will notice that it will create a spike in the
 Web UI cpu usage and trigger the autoscaler to scale the Web UI container to 5 pods (as configured 
 on the deployment config) to cope with the load.
 
-> Depending on the resources available on the OpenShift cluster in the lab environment, 
-> the Web UI might scale to fewer than 5 pods to handle the extra load. You can increase 
-> the load by specifying a higher number of requests (e.g. 80K) using `-n` flag.
+> Depending on the resources available on the OpenShift cluster, the pod might scale 
+> to fewer than 5 pods to handle the extra load. You can generate more load load by 
+> specifying a higher number of concurrent requests `-c80` flag. Just make sure to remove the 
+> existing `web-load` job first (see if you can find out how!). 
+
 
 ![Web UI Automatically Scaled]({% image_path fault-autoscale-web.png %}){:width="740px"}
 
