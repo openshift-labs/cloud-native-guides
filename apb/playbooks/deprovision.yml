@@ -15,6 +15,7 @@
   tasks:    
   - name: login as super user with token
     shell: "oc login --token={{ openshift_token }} --insecure-skip-tls-verify=true"
+    ignore_errors: true
     when:
       - openshift_token is defined
       - openshift_token is not none
@@ -22,6 +23,7 @@
 
   - name: login as super user with pwd
     shell: "oc login -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
+    ignore_errors: true
     when: >
       openshift_token is not defined or
       openshift_token is none or
@@ -29,6 +31,7 @@
           
   - name: Delete infrastructyre services from {{ namespace }}
     command: "oc delete all,cm,secret,pvc,sa -l app={{ item }} -n {{ namespace }}"
+    ignore_errors: true
     with_items:
       - che
       - gogs
