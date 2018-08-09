@@ -43,7 +43,7 @@ Use the OpenShift CLI command to create a new build and deployment for the Web c
 > which is the sub-folder of the Git repository where the source code for Web resides.
 
 ~~~shell
-$ oc new-app nodejs~{{LABS_GIT_REPO}} \
+$ oc new-app nodejs:8~{{LABS_GIT_REPO}} \
         --context-dir=web-nodejs \
         --name=web 
 ~~~
