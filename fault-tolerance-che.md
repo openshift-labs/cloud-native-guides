@@ -177,7 +177,7 @@ on the deployment config) to cope with the load.
 > the Web UI might scale to fewer than 5 pods to handle the extra load. Run the command again 
 > to generate more load.
 
-![Web UI Automatically Scaled]({% image_path fault-autoscale-web.png %}){:width="740px"}
+![Web UI Automatically Scaled]({% image_path fault-autoscale-web.gif %}){:width="740px"}
 
 You can see the aggregated cpu metrics graph of all 5 Web UI pods by going to the OpenShift Web Console and clicking on 
 **Monitoring** and then the arrow (**>**) on the left side of **web-n** under **Deployments**.
