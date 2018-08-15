@@ -56,6 +56,11 @@
           state: absent
     tags: always
 
+  - name: delete project quota
+    shell: "oc delete limitrange --all -n {{ namespace }}"
+    ignore_errors: true
+    tags: always
+
   - import_role:
       name: openshift_sonatype_nexus
     vars:
@@ -290,4 +295,3 @@
           "id": "java-oc-centos-cloudnative"
         }]
     tags: eclipse-che
-
