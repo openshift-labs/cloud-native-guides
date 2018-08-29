@@ -128,6 +128,16 @@
     when: java_imagestream_result is failed
     tags: jdk
 
+  # update jenkins templates
+  - import_role:
+      name: openshift_jenkins
+    vars:
+      update_jenkins_templates: true
+      jenkins_template_disable_admin_monitors: true
+      deploy_jenkins: false
+      jenkins_max_cpu: 2
+      jenkins_max_mem: 2Gi
+
   # deploy eclipse che
   - import_role:
       name: openshift_eclipse_che
