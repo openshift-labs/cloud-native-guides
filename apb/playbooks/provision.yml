@@ -10,11 +10,12 @@
     openshift_user_password:
     project_suffix: "-XX"
     github_account: openshift-labs
-    github_ref: ocp-3.10
+    github_ref: ocp-3.11
     gogs_dev_user: developer
     gogs_pwd: openshift
     infrasvcs_adm_user: adminuser
     infrasvcs_adm_pwd: adminpwd
+    master_url: "kubernetes.default"
 
   roles:
   - role: ansible.kubernetes-modules
@@ -23,7 +24,7 @@
 
   tasks:    
   - name: login as super user with token
-    shell: "oc login --token={{ openshift_token }} --insecure-skip-tls-verify=true"
+    shell: "oc login {{ master_url }} --token={{ openshift_token }} --insecure-skip-tls-verify=true"
     when:
       - openshift_token is defined
       - openshift_token is not none
@@ -31,7 +32,7 @@
     tags: always
 
   - name: login as super user with pwd
-    shell: "oc login -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
+    shell: "oc login {{ master_url }} -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
     when: >
       openshift_token is not defined or
       openshift_token is none or
@@ -290,7 +291,7 @@
               "name": "Ansible"
             },
             {
-              "version": "3.10",
+              "version": "3.11",
               "name": "OpenShift CLI"
             }
           ],

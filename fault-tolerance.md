@@ -157,7 +157,7 @@ All set! Now the Web UI can scale automatically to multiple instances if the loa
 online store increases. You can verify that using for example `siege` the 
 [http load testing and benchmarking utility](https://www.joedog.org/siege-manual/). Let's 
 deploy the `siege` container image from [Docker Hub](https://hub.docker.com/r/siamaksade/siege/) 
-as a [Kubernetes job](https://docs.openshift.com/container-platform/3.10/dev_guide/jobs.html) and 
+as a [Kubernetes job](https://docs.openshift.com/container-platform/3.11/dev_guide/jobs.html) and 
 generate some load on the Web UI:
 
 ~~~shell
