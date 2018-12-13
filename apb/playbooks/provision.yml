@@ -9,8 +9,8 @@
     openshift_master_url: 
     openshift_user_password:
     project_suffix: "-XX"
-    github_account: openshift-labs
-    github_ref: ocp-3.11
+    github_account: RedHat-Middleware-Workshops
+    github_ref: master
     gogs_dev_user: developer
     gogs_pwd: openshift
     infrasvcs_adm_user: adminuser
@@ -89,8 +89,8 @@
     vars:
       workshopper_name: guides
       project_name: "{{ namespace }}"
-      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}"
-      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}/_cloud-native-workshop.yml"
+      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-workshop-v2-guides/{{ github_ref }}"
+      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-workshop-v2-guides/{{ github_ref }}/_cloud-native-workshop.yml"
       workshopper_env_vars:
         PROJECT_SUFFIX: "{{ project_suffix }}"
         COOLSTORE_PROJECT: coolstore{{ project_suffix }}

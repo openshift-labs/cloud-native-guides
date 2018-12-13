@@ -15,9 +15,9 @@ install:
   - ansible-playbook apb/playbooks/provision.yml --syntax-check
 
 script:
-  - cd apb && docker build -t openshiftapb/cloudnative-workshop-apb:$TRAVIS_COMMIT .
+  - cd apb && docker build -t openshiftapb/cloudnative-workshop-v2-apb:$TRAVIS_COMMIT .
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker tag openshiftapb/cloudnative-workshop-apb:$TRAVIS_COMMIT openshiftapb/cloudnative-workshop-apb:$TAG
-  - docker push openshiftapb/cloudnative-workshop-apb:$TAG
+  - docker tag openshiftapb/cloudnative-workshop-v2-apb:$TRAVIS_COMMIT openshiftapb/cloudnative-workshop-v2-apb:$TAG
+  - docker push openshiftapb/cloudnative-workshop-v2-apb:$TAG
