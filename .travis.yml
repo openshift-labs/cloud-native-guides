@@ -7,7 +7,7 @@ services:
   - docker
 
 before_install:
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS quay.io
 
 install:
   - pip install ansible
@@ -19,5 +19,5 @@ script:
 
 after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker tag openshiftapb/cloudnative-workshop-v2-apb:$TRAVIS_COMMIT openshiftapb/cloudnative-workshop-v2-apb:$TAG
-  - docker push openshiftapb/cloudnative-workshop-v2-apb:$TAG
+  - docker tag openshiftapb/cloudnative-workshop-v2-apb:$TRAVIS_COMMIT quay.io/openshiftapb/cloudnative-workshop-v2-apb:$TAG
+  - docker push quay.io/openshiftapb/cloudnative-workshop-v2-apb:$TAG
