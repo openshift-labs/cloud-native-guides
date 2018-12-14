@@ -8,12 +8,12 @@ tags:
 metadata:
   dependencies: []
   displayName: "Cloud-Native Workshop Installer v2"
-  longDescription: "Installs the lab instructions and required components (Git server, Nexus, Eclipse Che, etc) for running the Cloud-Native Workshop https://github.com/openshift-labs/cloud-native-guides"
+  longDescription: "Installs the lab instructions and required components (Git server, Nexus, Eclipse Che, etc) for running the Cloud-Native Workshop https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-guides"
   console.openshift.io/iconClass: "pficon pficon-process-automation"
   providerDisplayName: "Red Hat, Inc."
 plans:
   - name: default
-    description: Deploys Cloud-Native Workshop Infrastructure
+    description: Deploys Cloud-Native Workshop v2 Infrastructure
     free: True
     metadata:
       displayName: Default
