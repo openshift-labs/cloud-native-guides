@@ -1,6 +1,6 @@
 version: 1.0
 name: cloudnative-workshop-v2-apb
-description: APB to deploy required infra components for the Cloud-Native Workshop on an OpenShift cluster
+description: APB to deploy required infra components for the v2 version of Cloud-Native Workshop on an OpenShift cluster
 bindable: False
 async: optional
 tags:
