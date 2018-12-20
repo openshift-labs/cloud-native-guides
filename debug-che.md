@@ -80,18 +80,29 @@ Enable remote debugging on Inventory by running the following inside the `labs/i
 directory in the Eclipse Che **Terminal** window:
 
 ~~~shell
-$ mvn fabric8:debug
+$ mvn fabric8:deploy -Dfabric8.debug.enabled=true
+$ oc get pods -w -lapp=inventory,deploymentconfig=inventory
+NAME                READY     STATUS    RESTARTS   AGE
+inventory-3-jrk84   1/1       Running   0          15m
 ~~~~
+
+Wait until the service is `Running` with `1/1` in the `READY` column.
 
 > The default port for remoting debugging is `5005` but you can change the default port 
 > via environment variables. Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
 
 You are all set now to start debugging using the tools of you choice. 
 
-Do not wait for the command to return! The fabric8 maven plugin keeps the forwarded 
-port open so that you can start debugging remotely.
+Forward the remote debugging port of the Inventory service locally by executing the following command:
 
-![Fabric8 Debug]({% image_path debug-che-fabric8.png %}){:width="900px"}
+~~~shell
+$ oc port-forward dc/inventory 5005
+Forwarding from 127.0.0.1:5005 -> 5005
+Forwarding from [::1]:5005 -> 5005
+~~~~
+
+Do not wait for the command to return! It keeps the forwarded 
+port open so that you can start debugging remotely.
 
 #### Remote Debug with Eclipse Che
 
@@ -121,7 +132,7 @@ You should see a confirmation that the remote debugger is successfully connected
 
 ![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="360px"}
 
-Open `com.redhat.cloudnative.inventory.InventoryResource` and double-click 
+Open `com.redhat.cloudnative.inventory.InventoryResource` and click once
 on the editor sidebar on the line number of the first line of the `getAvailability()` 
 method to add a breakpoint to that line. A start appears near the line to show a breakpoint 
 is set.
