@@ -7,7 +7,7 @@ In this lab you will learn about building microservices using WildFly Swarm.
 Java EE applications are traditionally created as an `ear` or `war` archive including all 
 dependencies and deployed in an application server. Multiple Java EE applications can and 
 were typically deployed in the same application server. This model is well understood in 
-the development teams and has been used over the past several years.
+development teams and has been used over the past several years.
 
 WildFly Swarm offers an innovative approach to packaging and running Java EE applications by 
 packaging them with just enough of the Java EE server runtime to be able to run them directly 
@@ -131,7 +131,7 @@ Review the `Inventory` domain model and note the JPA annotations on this class. 
 the class as a JPA entity, `@Table` customizes the table creation process by defining a table 
 name and database constraint and `@Id` marks the primary key for the table.
 
-WildFly Swarm configuration is done to a large extend through detecting the intent of the 
+WildFly Swarm configuration is done to a large extent through detecting the intent of the 
 developer and automatically adding the required dependencies configurations to make sure it can 
 get out of the way and developers can be productive with their code rather than Googling for 
 configuration snippets. As an example, configuration database access with JPA is composed of 
@@ -189,7 +189,7 @@ public class InventoryResource {
 }
 ~~~
 
-The above REST services defines an endpoint that is accessible via `HTTP GET` at 
+The above REST service defines an endpoint that is accessible via `HTTP GET` at 
 for example `/api/inventory/329299` with 
 the last path param being the product id which we want to check its inventory status.
 
@@ -227,7 +227,7 @@ it in your browser in a new tab.
 
 The REST API returned a JSON object representing the inventory count for this product. Congratulations!
 
-Stop the Inventory service by clicking on the stop icon near **run wildfly-swarm** in the **Machines** window.
+In Eclipse Che, stop the Inventory service by clicking on the **run wildfly-swarm** item in the **Machines** window. Then click the stop icon that appears next to **run wildfly-swarm**.
 
 ![Preview URL]({% image_path wfswarm-inventory-che-run-stop.png %}){:width="600px"}
 
@@ -253,11 +253,6 @@ which is already configured in Eclipse Che, from the commands palette, click on 
 
 ![Fabric8 Deploy]({% image_path eclipse-che-commands-deploy.png %}){:width="340px"}
 
-
-During the deployment, you might see that Fabric8 Maven Plugin throws an `java.util.concurrent.RejectedExecutionException` 
-exception. This is due to [a bug](https://github.com/fabric8io/kubernetes-client/issues/1035) in one of Fabric8 Maven Plugin 
-dependencies which is being worked on right now and will be fixed soon. You can ignore this exception for now. The deployment 
-nevertheless succeeds.
 
 ![Inventory Deployed]({% image_path wfswarm-inventory-che-deployed.png %}){:width="800px"}
 

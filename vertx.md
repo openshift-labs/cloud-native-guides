@@ -134,8 +134,8 @@ Now that the project is ready, let's get coding!
 #### Create an API Gateway
 
 In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
-web front contacting each of these backend services, you can create an API Gateway which is an entry 
-point for for the web front to access all backend services from a single place. This pattern is expectedly 
+web frontend contacting each of these backend services, you can create an API Gateway which is an entry 
+point for for the web frontend to access all backend services from a single place. This pattern is expectedly 
 called [API Gateway](http://microservices.io/patterns/apigateway.html) and is a common practice in Microservices 
 architecture.
 
@@ -244,7 +244,7 @@ method.
 
 Vert.x provides [built-in service discovery](http://vertx.io/docs/vertx-service-discovery/java) 
 for finding where dependent services are deployed 
-and accessing their endpoints. Vert.x service discovery can seamlessly integrated with external 
+and accessing their endpoints. Vert.x service discovery can be seamlessly integrated with external 
 service discovery mechanisms provided by OpenShift, Kubernetes, Consul, Redis, etc.
 
 In this lab, since you will deploy the API Gateway on OpenShift, the OpenShift service discovery 
@@ -430,11 +430,6 @@ To build and deploy the Inventory service on OpenShift using the `fabric8` maven
 ~~~shell
 $ mvn fabric8:deploy
 ~~~
-
-During the deployment, you might see that Fabric8 Maven Plugin throws an `java.util.concurrent.RejectedExecutionException` 
-exception. This is due to [a bug](https://github.com/fabric8io/kubernetes-client/issues/1035) in one of Fabric8 Maven Plugin 
-dependencies which is being worked on right now and will be fixed soon. You can ignore this exception for now. The deployment 
-nevertheless succeeds.
 
 `fabric8:deploy` will cause the following to happen:
 

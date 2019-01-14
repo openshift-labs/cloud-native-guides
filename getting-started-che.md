@@ -38,7 +38,7 @@ For this lab, click on the **Java Cloud-Native** stack and then on the **Create*
 
 ![Eclipse Che Workspace]({% image_path bootstrap-che-create-workspace.png %})
 
-Click on **Open** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
+Click on **Open in IDE** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
 
 ![Eclipse Che Workspace]({% image_path bootstrap-che-start-workspace.png %})
 
@@ -70,7 +70,7 @@ project skeletons. Click on **Save**
 The projects are imported now into your workspace and is visible in the project explorer.
 
 Eclipse Che is a full featured IDE and provides language specific capabilities for various project types. In order to 
-enable these capabilities, let's convert the imported project skeletons to a Maven projects. 
+enable these capabilities, let's convert the imported project skeletons to Maven projects. 
 
 In the project explorer, right-click on **catalog-spring-boot** and then click on **Convert to Project**.
 

@@ -239,9 +239,9 @@ $ oc set triggers dc/inventory --manual
 Deploy a Jenkins server using the provided template and container image that 
 comes out-of-the-box with OpenShift:
 
-```
+~~~shell
 oc new-app jenkins-ephemeral
-```
+~~~
 
 After Jenkins is deployed and is running (verify in web console), then create a 
 deployment pipeline by running the following command within the `inventory-widlfly-swarm` folder:
@@ -254,7 +254,7 @@ The above command creates a new build config of type pipeline which is automatic
 configured to fetch the `Jenkinsfile` from the Git repository of the current folder 
 (`inventory-wildfly-swarm` Git repository) and execute it on Jenkins.
 
-Go OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
+Go to the OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
 click on **Builds >> Pipelines**
 
 ![OpenShift Pipeline]({% image_path cd-pipeline-inprogress.png %}){:width="900px"}
@@ -272,7 +272,7 @@ updated pipeline next time it runs.
 
 #### Run the Pipeline on Every Code Change
 
-Manually triggering the deployment pipeline to run is useful but the real goes is to be able 
+Manually triggering the deployment pipeline to run is useful but the real goal is to be able 
 to build and deploy every change in code or configuration at least to lower environments 
 (e.g. dev and test) and ideally all the way to production with some manual approvals in-place.
 
@@ -281,7 +281,7 @@ to notify OpenShift on every commit that is made to the Git repository and trigg
 execution.
 
 You can get see the webhook links in the OpenShift Web Console by going to **Build >> Pipelines**, clicking 
-on the pipeline and going to the **Configurations** tab.
+on the pipeline and going to the **Configuration** tab.
 
 {% if MINISHIFT == true %}
 
@@ -304,7 +304,7 @@ Click on **Add Webhook**.
 
 All done. You can click on the newly defined webhook to see the list of *Recent Delivery*. 
 Clicking on the **Test Delivery** button allows you to manually trigger the webhook for 
-testing purposes. Click on it and verify that the `inventory-pipeline` start running 
+testing purposes. Click on it and verify that the `inventory-pipeline` starts running 
 immediately.
 
 {% else %}
