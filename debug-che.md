@@ -1,22 +1,22 @@
 ## Debugging Applications
 
-In this lab you will debug the coolstore application using Java remote debugging and 
+In this lab you will debug the CoolStore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.
 
 #### Investigate The Bug
 
-CoolStore application seem to have a bug that causes the inventory status for one of the 
-products not be displayed in the web interface. 
+CoolStore application seems to have a bug that causes the inventory status for one of the 
+products not to be displayed in the web interface. 
 
 ![Inventory Status Bug]({% image_path debug-coolstore-bug.png %}){:width="800px"}
 
 This is not an expected behavior! In previous labs, you added a circuit breaker to 
-protect the coolstore application from failures and in case the Inventory API is not 
+protect the CoolStore application from failures and in case the Inventory API is not 
 available, to skip it and show the products without the inventory status. However, right 
 now the inventory status is available for all products but one which is not how we 
 expect to see the products.
 
-Since the product list is provides by the API Gateway, take a look into the API Gateway 
+Since the product list is provided by the API Gateway, take a look into the API Gateway 
 logs to see if there are any errors:
 
 ~~~shell
@@ -76,7 +76,7 @@ An easier approach would be to use the fabric8 maven plugin to enable remote deb
 the Inventory pod. It also forwards the default remote debugging port, 5005, from the 
 Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on Inventory by running the following inside the `labs/inventory-wildfly-swarm` 
+Enable remote debugging on Inventory by running the following inside the `/projects/labs/inventory-wildfly-swarm` 
 directory in the Eclipse Che **Terminal** window:
 
 ~~~shell
@@ -95,7 +95,7 @@ port open so that you can start debugging remotely.
 
 #### Remote Debug with Eclipse Che
 
-Eclipse Che provides a convenience way to remotely connect to Java applications running 
+Eclipse Che provides a convenient way to remotely connect to Java applications running 
 inside containers and debug while following the code execution in the IDE.
 
 From the **Run** menu, click on **Edit Debug Configurations...**.
@@ -177,7 +177,7 @@ end the debug session.
 
 #### Fix the Inventory Bug
 
-Edit the `InventoryResource.java` add update the `getAvailability()` to make it look like the following 
+Edit the `InventoryResource.java` and update the `getAvailability()` to make it look like the following 
 code in order to return a zero inventory for products that don't exist in the inventory 
 database:
 

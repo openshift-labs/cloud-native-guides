@@ -52,7 +52,7 @@ Download the the OpenShift CLI tool for [Microsoft Windows]({{DOWNLOAD_CLIENT_WI
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
-directories:
+directory:
 
 ~~~shell
 C:\OpenShift
@@ -93,11 +93,11 @@ You should see the OpenShift version.
 
 #### Download and Install OpenShift CLI on Linux
 
-Download the the OpenShift CLI tool for [Linux 64]({{DOWNLOAD_CLIENT_LIN64}})
+Download the OpenShift CLI tool for [Linux 64]({{DOWNLOAD_CLIENT_LIN64}})
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
-directories:
+directory:
 
 ~~~shell
 ~/openShift
@@ -133,7 +133,7 @@ Download the the OpenShift CLI tool for [Mac]({{DOWNLOAD_CLIENT_MAC}})
 
 Once the file has been downloaded, you will need to extract the contents as it
 is a compressed archive. I would suggest saving this file to the following
-directories:
+directory:
 
 ~~~shell
 ~/openShift
@@ -215,7 +215,7 @@ corporate-standard CA that you already have installed on your system.
 >     $ oc login {{OPENSHIFT_CONSOLE_URL}} --insecure-skip-tls-verify=true
 >     
 
-Enter the username and password provided to you by the instructor
+Enter the username and password provided to you by the instructor.
 
 Congratulations, you are now authenticated to the OpenShift server.
 

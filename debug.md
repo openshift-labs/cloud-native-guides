@@ -1,22 +1,22 @@
 ## Debugging Applications
 
-In this lab you will debug the coolstore application using Java remote debugging and 
+In this lab you will debug the CoolStore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.
 
 #### Investigate The Bug
 
-CoolStore application seem to have a bug that causes the inventory status for one of the 
-products not be displayed in the web interface. 
+CoolStore application seems to have a bug that causes the inventory status for one of the 
+products not to be displayed in the web interface. 
 
 ![Inventory Status Bug]({% image_path debug-coolstore-bug.png %}){:width="800px"}
 
 This is not an expected behavior! In previous labs, you added a circuit breaker to 
-protect the coolstore application from failures and in case the Inventory API is not 
+protect the CoolStore application from failures and in case the Inventory API is not 
 available, to skip it and show the products without the inventory status. However, right 
 now the inventory status is available for all products but one which is not how we 
 expect to see the products.
 
-Since the product list is provides by the API Gateway, take a look into the API Gateway 
+Since the product list is provided by the API Gateway, take a look into the API Gateway 
 logs to see if there are any errors:
 
 ~~~shell
@@ -120,7 +120,7 @@ Initializing jdb ...
 
 Now that you are connected to the JVM running inside the Inventory pod on OpenShift, add 
 a breakpoint to pause the code execution when it reaches the Java method handling the 
-REST API `/api/inventory`. Review `com/redhat/cloudnative/inventory/InventoryResource.java` and note that the 
+REST API `/api/inventory`. Review `com/redhat/cloudnative/inventory/InventoryResource.java` and note that 
 `getAvailability()` is the method where you should add the breakpoint.
 
 Add a breakpoint.
@@ -284,8 +284,8 @@ Stop the debugger and move on to the **Fix the Inventory Bug** section to fix th
 
 #### Debug Remotely Using IntelliJ IDEA
 
-IntellJ IDEA is and IDEA that among other things provides a convenient way 
-to debug Java applications using the Java remote debugging architecture and allows 
+IntellJ IDEA is an IDE that among other things provides a convenient way 
+to debug Java applications using the Java remote debugging architecture and allows you to 
 execute code line-by-line on a remote machine (pod in this case) while seeing 
 the code within the IDE.
 
@@ -348,7 +348,7 @@ Stop the debugger and move on to the **Fix the Inventory Bug** section to fix th
 
 #### Fix the Inventory Bug
 
-Edit the `InventoryResource.java` add update the `getAvailability()` to make it look like the following 
+Edit the `InventoryResource.java` and update the `getAvailability()` to make it look like the following 
 code in order to return a zero inventory for products that don't exist in the inventory 
 database:
 

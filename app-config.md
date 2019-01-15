@@ -13,17 +13,16 @@ page and some other times they are dependent on the environment they are deploye
 such as the database coordinates for the application.
 
 The most common way to provide configurations to applications is using environment 
-variables and external configuration files such as properties, JSON or YAML files.
-
+variables and external configuration files such as properties, JSON or YAML files, 
 configuration files and command line arguments. These configuration artifacts
-should be externalized from the application and the docker image content in
+should be externalized from the application and the container image content in
 order to keep the image portable across environments.
 
 OpenShift provides a mechanism called [ConfigMaps]({{OPENSHIFT_DOCS_BASE}}/dev_guide/configmaps.html) 
 in order to externalize configurations 
 from the applications deployed within containers and provide them to the containers 
 in a unified way as files and environment variables. OpenShift also offers a way to 
-provide sensitive configuration data such as certificates, credentials, etc to the 
+provide sensitive configuration data such as certificates, credentials, etc. to the 
 application containers in a secure and encrypted mechanism called Secrets.
 
 This allows developers to build the container image for their application only once, 
@@ -35,7 +34,7 @@ different configurations that are provided to the application at runtime.
 So far Catalog and Inventory services have been using an in-memory H2 database. Although H2 
 is a convenient database to run locally on your laptop, it's in no way appropriate for production or 
 even integration tests. Since it's strongly recommended to use the same technology stack (operating 
-system, JVM, middleware, database, etc) that is used in production across all environments, you 
+system, JVM, middleware, database, etc.) that is used in production across all environments, you 
 should modify Inventory and Catalog services to use PostgreSQL instead of the H2 in-memory database.
 
 Fortunately, OpenShfit supports stateful applications such as databases which require access to 
@@ -46,8 +45,8 @@ database container.
 Let's create a [PostgreSQL database]({{OPENSHIFT_DOCS_BASE}}/using_images/db_images/postgresql.html) 
 for the Inventory service using the PostgreSQL template that is provided out-of-the-box:
 
-> [OpenShift Templates]({{OPENSHIFT_DOCS_BASE}}/dev_guide/templates.html) uses YAML/JSON to compose 
-> multiple containers and their configurations as a list of objects to be created and deployed at once hence 
+> [OpenShift Templates]({{OPENSHIFT_DOCS_BASE}}/dev_guide/templates.html) use YAML/JSON to compose 
+> multiple containers and their configurations as a list of objects to be created and deployed at once, 
 > making it simple to re-create complex deployments by just deploying a single template. Templates can 
 > be parameterized to get input for fields like service names and generate values for fields like passwords.
 
@@ -137,7 +136,7 @@ Modify the Inventory deployment config so that it injects the YAML configuration
 a config map into the Inventory container:
 
 ~~~shell
-$ oc volume dc/inventory --add --configmap-name=inventory --mount-path=/app/config
+$ oc set volume dc/inventory --add --configmap-name=inventory --mount-path=/app/config
 ~~~
 
 The above command mounts the content of the `inventory` config map as a file inside the Inventory container 
@@ -266,7 +265,7 @@ command:
 Delete the Catalog container to make it start again and look for the config maps:
 
 ~~~shell
-$ oc delete pod -l app=catalog
+$ oc delete pod -l deploymentconfig=catalog
 ~~~
 
 When the Catalog container is ready, verify that the PostgreSQL database is being 
@@ -308,23 +307,23 @@ $ exit
 
 #### Sensitive Configuration Data
 
-Config map is a superb mechanism for externalizing application configuration while keeping 
+Config maps are a superb mechanism for externalizing application configuration while keeping 
 containers independent of in which environment or on what container platform they are running. 
 Nevertheless, due to their clear-text nature, they are not suitable for sensitive data like 
 database credentials, SSH certificates, etc. In the current lab, we used config maps for database 
-credentials to simplify the steps however for production environments, you should opt for a more 
+credentials to simplify the steps; however, for production environments, you should opt for a more 
 secure way to handle sensitive data.
 
 Fortunately, OpenShift already provides a secure mechanism for handling sensitive data which is 
 called [Secrets]({{OPENSHIFT_DOCS_BASE}}/dev_guide/secrets.html). Secret objects act and are used 
-similar to config maps however with the difference that they are encrypted as they travel over the wire 
+similarly to config maps however with the difference that they are encrypted as they travel over the wire 
 and also at rest when kept on a persistent disk. Like config maps, secrets can be injected into 
 containers as environment variables or files on the filesystem using a temporary file-storage 
 facility (tmpfs).
 
-You won't create any secrets in this lab however you have already created 2 secrets when you created 
+You won't create any secrets in this lab; however, you have already created two secrets when you created 
 the PostgreSQL databases for Inventory and Catalog services. The PostgreSQL template by default stores 
-the database credentials in a secret in the project it's being created:
+the database credentials in a secret in the project in which it's being created:
 
 ~~~shell
 $ oc describe secret catalog-postgresql
