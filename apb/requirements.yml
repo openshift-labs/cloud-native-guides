@@ -19,5 +19,5 @@
   name: openshift_jenkins
 
 - src: openshift_labs.workshop_deployment_tracker
-  version: 1.0.0
+  version: 1.0.1
   name: workshop_deployment_tracker
