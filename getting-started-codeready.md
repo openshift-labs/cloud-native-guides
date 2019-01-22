@@ -77,7 +77,8 @@ Choose **Maven** from the project configurations and then click on **Save**
 ![CodeReady Workspaces - Convert to Project]({% image_path codeready-maven.png %}){:width="500px"}
 
 > Repeat the above for **inventory-thorntail** and **gateway-vertx** projects.
-> Convert the **web-nodejs** project into **Node JS**.
+
+> Convert the **web-nodejs** project into **NodeJS**.
 
 > The **Terminal** window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces **Terminal** window.
 > ![CodeReady Workspaces - Terminal]({% image_path codeready-terminal.png %}){:width="700px"}
@@ -130,8 +131,8 @@ deploying your applications.
 > have a unique project name for yourself e.g. appending your username to the project name
 
 ~~~shell
-$ odo project create coolstore
-OK  New project created and now using project : coolstore
+$ odo project create {{COOLSTORE_PROJECT}}
+OK  New project created and now using project : {{COOLSTORE_PROJECT}}
 ~~~
 
 OpenShift ships with a web-based console that will allow users to
@@ -147,5 +148,13 @@ Click on the **{{COOLSTORE_PROJECT}}** project to be taken to the project overvi
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
+
+Due to security reasons, by default, containers are not allowed to access to the OpenShift REST API. We need to grant them permission in order to use Service and Config Map discovery features later.
+
+> Make sure to replace the project name with your own unique project name
+
+~~~shell
+$ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
+~~~ 
 
 Now you are ready to get started with the labs!
