@@ -34,9 +34,9 @@ modules:
   - spring-boot-codeready
   - vertx-codeready
   - nodejs-codeready
+  - debug-codeready
   - health
   - fault-tolerance-che
   - app-config
   - continuous-delivery-che
-  - debug-che
   - env-info

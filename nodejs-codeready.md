@@ -98,10 +98,37 @@ Watch for Changes and updating Component on Change. Let's run `odo watch` in a n
 
 ~~~shell
 $ odo watch ui --app web
-Waiting for something to change in /projects/labs/web-nodejs/target/web-1.0-SNAPSHOT.jar
+Waiting for something to change in /projects/labs/web-nodejs
 ~~~
 
 
 #### Changing the Background Color
+
+Next, let's make a change to the user interface that will be obvious in the UI.
+
+First, open `labs/web-nodejs/app/css/coolstore.css`, which contains the CSS stylesheet for the CoolStore app.
+
+Add the following CSS to turn the header bar background to Red Hat red:
+
+~~~css
+.navbar-header {
+    background: #CC0000
+}
+~~~
+
+Once saved, the modified file `coolstore.css` will be detected and will be pushed automatically into the UI Component thanks to the `odo watch` command. You should see following logs in the Terminal where you ran the `odo watch` command.
+
+~~~shell
+File /projects/labs/web-nodejs/app/css/coolstore.css changed
+Pushing files...
+ ✓   Waiting for pod to start
+ ✓   Copying files to pod
+ ✓   Building component
+Waiting for something to change in /projects/labs/web-nodejs
+~~~
+
+Reload the Coolstore webpage and you should now see the red header.
+
+![CoolStore Shop]({% image_path coolstore-web-red.png %}){:width="500px"}
 
 Well done! You are ready to move on to the next lab.
