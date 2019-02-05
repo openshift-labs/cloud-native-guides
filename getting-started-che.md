@@ -4,88 +4,84 @@ In this lab you will get familiar with the OpenShift CLI and OpenShift Web Conso
 and get ready for the Cloud Native Roadshow labs.
 
 For completing the following labs, you can either use your own workstation or as an 
-alternative, Eclipse Che web IDE. The advantage of your own workstation is that you use the 
-environment that you are familiar with while the advantage of Eclipse Che is that all 
+alternative, CodeReady Workspaces Web IDE. The advantage of your own workstation is that you use the 
+environment that you are familiar with while the advantage of CodeReady Workspaces is that all 
 tools needed (Maven, Git, OpenShift CLI, etc ) are pre-installed in it (not on your workstation!) and all interactions 
 takes place within the browser which removes possible internet speed issues and version incompatibilities 
 on your workstation.
 
 The choice is yours but whatever you pick, like most things in life, stick with it for all the labs. We 
-ourselves are in love with Eclipse Che and highly recommend it.
+ourselves are in love with CodeReady Workspaces and highly recommend it.
 
-## Setup Your Workspace on Eclipse Che
+## Setup Your Workspace on CodeReady Workspaces
 
-Follow these instructions to setup the development environment on Eclipse Che. 
+Follow these instructions to setup the development environment on CodeReady Workspaces. 
 
-You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other
-programming languages. [Eclipse Che](https://www.eclipse.org/che/) is the next-generation Eclipse IDE which is web-based
-and gives you a full-featured IDE running in the cloud. You have an Eclipse Che instance deployed on your OpenShift cluster
-which you will use during these labs.
+You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other programming languages. Built on the open [Eclipse Che](https://www.eclipse.org/che/) project, [CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview/) is the next-generation Eclipse IDE which provides developer workspaces, which include all the tools and the dependencies that are needed to code, build, test, run, and debug applications. This full-featured web-based IDE runs in an OpenShift cluster hosted on-premises or in the cloud and eliminates the need to install anything on a local machine.You have a CodeReady Workspaces instance deployed on your OpenShift cluster which you will use during these labs.
 
-Go to the [Eclipse Che url]({{ ECLIPSE_CHE_URL }}) in order to configure your development workspace: {{ ECLIPSE_CHE_URL }}
+Go to the [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace: {{ CODEREADY_WORKSPACES_URL }}
 
+#### Registering to CodeReady Workspaces
 First, you need to register as a user. Register and choose the same username and password as 
 your OpenShift credentials.
 
-![Eclipse Che - Register]({% image_path bootstrap-che-register.png %}){:width="700px"}
+![CodeReady Workspaces - Register]({% image_path codeready-register.png %}){:width="500px"}
 
-Log into Eclipse Che with your user. You can now create your workspace based on a stack. A 
+#### Creating a Workspace
+Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
 stack is a template of workspace configuration. For example, it includes the programming language and tools needed
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
 For this lab, click on the **Java Cloud-Native** stack and then on the **Create** button. 
 
-![Eclipse Che Workspace]({% image_path bootstrap-che-create-workspace.png %})
+![CodeReady Workspaces - Workspace]({% image_path codeready-create-workspace.png %}){:width="1000px"}
 
-Click on **Open in IDE** to open the workspace and then on the **Start** button to start the workspace for use, if it hasn't started automatically.
+Click on **OPEN** to open and to start the workspace.
 
-![Eclipse Che Workspace]({% image_path bootstrap-che-start-workspace.png %})
+![CodeReady Workspaces - Workspace]({% image_path codeready-start-workspace.png %}){:width="1000px"}
 
-You can click on the left arrow icon to switch to the wide view:
+It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional CodeReady Workspaces IDE running in your browser.
 
-![Eclipse Che Workspace]({% image_path bootstrap-che-wide.png %}){:width="600px"}
+![CodeReady Workspaces - Workspace]({% image_path codeready-workspace.png %}){:width="1000px"}
 
-It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional 
-Eclipse Che IDE running in your browser.
-
-![Eclipse Che Workspace]({% image_path bootstrap-che-workspace.png %})
-
+#### Importing the lab project
 Now you can import the project skeletons into your workspace.
 
-In the project explorer pane, click on the **Import Projects...** and enter the following:
+In the project explorer pane, click on the **Import Project...** and enter the following:
 
   * Type: `ZIP`
   * URL: `{{LABS_DOWNLOAD_URL}}`
   * Name: `labs`
   * Check **Skip the root folder of the archive**
 
-![Eclipse Che - Import Project]({% image_path bootstrap-che-import.png %}){:width="700px"}
+![CodeReady Workspaces - Import Project]({% image_path codeready-import.png %}){:width="500px"}
 
 Click on **Import**. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
 project skeletons. Click on **Save**
 
-![Eclipse Che - Import Project]({% image_path bootstrap-che-import-save.png %}){:width="700px"}
+![CodeReady Workspaces - Import Project]({% image_path codeready-import-save.png %}){:width="500px"}
 
+#### Converting your project skeletons
 The projects are imported now into your workspace and is visible in the project explorer.
 
-Eclipse Che is a full featured IDE and provides language specific capabilities for various project types. In order to 
+CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
 enable these capabilities, let's convert the imported project skeletons to Maven projects. 
 
 In the project explorer, right-click on **catalog-spring-boot** and then click on **Convert to Project**.
 
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-convert.png %}){:width="600px"}
+![CodeReady Workspaces - Convert to Project]({% image_path codeready-convert.png %}){:width="500px"}
 
 Choose **Maven** from the project configurations and then click on **Save**
 
-![Eclipse Che - Convert to Project]({% image_path bootstrap-che-maven.png %}){:width="700px"}
+![CodeReady Workspaces - Convert to Project]({% image_path codeready-maven.png %}){:width="500px"}
 
-Repeat the above for **inventory-wildfly-swarm** and **gateway-vertx** projects.
+> Repeat the above for **inventory-thorntail** and **gateway-vertx** projects.
 
-Note the **Terminal** window in Eclipse Che. For the rest of these labs, anytime you need to run 
-a command in a terminal, you can use the Eclipse Che **Terminal** window.
+> Convert the **web-nodejs** project into **NodeJS**.
 
-![Eclipse Che - Terminal]({% image_path bootstrap-che-terminal.png %})
+> The **Terminal** window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces **Terminal** window.
+> ![CodeReady Workspaces - Terminal]({% image_path codeready-terminal.png %}){:width="700px"}
 
 ## Explore OpenShift with OpenShift CLI
 
