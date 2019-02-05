@@ -30,7 +30,7 @@ vars:
 modules:
   activate:
   - getting-started-che
-  - wildfly-swarm-che
+  - thorntail-che
   - spring-boot-che
   - vertx-che
   - nodejs

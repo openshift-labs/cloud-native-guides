@@ -18,6 +18,8 @@ modules:
     name: Enterprise Microservices with WildFly Swarm
   wildfly-swarm-che:
     name: Enterprise Microservices with WildFly Swarm
+  thorntail-che:
+    name: Enterprise Microservices with Thorntail
   thorntail-codeready:
     name: Enterprise Microservices with Thorntail
   vertx:
