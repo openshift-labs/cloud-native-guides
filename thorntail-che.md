@@ -141,7 +141,7 @@ the following steps:
 2. Adding the database driver (e.g. `org.postgresql:postgresql`) to `pom.xml`
 3. Adding database connection details in `src/main/resources/project-default.yml`
 
-Examine `pom.xml` and note the `io.thorntail:jpa` that is already added to enable JPA:
+Edit the `pom.xml` file and add the `io.thorntail:jpa` dependency to enable JPA:
 
 ~~~xml
 <dependency>
@@ -203,7 +203,7 @@ In CodeReady Workspaces, click on the run icon and then on **run thorntail**.
 
 > You can also run the inventory service in CodeReady Workspaces using the commands palette and then **run > run thorntail**
 
-![Run Palette]({% image_path wfswarm-inventory-che-run-palette.png %}){:width="800px"}
+![Run Palette]({% image_path thorntail-inventory-codeready-run-palette.png %}){:width="800px"}
 
 
 Once you see `Thorntail is Ready` in the logs, the Inventory service is up and running and you can access the 
@@ -219,7 +219,7 @@ You can also use the preview url that CodeReady Workspaces has generated for you
 directly in the browser. Append the path `/api/inventory/329299` at the end of the preview url and try 
 it in your browser in a new tab.
 
-![Preview URL]({% image_path wfswarm-inventory-che-preview-url.png %}){:width="900px"}
+![Preview URL]({% image_path thorntail-inventory-codeready-preview-url.png %}){:width="900px"}
 
 ![Preview URL]({% image_path wfswarm-inventory-che-preview-browser.png %}){:width="900px"}
 
@@ -228,7 +228,7 @@ The REST API returned a JSON object representing the inventory count for this pr
 
 In CodeReady Workspaces, stop the Inventory service by clicking on the **run thorntail** item in the **Machines** window. Then click the stop icon that appears next to **run thorntail**.
 
-![Preview URL]({% image_path wfswarm-inventory-che-run-stop.png %}){:width="600px"}
+![Preview URL]({% image_path thorntail-inventory-codeready-run-stop.png %}){:width="600px"}
 
 #### Deploy Thorntail on OpenShift
 
