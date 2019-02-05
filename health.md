@@ -62,10 +62,10 @@ with the Catalog route url:
 ~~~shell
 $ curl http://{{CATALOG_ROUTE_HOST}}/health
 
-{"status":"UP","diskSpace":{"status":"UP","total":3209691136,"free":2667175936,"threshold":10485760},"db":{"status":"UP","database":"H2","hello":1}}
+{"status":"UP"}
 ~~~
 
-[WildFly Swarm health endpoints](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/content/advanced/monitoring.html) function in a similar fashion and are enabled by adding `org.wildfly.swarm:monitor` 
+[Thorntail health endpoints](https://docs.thorntail.io/2.2.0.Final/#_microprofile_health) function in a similar fashion and are enabled by adding `io.thorntail:microprofile-health` 
 to the Maven project dependencies. 
 This is also already done for the Inventory service.
 

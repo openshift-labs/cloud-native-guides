@@ -4,6 +4,7 @@ In this lab you will learn about Eclipse Vert.x and how you can
 build microservices using reactive principles. During this lab you will 
 create a scalable API Gateway that aggregates Catalog and Inventory APIs.
 
+![CoolStore Architecture]({% image_path coolstore-arch-gateway.png %}){:width="500px"}
 
 #### What is Eclipse Vert.x?
 
@@ -43,18 +44,20 @@ Although you can have multiple, there is currently only one Verticle created in 
 Examine `GatewayVerticle` class in the `com.redhat.cloudnative.gateway` package in the `src` directory.
 
 ~~~java
+package com.redhat.cloudnative.gateway;
+
+
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.StaticHandler;
 
 public class GatewayVerticle extends AbstractVerticle {
     @Override
     public void start(Future<Void> future) {
         Router router = Router.router(vertx);
 
-        router.get("/*").handler(rc -> {
-            rc.response().end("{\"message\": \"Hello World\"}");
-        });
+        router.get("/").handler(StaticHandler.create("assets"));
 
         vertx.createHttpServer().requestHandler(router::accept)
             .listen(Integer.getInteger("http.port", 8080));
@@ -66,8 +69,8 @@ Here is what happens in the above code:
 
 1. A Verticle is created by extending from `AbstractVerticle` class
 2. `Router` is retrieved for mapping the REST endpoints
-3. A REST endpoint is created for `/*` to return a static JSON response `{"message": "Hello World"}`
-3. An HTTP Server is created which listens on port 8080
+3. A REST endpoint is created for `/` to return a static HTML page `assets/index.html`
+4. An HTTP Server is created which listens on port 8080
 
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the build logs, otherwise the build has failed.
@@ -114,6 +117,7 @@ import io.vertx.rxjava.ext.web.RoutingContext;
 import io.vertx.rxjava.ext.web.client.WebClient;
 import io.vertx.rxjava.ext.web.codec.BodyCodec;
 import io.vertx.rxjava.ext.web.handler.CorsHandler;
+import io.vertx.rxjava.ext.web.handler.StaticHandler;
 import io.vertx.rxjava.servicediscovery.ServiceDiscovery;
 import io.vertx.rxjava.servicediscovery.types.HttpEndpoint;
 import org.slf4j.Logger;
@@ -131,6 +135,7 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start() {
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
+        router.get("/").handler(StaticHandler.create("assets"));
         router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
@@ -215,6 +220,7 @@ and Catalog REST APIs.
 public void start() {
     Router router = Router.router(vertx);
     router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
+    router.get("/").handler(StaticHandler.create("assets"));
     router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
     router.get("/api/products").handler(this::products);
 

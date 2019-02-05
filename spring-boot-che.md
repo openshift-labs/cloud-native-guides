@@ -4,6 +4,8 @@ In this lab you will learn about Spring Boot and how you can build microservices
 using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
 the Catalog service in order to provide a list of products for the CoolStore online shop.
 
+![CoolStore Architecture]({% image_path coolstore-arch-catalog.png %}){:width="500px"}
+
 #### What is Spring Boot?
 
 Spring Boot is an opinionated framework that makes it easy to create stand-alone Spring based 

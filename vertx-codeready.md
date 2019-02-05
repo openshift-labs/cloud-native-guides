@@ -68,7 +68,7 @@ Here is what happens in the above code:
 1. A Verticle is created by extending from `AbstractVerticle` class
 2. `Router` is retrieved for mapping the REST endpoints
 3. A REST endpoint is created for `/` to return a static HTML page `assets/index.html`
-3. An HTTP Server is created which listens on port 8080
+4. An HTTP Server is created which listens on port 8080
 
 #### Creating an Openshift Application
 
