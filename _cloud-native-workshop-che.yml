@@ -22,6 +22,7 @@ vars:
   CATALOG_ROUTE_HOST: CATALOG-ROUTE-HOST
   API_GATEWAY_ROUTE_HOST: API-GATEWAY-ROUTE-HOST
   ECLIPSE_CHE_URL: "http://che-lab-infra.192.168.99.100.nip.io"
+  CODEREADY_WORKSPACES_URL: "http://codeready-lab-infra.192.168.99.100.nip.io"
   GIT_URL: "http://gogs-lab-infra.192.168.99.100.nip.io"
   NEXUS_URL: "http://nexus.lab-infra.svc:8081/repository/maven-all-public"
   OPENSHIFT_USER: userX
