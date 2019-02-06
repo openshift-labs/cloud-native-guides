@@ -77,9 +77,9 @@ $ oc new-app postgresql-persistent \
 
 Now you can move on to configure the Inventory and Catalog service to use these PostgreSQL databases.
 
-#### Externalize WildFly Swarm (Inventory) Configuration
+#### Externalize Thorntail (Inventory) Configuration
 
-WildFly Swarm supports multiple mechanisms for externalizing configurations such as environment variables, 
+Thorntail supports multiple mechanisms for externalizing configurations such as environment variables, 
 Maven properties, command-line arguments and more. The recommend approach for the long-term for externalizing 
 configuration is however using a [YAML file](https://reference.wildfly-swarm.io/configuration.html#_using_yaml) 
 which you have already packaged within the Inventory Maven project.
@@ -87,10 +87,10 @@ which you have already packaged within the Inventory Maven project.
 The YAML file can be packaged within the application JAR file and be overladed 
 [using command-line or system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/command_line.html) which you will do in this lab.
 
-> Check out `inventory-wildfly-swarm/src/main/resources/project-defaults.yml` which contains the default configuration.
+> Check out `inventory-thorntail/src/main/resources/project-defaults.yml` which contains the default configuration.
 
 Create a YAML file with the PostgreSQL database credentials. Note that you can give an arbitrary 
-name to this configuration (e.g. `prod`) in order to tell WildFly Swarm which one to use:
+name to this configuration (e.g. `prod`) in order to tell Thorntail which one to use:
 
 ~~~shell
 $ cat <<EOF > ./project-defaults.yml
@@ -142,7 +142,7 @@ $ oc set volume dc/inventory --add --configmap-name=inventory --mount-path=/app/
 The above command mounts the content of the `inventory` config map as a file inside the Inventory container 
 at `/app/config/project-defaults.yaml`
 
-The last step is the [aforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/command_line.html) on the Inventory container to overlay the WildFly Swarm configuration, using the `JAVA_ARGS` environment variable. 
+The last step is the [aforementioned system properties](https://wildfly-swarm.gitbooks.io/wildfly-swarm-users-guide/configuration/command_line.html) on the Inventory container to overlay the Thorntail configuration, using the `JAVA_ARGS` environment variable. 
 
 > The Java runtime on OpenShift can be configured using 
 > [a set of environment variables](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables) 

@@ -44,7 +44,7 @@ Let's add health probes to the microservices deployed so far.
 
 ####  Explore Health REST Endpoints
 
-Spring Boot, WildFly Swarm and Vert.x all provide out-of-the-box support for creating RESTful endpoints that
+Spring Boot, Thorntail and Vert.x all provide out-of-the-box support for creating RESTful endpoints that
 provide details on the health of the application. These endpoints by default provide basic data about the 
 service however they all provide a way to customize the health data and add more meaningful information (e.g. 
 database connection health, backoffice system availability, etc).
@@ -83,7 +83,7 @@ $ curl http://{{INVENTORY_ROUTE_HOST}}/node
     "suspend-state" : "RUNNING",
     "running-mode" : "NORMAL",
     "uuid" : "79b3ffc5-d98c-4b8e-ae5c-9756ed13944a",
-    "swarm-version" : "2017.8.1"
+    "swarm-version" : "2.2.0.Final-redhat-00021"
 }
 ~~~
 
@@ -161,7 +161,7 @@ health probes succeed, it is ready to receive traffic.
 > Fabric8 Maven Plugin can also be configured to automatically set the health probes when running `fabric8:deploy` 
 > goal. Read more on [Fabric8 docs](https://maven.fabric8.io/#enrichers) under 
 > [Spring Boot](https://maven.fabric8.io/#f8-spring-boot-health-check), 
-> [WildFly Swarm](https://maven.fabric8.io/#f8-wildfly-swarm-health-check) and 
+> [Thorntail](https://maven.fabric8.io/#f8-healthcheck-thorntail-v2) and 
 > [Eclipse Vert.x](https://maven.fabric8.io/#f8-vertx-health-check).
 
 ####  Monitoring Inventory Service Health
@@ -187,7 +187,7 @@ Name:       inventory
 Namespace:  {{COOLSTORE_PROJECT}}
 ...
   Containers:
-   wildfly-swarm:
+   thorntail-v2:
     ...
     Liveness:     http-get http://:8080/node delay=180s timeout=1s period=10s #success=1 #failure=3
     Readiness:    http-get http://:8080/node delay=10s timeout=1s period=10s #success=1 #failure=3

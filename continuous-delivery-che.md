@@ -42,7 +42,7 @@ Click on the plus icon on the top navigation bar and then on **New Repository**.
 
 ![Create New Repository]({% image_path cd-gogs-plus-icon.png %}){:width="900px"}
 
-Give `inventory-wildfly-swarm` as **Repository Name** and click on **Create Repository** 
+Give `inventory-thorntail` as **Repository Name** and click on **Create Repository** 
 button, leaving the rest with default values.
 
 ![Create New Repository]({% image_path cd-gogs-new-repo.png %}){:width="700px"}
@@ -59,13 +59,13 @@ HTTP Git url to copy it to the clipboard which you will need in a few minutes.
 Now that you have a Git repository for the Inventory service, you should push the 
 source code into this Git repository.
 
-Go the `inventory-wildfly-swarm` folder, initialize it as a Git working copy and add 
+Go the `inventory-thorntail` folder, initialize it as a Git working copy and add 
 the GitHub repository as the remote repository for your working copy. 
 
 > Replace `GIT-REPO-URL` with the Git repository url copied in the previous steps
 
 ~~~shell
-$ cd /projects/labs/inventory-wildfly-swarm
+$ cd /projects/labs/inventory-thorntail
 $ git init
 $ git remote add origin GIT-REPO-URL
 ~~~
@@ -89,7 +89,7 @@ $ git push -u origin master
 ~~~
 
 Enter your Git repository username and password if you get asked to enter your credentials. Go 
-to your `inventory-wildfly-swarm` repository web interface and refresh the page. You should 
+to your `inventory-thorntail` repository web interface and refresh the page. You should 
 see the project files in the repository.
 
 ![Inventory Repository]({% image_path cd-gogs-inventory-repo.png %}){:width="900px"}
@@ -108,7 +108,7 @@ a Git repository and referenced by the build configuration.
 Jenkinsfile is a text file that contains the definition of a Jenkins Pipeline 
 and is created using a [scripted or declarative syntax](https://jenkins.io/doc/book/pipeline/syntax/).
 
-In the project explorer in Eclipse Che, right-click on `inventory-wildfly-swarm` project and then 
+In the project explorer in CodeReady Workspaces, right-click on `inventory-thorntail` project and then 
 on **New > File** and name it `Jenkinsfile`.
 
 Copy the following pipeline definition into `Jenkinsfile`.
@@ -122,7 +122,7 @@ pipeline {
     stage('Build JAR') {
       steps {
         sh "mvn package"
-        stash name:"jar", includes:"target/inventory-1.0-SNAPSHOT-swarm.jar"
+        stash name:"jar", includes:"target/inventory-1.0-SNAPSHOT-thorntail.jar"
       }
     }
     stage('Build Image') {
@@ -130,7 +130,7 @@ pipeline {
         unstash name:"jar"
         script {
           openshift.withCluster() {
-            openshift.startBuild("inventory-s2i", "--from-file=target/inventory-1.0-SNAPSHOT-swarm.jar", "--wait")
+            openshift.startBuild("inventory-s2i", "--from-file=target/inventory-1.0-SNAPSHOT-thorntail.jar", "--wait")
           }
         }
       }
@@ -192,11 +192,11 @@ Deploy a Jenkins server using the provided template and container image that
 comes out-of-the-box with OpenShift:
 
 ~~~shell
-oc new-app jenkins-ephemeral
+$ oc new-app jenkins-ephemeral --param=MEMORY_LIMIT="2Gi"
 ~~~
 
 After Jenkins is deployed and is running (verify in web console), then create a 
-deployment pipeline by running the following command within the `inventory-widlfly-swarm` folder:
+deployment pipeline by running the following command within the `inventory-thorntail` folder:
 
 ~~~shell
 $ oc new-app . --name=inventory-pipeline --strategy=pipeline
@@ -204,7 +204,7 @@ $ oc new-app . --name=inventory-pipeline --strategy=pipeline
 
 The above command creates a new build config of type pipeline which is automatically 
 configured to fetch the `Jenkinsfile` from the Git repository of the current folder 
-(`inventory-wildfly-swarm` Git repository) and execute it on Jenkins.
+(`inventory-thorntail` Git repository) and execute it on Jenkins.
 
 Go to the OpenShift Web Console inside the **{{COOLSTORE_PROJECT}}** project and from the left sidebar 
 click on **Builds >> Pipelines**
@@ -219,7 +219,7 @@ advanced pipelines in the
 [OpenShift GitHub Repository](https://github.com/openshift/origin/tree/master/examples/jenkins/pipeline).
 
 In order to update the deployment pipeline, all you need to do is to update the `Jenkinsfile` 
-in the `inventory-wildfly-swarm` Git repository. OpenShift pipeline automatically executes the 
+in the `inventory-thorntail` Git repository. OpenShift pipeline automatically executes the 
 updated pipeline next time it runs.
 
 #### Run the Pipeline on Every Code Change
@@ -237,7 +237,7 @@ on the pipeline and going to the **Configuration** tab.
 
 Copy the Generic webhook url which you will need in the next steps.
 
-Go to Gogs and your **inventory-wildfly-swarm** Git repository, then click on **Settings**.
+Go to Gogs and your **inventory-thorntail** Git repository, then click on **Settings**.
 
 ![Repository Settings]({% image_path cd-gogs-settings-link.png %}){:width="900px"}
 
