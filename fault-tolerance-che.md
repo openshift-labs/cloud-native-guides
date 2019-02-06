@@ -156,7 +156,7 @@ deploymentconfig "web" autoscaled
 All set! Now the Web UI can scale automatically to multiple instances if the load on the CoolStore 
 online store increases. You can verify that using for example the `siege` command-line utility, which 
 is a handy tool for running load tests against web endpoints and is already 
-installed within your Eclipse Che workspace. 
+installed within your CodeReady Workspaces workspace. 
 
 Run the following command in the **Terminal** window.
 
@@ -164,7 +164,7 @@ Run the following command in the **Terminal** window.
 $ siege -c80 -d2 -t5M http://web.coolstore-XX.svc.cluster.local:8080
 ~~~
 
-Note that you are using the internal url of the Web UI in this command. Since Eclipse Che is running on 
+Note that you are using the internal url of the Web UI in this command. Since CodeReady Workspaces is running on 
 the same OpenShift cluster as Web UI, you can choose to use the external URL that is exposed on the load balancer 
 or the internal user which goes directly to the Web UI pod and bypasses the load balancer. You can 
 read more about internal service dns names in 

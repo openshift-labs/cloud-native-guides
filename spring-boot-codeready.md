@@ -66,7 +66,7 @@ ACTIVE     NAME
 
 Run Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message in the build logs, otherwise the build has failed.
 
-In Eclipse Che, click on **catalog-spring-boot** project in the project explorer, and then click on Commands Palette and click on **BUILD > build**
+In CodeReady Workspaces, click on **catalog-spring-boot** project in the project explorer, and then click on Commands Palette and click on **BUILD > build**
 
 ![Maven Build]({% image_path codeready-commands-build.png %}){:width="200px"}
 
@@ -146,7 +146,7 @@ Now that the project is ready, let's get coding and create a domain model, data 
 Create a new Java class named `Product` in the `com.redhat.cloudnative.catalog` package with the below code and 
 following fields: `itemId`, `name`, `desc` and `price`
 
-In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
+In the project explorer in CodeReady Workspaces, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
 
 
 ~~~java
@@ -247,7 +247,7 @@ Spring Data repository abstraction simplifies dealing with data models in Spring
 
 Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative.catalog` package and extend [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) interface in order to indicate to Spring that you want to expose a complete set of methods to manipulate the entity.
 
-In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class** and paste the following code:
+In the project explorer in CodeReady Workspaces, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class** and paste the following code:
 
 ~~~java
 package com.redhat.cloudnative.catalog;
@@ -293,7 +293,7 @@ public class CatalogController {
 The above REST services defines an endpoint that is accessible via `HTTP GET` at `/api/catalog`. Notice the `repository` field on the controller class which is used to retrieve the list of products. Spring Boot automatically provides an implementation for `ProductRepository` at runtime and 
 [injects it into the controller using the `@Autowire` annotation](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html).
 
-In Eclipse Che, click on **catalog-spring-boot** project in the project explorer, and then click on Commands Palette and click on **BUILD > build**
+In CodeReady Workspaces, click on **catalog-spring-boot** project in the project explorer, and then click on Commands Palette and click on **BUILD > build**
 
 ![Maven Build]({% image_path codeready-commands-build.png %}){:width="200px"}
 

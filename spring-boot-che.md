@@ -56,7 +56,7 @@ with a PostgreSQL database in the following labs. Be patient! More on that later
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the build logs, otherwise the build has failed.
 
-In Eclipse Che, click on **catalog-spring-boot** project in the project explorer, 
+In CodeReady Workspaces, click on **catalog-spring-boot** project in the project explorer, 
 and then click on Commands Palette and click on **BUILD > build**
 
 ![Maven Build]({% image_path eclipse-che-commands-build.png %}){:width="340px"}
@@ -82,7 +82,7 @@ RESTful endpoint to create the Catalog service:
 Create a new Java class named `Product` in the `com.redhat.cloudnative.catalog` package with the below code and 
 following fields: `itemId`, `name`, `desc` and `price`
 
-In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
+In the project explorer in CodeReady Workspaces, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class**. Enter `Product` as the Java class name.
 
 
 ~~~java
@@ -168,7 +168,7 @@ Create a new Java interface named `ProductRepository` in `com.redhat.cloudnative
 and extend [CrudRepository](https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/repository/CrudRepository.html) interface in order to indicate to Spring that you want to expose a 
 complete set of methods to manipulate the entity.
 
-In the project explorer in Eclipse Che, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class** and paste the following code:
+In the project explorer in CodeReady Workspaces, right-click on **catalog-spring-boot > src > main > java > com.redhat.cloudnative.catalog** and then on **New > Java Class** and paste the following code:
 
 
 ~~~java
@@ -224,10 +224,10 @@ Build and package the Catalog service using Maven by clicking on **BUILD > build
 
 ![Maven Build]({% image_path eclipse-che-commands-build.png %}){:width="340px"}
 
-Using Spring Boot maven plugin, you can conveniently run the application in Eclipse Che and 
-test the endpoint. In Eclipse Che, click on the run icon and then on **run spring-boot**. 
+Using Spring Boot maven plugin, you can conveniently run the application in CodeReady Workspaces and 
+test the endpoint. In CodeReady Workspaces, click on the run icon and then on **run spring-boot**. 
 
-> You can also run the inventory service in Eclipse Che using the commands palette and then **run > run spring-boot**
+> You can also run the inventory service in CodeReady Workspaces using the commands palette and then **run > run spring-boot**
  
 When you see `Started CatalogApplication` in the logs, you can access the 
 Catalog REST API. Let’s test it out using `curl` in a new terminal window:
@@ -238,7 +238,7 @@ $ curl http://localhost:9000/api/catalog
 [{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ~~~
 
-You can also use the preview url that Eclipse Che has generated for you to be able to test service 
+You can also use the preview url that CodeReady Workspaces has generated for you to be able to test service 
 directly in the browser. Append the path `/api/catalog` at the end of the preview url and try 
 it in your browser in a new tab.
 
@@ -265,7 +265,7 @@ able to communicate with the OpenShift platform using the REST endpoints in orde
 allowing to build a project, deploy it and finally launch a docker process as a pod.
 
 To build and deploy the Catalog service on OpenShift using the `fabric8` maven plugin, 
-which is already configured in Eclipse Che, from the commands palette, click on **DEPLOY > fabric8:deploy**
+which is already configured in CodeReady Workspaces, from the commands palette, click on **DEPLOY > fabric8:deploy**
 
 ![Fabric8 Deploy]({% image_path eclipse-che-commands-deploy.png %}){:width="340px"}
 

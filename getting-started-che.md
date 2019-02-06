@@ -88,7 +88,7 @@ Choose **Maven** from the project configurations and then click on **Save**
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-Issue the following command in Eclipse Che terminal and replace `{{OPENSHIFT_CONSOLE_URL}}` 
+Issue the following command in CodeReady Workspaces terminal and replace `{{OPENSHIFT_CONSOLE_URL}}` 
 with your OpenShift Web Console url. 
 
 ~~~shell

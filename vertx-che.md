@@ -75,7 +75,7 @@ Here is what happens in the above code:
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the build logs, otherwise the build has failed.
 
-In Eclipse Che, click on **gateway-vertx** project in the project explorer, 
+In CodeReady Workspaces, click on **gateway-vertx** project in the project explorer, 
 and then click on Commands Palette and click on **BUILD > build**.
 
 ![Maven Build]({% image_path eclipse-che-commands-build.png %}){:width="340px"}
@@ -345,7 +345,7 @@ $ curl http://localhost:8080/api/products
 Note that the JSON response aggregates responses from Catalog and Inventory services and 
 the inventory info for each product is available within the same JSON object.
 
-You can also use the preview url that Eclipse Che has generated for you to be able to test service 
+You can also use the preview url that CodeReady Workspaces has generated for you to be able to test service 
 directly in the browser. Append the path `/api/products` at the end of the preview url and try 
 it in your browser in a new tab.
 
@@ -389,7 +389,7 @@ able to communicate with the OpenShift platform using the REST endpoints in orde
 allowing to build a project, deploy it and finally launch a docker process as a pod.
 
 To build and deploy the Gateway service on OpenShift using the `fabric8` maven plugin, 
-which is already configured in Eclipse Che, from the commands palette, click on **DEPLOY > fabric8:deploy**
+which is already configured in CodeReady Workspaces, from the commands palette, click on **DEPLOY > fabric8:deploy**
 
 ![Fabric8 Deploy]({% image_path eclipse-che-commands-deploy.png %}){:width="340px"}
 

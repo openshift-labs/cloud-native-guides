@@ -98,7 +98,7 @@ ACTIVE     NAME
 You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
 in the build logs, otherwise the build has failed.
 
-In Eclipse Che, click on **gateway-vertx** project in the project explorer, 
+In CodeReady Workspaces, click on **gateway-vertx** project in the project explorer, 
 and then click on Commands Palette and click on **BUILD > build**.
 
 ![Maven Build]({% image_path codeready-commands-build.png %}){:width="200px"}
