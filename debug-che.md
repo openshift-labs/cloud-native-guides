@@ -76,8 +76,8 @@ An easier approach would be to use the fabric8 maven plugin to enable remote deb
 the Inventory pod. It also forwards the default remote debugging port, 5005, from the 
 Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on Inventory by running the following inside the `/projects/labs/inventory-wildfly-swarm` 
-directory in the Eclipse Che **Terminal** window:
+Enable remote debugging on Inventory by running the following inside the `/projects/labs/inventory-thorntail` 
+directory in the CodeReady Workspaces **Terminal** window:
 
 ~~~shell
 $ mvn fabric8:deploy -Dfabric8.debug.enabled=true
@@ -104,16 +104,16 @@ Forwarding from [::1]:5005 -> 5005
 Do not wait for the command to return! It keeps the forwarded 
 port open so that you can start debugging remotely.
 
-#### Remote Debug with Eclipse Che
+#### Remote Debug with CodeReady Workspaces
 
-Eclipse Che provides a convenient way to remotely connect to Java applications running 
+CodeReady Workspaces provides a convenient way to remotely connect to Java applications running 
 inside containers and debug while following the code execution in the IDE.
 
 From the **Run** menu, click on **Edit Debug Configurations...**.
 
 ![Remote Debug]({% image_path debug-che-debug-config-1.png %}){:width="600px"}
 
-The window shows the debuggers available in Eclipse Che. Click on the plus sign near the 
+The window shows the debuggers available in CodeReady Workspaces. Click on the plus sign near the 
 Java debugger.
 
 ![Remote Debug]({% image_path debug-che-debug-config-2.png %}){:width="700px"}
@@ -125,7 +125,7 @@ Configure the remote debugger and click on the **Save** button:
 
 ![Remote Debug]({% image_path debug-che-debug-config-3.png %}){:width="700px"}
 
-You can now click on the **Debug** button to make Eclipse Che connect to the 
+You can now click on the **Debug** button to make CodeReady Workspaces connect to the 
 Inventory service running on OpenShift.
 
 You should see a confirmation that the remote debugger is successfully connected.

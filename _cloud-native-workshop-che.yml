@@ -39,5 +39,5 @@ modules:
   - fault-tolerance-che
   - app-config
   - continuous-delivery-che
-  - debug-che
+  # - debug-che
   - env-info
