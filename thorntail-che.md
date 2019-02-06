@@ -160,7 +160,7 @@ labs will be replaced with a PostgreSQL database. Be patient! More on that later
 
 #### Creating a RESTful Service
 
-Thorntail uses JAX-RS standard for building REST services. In the project explorer in CodeReady Workspaces, replace the Java class named  `InventoryResource` from **inventory-thorntail > src > main > java > com.redhat.cloudnative.inventory** with the following content:
+Thorntail uses JAX-RS standard for building REST services. In the project explorer in CodeReady Workspaces, right-click on **inventory-thorntail > src > main > java > com.redhat.cloudnative.inventory** and then on **New > Java Class**. Enter `InventoryResource` as the Java class name.
 
 ~~~java
 package com.redhat.cloudnative.inventory;
