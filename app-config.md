@@ -346,8 +346,8 @@ database-password:    7 bytes
 database-user:        7 bytes
 ~~~
 
-This secret has two encrypted properties defined as `database-user` and `database-password` which hold 
-the PostgreSQL username and password values. These values are injected in the PostgreSQL container as 
+This secret has three encrypted properties defined as `database-name`, `database-user` and `database-password` which hold 
+the PostgreSQL database name, username and password values. These values are injected in the PostgreSQL container as 
 environment variables and used to initialize the database.
 
 Go to the **{{COOLSTORE_PROJECT}}** in the OpenShift Web Console and click on the `catalog-postgresql` 
