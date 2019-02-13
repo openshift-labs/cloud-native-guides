@@ -1,4 +1,4 @@
-- name: cloudnative-workshop-apb playbook to provision the application
+- name: cloudnative-workshopv2-apb playbook to provision the application
   hosts: localhost
   gather_facts: false
   connection: local
@@ -15,6 +15,7 @@
     gogs_pwd: openshift
     infrasvcs_adm_user: adminuser
     infrasvcs_adm_pwd: adminpwd
+    infrasvcs_gogs_user_count: 25
     master_url: "kubernetes.default"
 
   roles:
@@ -80,6 +81,7 @@
       gogs_admin_password: "{{ infrasvcs_adm_pwd }}"
       gogs_user: "{{ gogs_dev_user }}"
       gogs_password: "{{ gogs_pwd }}"
+      gogs_generate_user_count: "{{ infrasvcs_gogs_user_count }}"
     tags: gogs
 
   # deploy guides

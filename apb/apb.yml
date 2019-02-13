@@ -62,3 +62,13 @@ plans:
       required: true
       display_type: text
       display_group: Workshop Infra Services
+    - name: infrasvcs_gogs_user_count
+      title: Number of gogs user for the lab
+      description: Set the number of users, this will create gogs users with git repos
+      type: string
+      default: "25"
+      required: true
+      display_type: text
+      display_group: Workshop Infra Services
+
+      
