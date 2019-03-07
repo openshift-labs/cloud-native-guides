@@ -4,7 +4,7 @@ Cloud-Native Workshop Installer v2 [![Build Status](https://travis-ci.org/RedHat
 The provided Ansible Playbook Bundle automates preparing an OpenShift cluster for the Cloud-Native Labs 
 by deploying required services (lab instructions, Gogs, Nexus, etc) which are used during the labs.
 
-The instructions for using this APB is documented in the [README](../README.md)
+The instructions for using this APB are as follows:
 
 Step 1: 
 Make sure you have the right settings for looking up Quay for the apb
