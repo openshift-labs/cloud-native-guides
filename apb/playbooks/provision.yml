@@ -13,10 +13,16 @@
     github_ref: master
     gogs_dev_user: developer
     gogs_pwd: openshift
+    gogs_generate_user_format: user%02d  
+    gogs_clone_addr: "https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2-labs"
+    gogs_repo_name: "cloud-native-workshop-v2-labs"
+    gogs_user_count: 0
+    gogs_user_format: user%d
     infrasvcs_adm_user: adminuser
     infrasvcs_adm_pwd: adminpwd
     infrasvcs_gogs_user_count: 25
     master_url: "kubernetes.default"
+
 
   roles:
   - role: ansible.kubernetes-modules
@@ -70,7 +76,8 @@
       nexus_image_version: 3.12.1
       nexus_max_memory: 6Gi
     tags: nexus
-
+ 
+ # deploy gogs
   - import_role:
       name: openshift_gogs
     vars:
@@ -81,8 +88,36 @@
       gogs_admin_password: "{{ infrasvcs_adm_pwd }}"
       gogs_user: "{{ gogs_dev_user }}"
       gogs_password: "{{ gogs_pwd }}"
-      gogs_generate_user_count: "{{ infrasvcs_gogs_user_count }}"
     tags: gogs
+
+  - name: Create gogs users
+    uri:
+      url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/admin/users
+      method: POST
+      body: "{'login_name': '{{ item }}', 'username': '{{ item }}', 'email': '{{ item }}@gogs.com', 'password': '{{ gogs_pwd }}'}"
+      body_format: json
+      user: "{{ infrasvcs_adm_user }}"
+      password: "{{ infrasvcs_adm_pwd }}"
+      status_code: 200,201
+      force_basic_auth: true
+    ignore_errors: true
+    with_sequence: start=0 end={{ infrasvcs_gogs_user_count }} format="{{ gogs_user_format }}"
+    when: infrasvcs_gogs_user_count > 0
+
+  - name: migrate repos for all users
+    uri:
+      url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/repos/migrate
+      method: POST
+      body: "{'clone_addr': '{{ gogs_clone_addr }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name }}' }"
+      body_format: json
+      username: "user{{ item }}"
+      url_username: "user{{ item }}"
+      password: "{{ gogs_pwd }}"
+      status_code: 200,201
+      force_basic_auth: true
+    ignore_errors: true
+    with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
+    when: infrasvcs_gogs_user_count > 0
 
   # deploy guides
   - import_role:
