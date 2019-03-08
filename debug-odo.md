@@ -1,43 +1,32 @@
 ## Debugging Applications
 
-In this lab you will debug the CoolStore application using Java remote debugging and 
+In this lab you will debug the coolstore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.
 
 #### Investigate The Bug
 
-CoolStore application seems to have a bug that causes the inventory status for one of the 
-products not to be displayed in the web interface. 
+CoolStore application seem to have a bug that causes the inventory status for one of the 
+products not be displayed in the web interface. 
 
 ![Inventory Status Bug]({% image_path debug-coolstore-bug.png %}){:width="800px"}
 
-This is not an expected behavior! In previous labs, you added a circuit breaker to 
-protect the CoolStore application from failures and in case the Inventory API is not 
-available, to skip it and show the products without the inventory status. However, right 
-now the inventory status is available for all products but one which is not how we 
+This is not an expected behavior! The inventory status is available for all products but one which is not how we 
 expect to see the products.
 
 Since the product list is provided by the API Gateway, take a look into the API Gateway 
 logs to see if there are any errors:
 
 ~~~shell
-$ oc logs dc/gateway | grep -i error
+$ odo log service --app gateway | grep -i WARNING
 
 ...
 WARNING: Inventory error for 444436: status code 204
-SEVERE: Inventory error for 444436: null
+WARNING: Inventory error for 444436: status code 204
 ...
 ~~~
 
 Oh! Something seems to be wrong with the response the API Gateway has received from the 
 Inventory API for the product id `444436`. 
-
-Look into the Inventory pod logs to investigate further and see if you can find more  
-information about this bug:
-
-
-~~~shell
-$ oc logs dc/inventory | grep ERROR
-~~~
 
 There doesn't seem to be anything relevant to the `invalid response` error that the 
 API Gateway received either! 
@@ -45,7 +34,7 @@ API Gateway received either!
 Invoke the Inventory API using `curl` for the suspect product id to see what actually 
 happens when API Gateway makes this call:
 
-> You can find out the Inventory route url using `oc get route inventory`. Replace 
+> You can find out the Inventory route url using `odo url list --component service --app inventory`. Replace 
 > `{{INVENTORY_ROUTE_HOST}}` with the Inventory route url from your project.
 
 ~~~shell
@@ -76,29 +65,26 @@ An easier approach would be to use the fabric8 maven plugin to enable remote deb
 the Inventory pod. It also forwards the default remote debugging port, 5005, from the 
 Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on Inventory by running the following inside the `/projects/labs/inventory-thorntail` 
-directory in the CodeReady Workspaces **Terminal** window:
+Enable remote debugging on Inventory by running the following command:
 
 ~~~shell
-$ mvn fabric8:deploy -Dfabric8.debug.enabled=true
-$ oc get pods -w -lapp=inventory,deploymentconfig=inventory
-NAME                READY     STATUS    RESTARTS   AGE
-inventory-3-jrk84   1/1       Running   0          15m
+$ oc set env dc/service-inventory JAVA_DEBUG=true JAVA_DEBUG_PORT=9009
+$ 
 ~~~~
 
 Wait until the service is `Running` with `1/1` in the `READY` column.
 
 > The default port for remoting debugging is `5005` but you can change the default port 
-> via environment variables. Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
+> via environment variables as we did previously. Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
 
 You are all set now to start debugging using the tools of you choice. 
 
 Forward the remote debugging port of the Inventory service locally by executing the following command:
 
 ~~~shell
-$ oc port-forward dc/inventory 5005
-Forwarding from 127.0.0.1:5005 -> 5005
-Forwarding from [::1]:5005 -> 5005
+$ oc port-forward dc/service-inventory 5005:9009
+Forwarding from 127.0.0.1:5005 -> 9009
+Forwarding from [::1]:5005 -> 9009
 ~~~~
 
 Do not wait for the command to return! It keeps the forwarded 
@@ -106,7 +92,7 @@ port open so that you can start debugging remotely.
 
 #### Remote Debug with CodeReady Workspaces
 
-CodeReady Workspaces provides a convenient way to remotely connect to Java applications running 
+CodeReady Workspaces provides a convenience way to remotely connect to Java applications running 
 inside containers and debug while following the code execution in the IDE.
 
 From the **Run** menu, click on **Edit Debug Configurations...**.
@@ -147,7 +133,7 @@ Note that you can use the the following icons to switch between debug and termin
 
 ![Icons]({% image_path debug-che-window-guide.png %}){:width="700px"}
 
->  You can find out the Inventory route url using `oc get routes`. Replace 
+>  You can find out the Inventory route url using `odo url list --component service --app inventory`. Replace 
 > `{{INVENTORY_ROUTE_HOST}}` with the Inventory route url from your project.
 
 ~~~
@@ -188,7 +174,7 @@ end the debug session.
 
 #### Fix the Inventory Bug
 
-Edit the `InventoryResource.java` and update the `getAvailability()` to make it look like the following 
+Edit the `InventoryResource.java` add update the `getAvailability()` to make it look like the following 
 code in order to return a zero inventory for products that don't exist in the inventory 
 database:
 
@@ -209,22 +195,20 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 }
 ~~~
 
-Go back to the **Terminal** window where `fabric8:debug` was running. Press 
-`Ctrl+C` to stop the debug and port-forward and then run the following commands 
-to commit the changes to the Git repository.
+Go back to the **Terminal** window where `oc port-forward` was running. Press 
+`Ctrl+C` to stop the debug and port-forward and then run the following commands.
 
 ~~~shell
-$ git add src/main/java/com/redhat/cloudnative/inventory/InventoryResource.java
-$ git commit -m "inventory returns zero for non-existing product id" 
-$ git push origin master
+$ odo push service --app inventory
+
+Pushing changes to component: service
+ ✓   Waiting for pod to start
+ ✓   Copying files to pod
+ ✓   Building component
+ OK  Changes successfully pushed to component: service
 ~~~
 
-As soon as you commit the changes to the Git repository, the `inventory-pipeline` gets 
-triggered to build and deploy a new Inventory container with the fix. Go to the 
-OpenShift Web Console and inside the **{{COOLSTORE_PROJECT}}** project. On the sidebar 
-menu, Click on **Builds >> Pipelines** to see its progress.
-
-When the pipeline completes successfully, point your browser at the Web route and verify 
+When the push completes successfully, point your browser at the Web route and verify 
 that the inventory status is visible for all products. The suspect product should show 
 the inventory status as _Not in Stock_.
 

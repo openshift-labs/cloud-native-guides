@@ -131,7 +131,7 @@ $ odo url create --app inventory --component service --port 8080
 Adding URL to component: service
  OK  URL created for component: service
 
-service - http://service-inventory-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com
+service - http://service-inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}
 ~~~
 
 > The route urls in your project would be different from the ones in this lab guide! Use the ones from your project.
@@ -293,9 +293,9 @@ Now, you can access the Inventory REST API. Let’s test it out using `curl` in 
 $ odo url list --component service --app inventory
 Found the following URLs for component service in application inventory:
 NAME                  URL                                                                   PORT
-service     http://service-inventory-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com     8080
+service     http://service-inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}     8080
 
-$ curl http://service-inventory-{{COOLSTORE_PROJECT}}apps.openshiftworkshop.com/api/inventory/329299
+$ curl http://service-inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}/api/inventory/329299
 {"itemId":"329299","quantity":35}
 ~~~
 

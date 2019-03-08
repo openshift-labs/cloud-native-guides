@@ -81,7 +81,7 @@ $ odo url create --app web --component ui --port 8080
 Adding URL to component: ui
  OK  URL created for component: ui
 
-ui - http://ui-web-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com
+ui - http://ui-web-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}
 ~~~
 
 > The route urls in your project would be different from the ones in this lab guide! Use the ones from your project.

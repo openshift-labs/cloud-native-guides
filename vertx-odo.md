@@ -155,7 +155,7 @@ $ odo url create --app gateway --component service --port 8080
 Adding URL to component: service
  OK  URL created for component: service
 
-service - http://service-gateway-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com
+service - http://service-gateway-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}
 ~~~
 
 > The route urls in your project would be different from the ones in this lab guide! Use the ones from your project.
@@ -327,9 +327,9 @@ Now, you can access the Catalog REST API. Let’s test it out using `curl` in a 
 ~~~shell
 $ odo url list --component service --app gateway
 NAME        URL                                                              PORT
-service     http://service-gateway-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com      8080
+service     http://service-gateway-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}       8080
 
-$ curl http://service-gateway-{{COOLSTORE_PROJECT}}.apps.openshiftworkshop.com/api/products
+$ curl http://service-gateway-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}/api/products
 [ {
   "itemId" : "329299",
   "name" : "Red Fedora",
