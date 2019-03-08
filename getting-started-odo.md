@@ -19,10 +19,10 @@ Follow these instructions to setup the development environment on CodeReady Work
 
 You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other programming languages. Built on the open [Eclipse Che](https://www.eclipse.org/che/) project, [CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview/) is the next-generation Eclipse IDE which provides developer workspaces, which include all the tools and the dependencies that are needed to code, build, test, run, and debug applications. This full-featured web-based IDE runs in an OpenShift cluster hosted on-premises or in the cloud and eliminates the need to install anything on a local machine.You have a CodeReady Workspaces instance deployed on your OpenShift cluster which you will use during these labs.
 
-Go to the [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace: {{ CODEREADY_WORKSPACES_URL }}
+Launch a browser and navigate to [CodeReady Workspaces]({{ CODEREADY_WORKSPACES_URL }}) ({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace
 
 #### Registering to CodeReady Workspaces
-First, you need to register as a user. Register and choose the same username and password as 
+First, you need to register as a user. `Register` and choose the same username and password as 
 your OpenShift credentials.
 
 ![CodeReady Workspaces - Register]({% image_path codeready-register.png %}){:width="500px"}
@@ -83,16 +83,18 @@ Choose **Maven** from the project configurations and then click on **Save**
 > The **Terminal** window in CodeReady Workspaces. For the rest of these labs, anytime you need to run a command in a terminal, you can use the CodeReady Workspaces **Terminal** window.
 > ![CodeReady Workspaces - Terminal]({% image_path codeready-terminal.png %}){:width="700px"}
 
-## Explore OpenShift with OpenShift CLI
+## Explore OpenShift with OpenShift DO
 
-In order to login, we will use the `oc` command and then specify the server that we
+[OpenShift Do (Odo)](https://openshiftdo.org/) is a CLI tool for developers who are writing, building, and deploying applications on OpenShift. With Odo, developers get an opinionated CLI tool that supports fast, iterative development which abstracts away Kubernetes and OpenShift concepts, thus allowing them to focus on what's most important to them: **CODE**.
+
+In order to login, we will use the `odo` command and then specify the server that we
 want to authenticate to.
 
 Issue the following command in CodeReady Workspaces terminal and replace `{{OPENSHIFT_CONSOLE_URL}}` 
 with your OpenShift Web Console url. 
 
 ~~~shell
-$ oc login {{OPENSHIFT_CONSOLE_URL}}
+$ odo login {{OPENSHIFT_CONSOLE_URL}}
 ~~~
 
 You may see the following output:
@@ -103,7 +105,7 @@ You can bypass the certificate check, but any data you send to the server could 
 Use insecure connections? (y/n):
 ~~~
 
-Enter in `Y` to use a potentially insecure connection.  The reason you received
+Enter in `y` to use a potentially insecure connection.  The reason you received
 this message is because we are using a self-signed certificate for this
 workshop, but we did not provide you with the CA certificate that was generated
 by OpenShift. In a real-world scenario, either OpenShift's certificate would be
@@ -129,10 +131,8 @@ deploying your applications.
 > have a unique project name for yourself e.g. appending your username to the project name
 
 ~~~shell
-$ oc new-project {{COOLSTORE_PROJECT}}
-
-Now using project "{{COOLSTORE_PROJECT}}" on server ...
-...
+$ odo project create {{COOLSTORE_PROJECT}}
+OK  New project created and now using project : {{COOLSTORE_PROJECT}}
 ~~~
 
 OpenShift ships with a web-based console that will allow users to
@@ -148,5 +148,13 @@ Click on the **{{COOLSTORE_PROJECT}}** project to be taken to the project overvi
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.
+
+Due to security reasons, by default, containers are not allowed to access to the OpenShift REST API. We need to grant them permission in order to use Service and Config Map discovery features later.
+
+> Make sure to replace the project name with your own unique project name
+
+~~~shell
+$ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
+~~~ 
 
 Now you are ready to get started with the labs!

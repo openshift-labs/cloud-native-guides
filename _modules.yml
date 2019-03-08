@@ -50,5 +50,7 @@ modules:
     name:  Debugging Applications
   debug-codeready:
     name:  Debugging Applications
+  service-mesh:
+    name:  Service Mesh
   env-info:
     name: "Appendix: Lab Env Info"
