@@ -343,3 +343,10 @@
           "id": "java-oc-centos-cloudnative"
         }]
     tags: eclipse-che
+
+ # deploy rhamt
+  - import_role:
+      name: rhamt
+    vars:
+      OCP_PROJECT: "{{ namespace }}"
+    tags: rhamt
