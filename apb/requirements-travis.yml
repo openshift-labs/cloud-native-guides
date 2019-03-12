@@ -6,6 +6,10 @@
   version: 1.1.0
   name: openshift_gogs
 
+- src: siamaksade.openshift_workshopper
+  version: 1.2.0
+  name: openshift_workshopper
+
 - src: siamaksade.openshift_eclipse_che
   version: 1.2.0
   name: openshift_eclipse_che
