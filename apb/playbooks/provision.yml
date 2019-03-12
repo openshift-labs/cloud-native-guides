@@ -175,6 +175,13 @@
       deploy_jenkins: false
       jenkins_max_cpu: 2
       jenkins_max_mem: 2Gi
+  
+  # deploy rhamt
+  - import_role:
+      name: rhamt
+    vars:
+      OCP_PROJECT: "{{ namespace }}"
+    tags: rhamt
 
   # deploy eclipse che
   - import_role:
@@ -343,10 +350,3 @@
           "id": "java-oc-centos-cloudnative"
         }]
     tags: eclipse-che
-
- # deploy rhamt
-  - import_role:
-      name: rhamt
-    vars:
-      OCP_PROJECT: "{{ namespace }}"
-    tags: rhamt
