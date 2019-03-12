@@ -69,13 +69,13 @@
     ignore_errors: true
     tags: always
 
-  - import_role:
-      name: openshift_sonatype_nexus
-    vars:
-      project_name: "{{ namespace }}"
-      nexus_image_version: 3.12.1
-      nexus_max_memory: 6Gi
-    tags: nexus
+ # - import_role:
+ #     name: openshift_sonatype_nexus
+ #   vars:
+ #     project_name: "{{ namespace }}"
+ #     nexus_image_version: 3.12.1
+ #     nexus_max_memory: 6Gi
+ #   tags: nexus
  
  # deploy gogs
   - import_role:
