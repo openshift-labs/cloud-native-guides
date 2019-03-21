@@ -75,7 +75,7 @@ plans:
       description: Set the number of CPU resources to provision RHMAT pod and the labs users will to access it
       type: string
       default: "2"
-      required: false
+      required: true
       display_type: text
       display_group: Workshop Infra Services
     - name: requested_memory
@@ -83,7 +83,7 @@ plans:
       description: Set the number of MEMORY resources to provision RHMAT pod and the labs users will to access it
       type: string
       default: "4Gi"
-      required: false
+      required: true
       display_type: text
       display_group: Workshop Infra Services
 
