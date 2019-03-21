@@ -159,7 +159,13 @@
       jenkins_max_mem: 2Gi
   
   # deploy rhamt-rhsso
- 
+  - import_role:
+      name: rhamt
+    vars:
+      OCP_PROJECT: "{{ namespace }}"
+      REQUESTED_CPU: "{{ requested_cpu }}"
+      REQUESTED_MEMORY: "{{ requested_memory }}"
+    tags: rhamt
 
   # deploy eclipse che
   - import_role:
