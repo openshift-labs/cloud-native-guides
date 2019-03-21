@@ -11,6 +11,7 @@ before_install:
 
 install:
   - pip install ansible
+  - scl enable python27 "pip install --install-option='--install-purelib=/usr/lib/python2.7/site-packages/' jinja2 jmespath"
   - ansible-galaxy install -r apb/requirements-travis.yml
   - ansible-playbook apb/playbooks/provision.yml --syntax-check
 
