@@ -27,7 +27,7 @@ If running via your own machine you can run the following command
   oc new-project labs-infra
 
   oc run apb --restart=Never --image="quay.io/openshiftlabs/cloudnative-workshop-v2-apb:ocp-3.11" \
--- provision -vvv -e namespace="labs-infra" -e openshift_token=$(oc whoami -t) -e infrasvcs_gogs_user_count=50 -e trequested_cpu=2 -e requested_memory=4Gi
+-- provision -vvv -e namespace="labs-infra" -e openshift_token=$(oc whoami -t) -e infrasvcs_gogs_user_count=50 -e requested_cpu=2 -e requested_memory=4Gi
   ```
 
 to follow the logs
