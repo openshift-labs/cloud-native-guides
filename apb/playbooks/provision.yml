@@ -159,14 +159,91 @@
       jenkins_max_cpu: 2
       jenkins_max_mem: 2Gi
   
-  # deploy rhamt
+  # deploy rhamt-rhsso
   - import_role:
       name: rhamt
     vars:
       OCP_PROJECT: "{{ namespace }}"
-      APP: rhamt-web-console
-      APP_DIR: app
+      REQUESTED_CPU: "{{ requested_cpu }}"
+      REQUESTED_MEMORY: "{{ requested_memory }}"
     tags: rhamt
+  
+  - name: Get access token to update RH-SSO theme
+    uri: 
+      url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/realms/master/protocol/openid-connect/token
+      method: POST
+      body: "username=admin&password=password&grant_type=password&client_id=admin-cli"
+      status_code: 200, 201
+      force_basic_auth: true
+      validate_certs: no
+      return_content: yes
+      headers:
+        Content-Type: "application/x-www-form-urlencoded"
+      register: result_token
+         
+  - name: Update a master realm with RH-SSO theme
+    uri: 
+      url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/master/
+      method: PUT
+      body_format: json
+      body: '{ "displayName": "rh-sso", "displayNameHtml": "<strong>Red Hat</strong><sup>®</sup> Single Sign On", "loginTheme": "rh-sso", "adminTheme": "rh-sso", "accountTheme": "rh-sso", "emailTheme": "rh-sso", "accessTokenLifespan": 100 }'
+      status_code: 204
+      force_basic_auth: true
+      validate_certs: no
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        Authorization: "Bearer {{ result_token.json.access_token }}"
+    when: result_token.json.access_token != ""
+
+  - name: Create RH-SSO users as many as gogs users
+    uri: 
+      url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/rhamt/users
+      method: POST
+      body_format: json
+      body: '{ "username": "user{{ item }}", "enabled": true, "disableableCredentialTypes": [ "password" ] }' 
+      status_code: 200, 201, 409
+      force_basic_auth: true
+      validate_certs: no
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+          Authorization: "Bearer {{ result_token.json.access_token }}"
+      ignore_errors: true
+      with_sequence: start=1 end={{ infrasvcs_gogs_user_count }}
+      when: result_token.json.access_token != "" and infrasvcs_gogs_user_count > 0
+
+    - name: Retrieve RH-SSO user's ID list
+      uri: 
+        url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/rhamt/users
+        method: GET
+        status_code: 200, 201, 409
+        force_basic_auth: true
+        validate_certs: no
+        return_content: yes
+        headers:
+          Accept: "application/json"
+          Authorization: "Bearer {{ result_token.json.access_token }}"
+      ignore_errors: true
+      when: result_token.json.access_token != ""
+      register: result_useridlist
+
+    - name: Reset passwords for each RH-SSO user like userxx
+      uri: 
+        url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/rhamt/users/{{ item.id }}/reset-password
+        method: PUT
+        body_format: json
+        body: '{ "type": "password", "value": "{{ gogs_pwd }}", "temporary": true}' 
+        status_code: 204
+        force_basic_auth: true
+        validate_certs: no
+        headers:
+          Content-Type: "application/json"
+          Accept: "application/json"
+          Authorization: "Bearer {{ result_token.json.access_token }}"
+      ignore_errors: true
+      with_items: "{{ result_useridlist.json }}"
+      when: item.username != "rhamt"
 
   # deploy eclipse che
   - import_role:
