@@ -53,6 +53,8 @@ cnZpY2VzCgogICAgICAK"
 
 COPY playbooks /opt/apb/actions
 ADD requirements.yml /opt/apb/actions/requirements.yml
-RUN ansible-galaxy install -r /opt/apb/actions/requirements.yml -f
-RUN chmod -R g=u /opt/{ansible,apb}
+RUN yum install python-pip -y \
+  && pip install jmespath \
+  && ansible-galaxy install -r /opt/apb/actions/requirements.yml -f \
+  && chmod -R g=u /opt/{ansible,apb}
 USER apb

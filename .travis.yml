@@ -11,9 +11,6 @@ before_install:
 
 install:
   - pip install ansible
-  - curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
-  - python get-pip.py
-  - pip install jmespath
   - ansible-galaxy install -r apb/requirements-travis.yml
   - ansible-playbook apb/playbooks/provision.yml --syntax-check
 
