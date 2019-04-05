@@ -1,4 +1,4 @@
-## Service Mesh
+## Microservice Tracing with Service Mesh
 
 In this lab you will enable tracing and monitoring of your backend services using Service Mesh.
 
