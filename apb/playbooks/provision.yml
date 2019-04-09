@@ -38,23 +38,37 @@
       openshift_token is none or
       openshift_token|trim() == ""
     tags: always  
-          
-  - name: extract app route suffix
+
+  - name: Get apps route suffix
     block:
-      - openshift_v1_route:
+      - k8s:
+          state: present
+          definition:
+            apiVersion: "route.openshift.io/v1"
+            kind: Route
+            metadata:
+              name: dummy
+              namespace: "{{ namespace }}"
+            spec:
+              to:
+                kind: Service
+                name: dummy
+              ports:
+              - targetPort: 8080
+      - k8s_facts:
+          api_version: "route.openshift.io/v1"
+          kind: Route
           name: dummy
           namespace: "{{ namespace }}"
-          state: present
-          spec_to_kind: Service
-          spec_to_name: dummy
-          spec_port_target_port: 8080
         register: dummy_route
       - set_fact:
-          apps_hostname_suffix: "{{ dummy_route.route.spec.host|regex_replace('^dummy-' + namespace + '\\.(.*)$', '\\1') }}"
-      - openshift_v1_route:
+          apps_hostname_suffix: "{{ dummy_route.resources[0].spec.host|regex_replace('^dummy-' + namespace + '\\.(.*)$', '\\1') }}"
+      - k8s:
+          state: absent
+          api_version: "route.openshift.io/v1"
+          kind: Route
           name: dummy
           namespace: "{{ namespace }}"
-          state: absent
     tags: always
 
   - name: delete project quota
@@ -125,7 +139,7 @@
     tags: jdk
 
   - name: install java image stream
-    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/openjdk/openjdk18-image-stream.json"
+    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/openshift/library/master/official/java/imagestreams/java-rhel7.json"
     when: java_imagestream_result is failed
     tags: jdk
 

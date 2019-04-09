@@ -1,4 +1,4 @@
-FROM quay.io/openshiftlabs/apb-base:1.2
+FROM ansibleplaybookbundle/apb-base:release-1.3
 
 LABEL "com.redhat.apb.spec"=\
 "dmVyc2lvbjogMS4wCm5hbWU6IGNsb3VkbmF0aXZlLXdvcmtzaG9wLWFwYgpkZXNjcmlwdGlvbjog\
@@ -41,13 +41,8 @@ ICAtIG5hbWU6IGluZnJhc3Zjc19hZG1fcHdkCiAgICAgIHRpdGxlOiBJbmZyYSBTZXJ2aWNlcyBB\
 ZG1pbiBQYXNzd29yZAogICAgICBkZXNjcmlwdGlvbjogQWRtaW4gcGFzc3dvcmQgZm9yIGluZnJh\
 c3RydWN0dXJlIHNlcnZpY2VzIChHb2dzLCBDaGUsIC4uLikKICAgICAgdHlwZTogc3RyaW5nCiAg\
 ICAgIGRlZmF1bHQ6ICJhZG1pbnB3ZCIKICAgICAgcmVxdWlyZWQ6IHRydWUKICAgICAgZGlzcGxh\
-eV90eXBlOiB0ZXh0CiAgICAgIGRpc3BsYXlfZ3JvdXA6IFdvcmtzaG9wIEluZnJhIFNlcnZpY2Vz"
-
-
-
-
-
-
+eV90eXBlOiB0ZXh0CiAgICAgIGRpc3BsYXlfZ3JvdXA6IFdvcmtzaG9wIEluZnJhIFNlcnZpY2Vz\
+"
 
 COPY playbooks /opt/apb/actions
 ADD requirements.yml /opt/apb/actions/requirements.yml
