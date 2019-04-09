@@ -72,7 +72,7 @@ This is also already done for the Inventory service.
 Verify that the health endpoint works for the Inventory service using `curl`, replacing `{{INVENTORY_ROUTE_HOST}}` 
 with the Inventory route url:
 
-> You know this by know! Use `oc get route inventory` to get the Inventory route url 
+> You know this by now! Use `oc get route inventory` to get the Inventory route url 
 
 ~~~shell
 $ curl http://{{INVENTORY_ROUTE_HOST}}/node

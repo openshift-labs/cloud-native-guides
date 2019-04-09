@@ -7,7 +7,7 @@ the Catalog service in order to provide a list of products for the CoolStore onl
 #### What is Spring Boot?
 
 Spring Boot is an opinionated framework that makes it easy to create stand-alone Spring based 
-applications with an embedded web containers such as Tomcat (or JBoss Web Server), Jetty and Undertow 
+applications with embedded web containers such as Tomcat (or JBoss Web Server), Jetty and Undertow 
 that you can run directly on the JVM using `java -jar`. Spring Boot also allows producing a war 
 file that can be deployed on stand-alone web containers.
 
@@ -198,7 +198,7 @@ Build and package the Catalog service using Maven to make sure there are no comp
 $ mvn clean package
 ~~~
 
-That's it! Now that you have a domain model and a repository to retrieve the domain mode, let's create a 
+That's it! Now that you have a domain model and a repository to retrieve the domain model, let's create a 
 RESTful service that returns the list of products.
 
 #### Create a RESTful Service
@@ -232,7 +232,7 @@ public class CatalogController {
 }
 ~~~
 
-The above REST services defines an endpoint that is accessible via `HTTP GET` at `/api/catalog`. Notice 
+The above REST service defines an endpoint that is accessible via `HTTP GET` at `/api/catalog`. Notice 
 the `repository` field on the controller class which is used to retrieve the list of products. Spring Boot 
 automatically provides an implementation for `ProductRepository` at runtime and 
 [injects it into the controller using the `@Autowire` annotation](https://docs.spring.io/spring-boot/docs/current/reference/html/using-boot-spring-beans-and-dependency-injection.html).
@@ -283,11 +283,6 @@ To build and deploy the Catalog service on OpenShift using the `fabric8` maven p
 $ mvn fabric8:deploy
 ~~~
 
-During the deployment, you might see that Fabric8 Maven Plugin throws an `java.util.concurrent.RejectedExecutionException` 
-exception. This is due to [a bug](https://github.com/fabric8io/kubernetes-client/issues/1035) in one of Fabric8 Maven Plugin 
-dependencies which is being worked on right now and will be fixed soon. You can ignore this exception for now. The deployment 
-nevertheless succeeds.
-
 `fabric8:deploy` will cause the following to happen:
 
 * The Catalog uber-jar is built using Spring Boot
@@ -328,7 +323,7 @@ $ oc describe svc catalog
 $ oc describe route catalog
 ~~~
 
-You can see the expose DNS url for the Catalog service in the OpenShift Web Console or using 
+You can see the exposed DNS url for the Catalog service in the OpenShift Web Console or using 
 OpenShift CLI:
 
 ~~~shell

@@ -1,13 +1,13 @@
 ## Service Resilience and Fault Tolerance
 
-In this lab you will learn about how you can build service resilience and fault-tolerant into 
+In this lab you will learn about how you can build service resilience and fault tolerance into 
 the applications both at the infrastructure level using OpenShift capabilities as well as 
 at the application level using circuit breakers to prevent cascading failures when 
 downstream dependencies fail.
 
 #### Scaling Up Applications
 
-Applications capacity for serving clients is bounded by the amount of computing power 
+An application's capacity for serving clients is bounded by the amount of computing power 
 allocated to them and although it's possible to increase the computing power per instance, 
 it's far easier to keep the application instances within reasonable sizes and 
 instead add more instances to increase serving capacity. Traditionally, due to 
@@ -22,7 +22,7 @@ between those instances (horizontal scaling).
 In previous labs, you learned how to build container images from your application code and 
 deploy them on OpenShift. Container images on OpenShift follow the 
 [immutable server](https://martinfowler.com/bliki/ImmutableServer.html) pattern which guarantees 
-your application instances will always starts from a known well-configured state and makes 
+your application instances will always start from a known well-configured state and makes 
 deploying instances a repeatable practice. Immutable server pattern simplifies scaling out 
 application instances to starting a new instance which is guaranteed to be identical to the 
 existing instances and adding it to the load-balancer.
@@ -94,7 +94,7 @@ OpenShift automates this aspect of scaling as well via automatically scaling the
 and down within a specified min and max boundary based on the container metrics such as cpu and memory 
 consumption. In that case, if there is a surge of users visiting the CoolStore online shop due to 
 holiday season coming up or a good deal on a product, OpenShift would automatically add more pods to 
-handle the increase load on the application and after the load goes, the application is automatically 
+handle the increased load on the application and after the load goes back down, the application is automatically 
 scaled down to free up compute resources.
 
 In order to define auto-scaling for a pod, we should first define how much cpu and memory a pod is 
@@ -103,7 +103,7 @@ down. Since the deployment config is used when starting the application pods, th
 (cpu and memory) containers should also be defined on the deployment config.
 
 When allocating compute resources to application pods, each container may specify a *request*
-and a *limit*value each for CPU and memory. The 
+and a *limit* value each for CPU and memory. The 
 [*request*]({{OPENSHIFT_DOCS_BASE}}/dev_guide/compute_resources.html#dev-memory-requests) 
 values define how much resource should be dedicated to an application pod so that it can run. It's 
 the minimum resources needed in other words. The 
@@ -145,7 +145,8 @@ the CPU consumption passes 50% utilization:
 > You can configure an autoscaler using OpenShift Web Console by clicking 
 > on **Applications** >> **Deployments** within 
 > the **{{COOLSTORE_PROJECT}}** project. Click then on **web** and from the **Actions** menu on 
-> the top-right, choose **Edit Autoscaler**.
+> the top-right, choose **Add Autoscaler** or **Edit Autoscaler**, depending on whether or not 
+> you already have an autoscaler configured.
 
 ~~~shell
 $ oc autoscale dc/web --min 1 --max 5 --cpu-percent=40
@@ -223,7 +224,7 @@ node (virtual or physical machine) crashes and is removed from the cluster.
 > it would kill the extra pods so that the number of running instances matches what is configured on the deployment 
 > config.
 
-All of the above comes out-of-the-box and don't need any extra configuration. Remove the Catalog 
+All of the above comes out-of-the-box and doesn't need any extra configuration. Remove the Catalog 
 pod to verify how OpenShift starts the pod again. First, check the Catalog pod that is running:
 
 ~~~shell
@@ -456,4 +457,4 @@ Scale the Inventory service back up before moving on to the next labs.
 $ oc scale dc/inventory --replicas=1
 ~~~
 
-Well done! Let's move on to the next.
+Well done! Let's move on to the next lab.

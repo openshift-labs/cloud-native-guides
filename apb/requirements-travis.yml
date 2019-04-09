@@ -17,6 +17,10 @@
 - src: siamaksade.openshift_jenkins
   version: 1.4.1
   name: openshift_jenkins
+
+- src: openshift_labs.workshop_deployment_tracker
+  version: 1.0.1
+  name: workshop_deployment_tracker
   
 - src: ansible.kubernetes-modules
 

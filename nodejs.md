@@ -1,7 +1,7 @@
 ## Web UI with Node.js and AngularJS 
 
 In this lab you will learn about Node.js and will deploy the Node.js and Angular-based 
-web front+end for the CoolStore online shop which uses the API Gateway services you deployed 
+web frontend for the CoolStore online shop which uses the API Gateway services you deployed 
 in previous labs. 
 
 ![API Gateway Pattern]({% image_path coolstore-arch.png %}){:width="400px"}
@@ -60,7 +60,7 @@ logs using OpenShift Web Console or OpenShift CLI:
 $ oc logs -f bc/web
 ~~~
 
-The `-f` option is to follow the logs as the build progresses. After the building the Node.s Web UI 
+The `-f` option is to follow the logs as the build progresses. After the building the Node.js Web UI 
 completes, it gets pushed into the internal image registry in OpenShift and then deployed within 
 your project.
 
