@@ -1,5 +1,7 @@
 ## Getting Started with OpenShift
 
+*5 MINUTES PRACTICE*
+
 In this lab you will get familiar with the OpenShift CLI and OpenShift Web Console 
 and get ready for the Cloud Native Roadshow labs.
 
@@ -21,11 +23,10 @@ You might be familiar with the Eclipse IDE which is one of the most popular IDEs
 
 Go to the [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace: {{ CODEREADY_WORKSPACES_URL }}
 
-#### Registering to CodeReady Workspaces
-First, you need to register as a user. Register and choose the same username and password as 
-your OpenShift credentials.
+#### Logging in to CodeReady Workspaces
+First, you need to log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
 
-![CodeReady Workspaces - Register]({% image_path codeready-register.png %}){:width="500px"}
+![CodeReady Workspaces - Log in]({% image_path codeready-login.png %}){:width="500px"}
 
 #### Creating a Workspace
 Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
@@ -33,13 +34,9 @@ stack is a template of workspace configuration. For example, it includes the pro
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
-For this lab, click on the **Java Cloud-Native** stack and then on the **Create** button. 
+For this lab, click on the **Java Cloud-Native** stack and then on the **CREATE & OPEN** button. 
 
 ![CodeReady Workspaces - Workspace]({% image_path codeready-create-workspace.png %}){:width="1000px"}
-
-Click on **OPEN** to open and to start the workspace.
-
-![CodeReady Workspaces - Workspace]({% image_path codeready-start-workspace.png %}){:width="1000px"}
 
 It takes a little while for the workspace to be ready. When it's ready, you will see a fully functional CodeReady Workspaces IDE running in your browser.
 
@@ -88,8 +85,7 @@ Choose **Maven** from the project configurations and then click on **Save**
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-Issue the following command in CodeReady Workspaces terminal and replace `{{OPENSHIFT_CONSOLE_URL}}` 
-with your OpenShift Web Console url. 
+Issue the following command in CodeReady Workspaces terminal and log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
 
 ~~~shell
 $ oc login {{OPENSHIFT_CONSOLE_URL}}
@@ -110,8 +106,6 @@ by OpenShift. In a real-world scenario, either OpenShift's certificate would be
 signed by a standard CA (eg: Thawte, Verisign, StartSSL, etc.) or signed by a
 corporate-standard CA that you already have installed on your system.
 
-Enter the username and password provided to you by the instructor
-
 Congratulations, you are now authenticated to the OpenShift server.
 
 [Projects]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/projects_and_users.html#projects) 
@@ -122,25 +116,14 @@ resources, policies (who can or cannot perform actions), and constraints (quotas
 and limits on resources, etc). Projects act as a "wrapper" around all the
 application services and endpoints you (or your teams) are using for your work.
 
-For this lab, let's create a project that you will use in the following labs for 
-deploying your applications. 
-
-> Make sure to follow your instructor guidance on the project names in order to 
-> have a unique project name for yourself e.g. appending your username to the project name
-
-~~~shell
-$ oc new-project {{COOLSTORE_PROJECT}}
-
-Now using project "{{COOLSTORE_PROJECT}}" on server ...
-...
-~~~
+ > Make sure to use your dedicated project {{COOLSTORE_PROJECT}} by running the following command `oc project {{COOLSTORE_PROJECT}}`
 
 OpenShift ships with a web-based console that will allow users to
 perform various tasks via a browser.  To get a feel for how the web console
-works, open your browser and go to the OpenShift Web Console.
+works, open your browser and go to the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
 
 
-The first screen you will see is the authentication screen. Enter your username and password and 
+The first screen you will see is the authentication screen. Enter your username and password (`{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`) and 
 then log in. After you have authenticated to the web console, you will be presented with a
 list of projects that your user has permission to work with. 
 

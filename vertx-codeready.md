@@ -1,5 +1,7 @@
 ## Reactive Microservices with Eclipse Vert.x
 
+*15 MINUTES PRACTICE*
+
 In this lab you will learn about Eclipse Vert.x and how you can 
 build microservices using reactive principles. During this lab you will 
 create a scalable API Gateway that aggregates Catalog and Inventory APIs.
@@ -57,7 +59,7 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start(Future<Void> future) {
         Router router = Router.router(vertx);
 
-        router.get("/").handler(StaticHandler.create("assets"));
+        router.get("/*").handler(StaticHandler.create("assets"));
 
         vertx.createHttpServer().requestHandler(router::accept)
             .listen(Integer.getInteger("http.port", 8080));
@@ -135,7 +137,7 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start() {
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/").handler(StaticHandler.create("assets"));
+        router.get("/*").handler(StaticHandler.create("assets"));
         router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
@@ -303,59 +305,6 @@ Build and package the Gateway service using Maven by clicking on **BUILD > build
 
 ![Maven Build]({% image_path codeready-command-build.png %}){:width="200px"}
 
-
-<!---
-
-Since the API Gateway requires the Catalog and Inventory services to be running, let's run all three 
-services simultaneously and verify that the API Gateway works as expected. 
-
-In the project explorer, click on the **catalog-spring-boot** project and then from the run commands, click 
-on **run spring-boot**.
-
-> Make sure you first click on the **catalog-spring-boot** in the project explorer
-
-![Run Catalog]({% image_path vertx-run-commands.png %}){:width="800px"}
-
-Then click on **inventory-wildfly-swarm** project in the project explorer, open the run commands then click on 
-**run wildfly-swarm**.
-
-> Make sure you first click on the **inventory-wildfly-swarm** in the project explorer!
-
-Now that Catalog and Inventory services are up and running, start the API Gateway service by clicking on the 
-**gateway-vertx** project in the project explorer and then run **run vertx** from the run palette.
-
-Now you can test the API Gateway by hitting the `/api/products` endpoint using `curl`:
-
-~~~shell
-$ curl http://localhost:8080/api/products
-
-[ {
-  "itemId" : "329299",
-  "name" : "Red Fedora",
-  "desc" : "Official Red Hat Fedora",
-  "price" : 34.99,
-  "availability" : {
-    "quantity" : 35
-  }
-},
-...
-]
-~~~
-
-Note that the JSON response aggregates responses from Catalog and Inventory services and 
-the inventory info for each product is available within the same JSON object.
-
-You can also use the preview url that CodeReady Workspaces has generated for you to be able to test service 
-directly in the browser. Append the path `/api/products` at the end of the preview url and try 
-it in your browser in a new tab.
-
-![Preview URL]({% image_path vertx-preview-browser.png %}){:width="900px"}
-
-Stop the Inventory service by clicking on the stop icon near **run spring-boot**, **run wildfly-swarm** and 
-**run vertx** in the **Machines** window.
-
--->
-
 #### Deploy Vert.x on OpenShift
 
 It’s time to build and deploy our service on OpenShift. 
@@ -368,14 +317,6 @@ OpenShift run with a `serviceaccount` (by default, the project `default` service
 be used to grant permissions for operations like accessing the OpenShift REST API. You can read 
 more about service accounts in the [OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/dev_guide/service_accounts.html) and this 
 [blog post](https://blog.openshift.com/understanding-service-accounts-sccs/#_service_accounts)
-
-Grant permission to the API Gateway to be able to access OpenShift REST API and discover services.
-
-> Make sure to replace the project name with your own unique project name
-
-~~~shell
-$ oc policy add-role-to-user view -n {{COOLSTORE_PROJECT}} -z default
-~~~
 
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
@@ -439,18 +380,21 @@ OpenShift CLI.
 ~~~shell
 $ oc get routes
 
-NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
-catalog     catalog-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}               catalog     8080                     None
-inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}             inventory   8080                     None
-gateway     gateway-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}               gateway     8080                     None
+NAME        HOST/PORT                                       PATH        SERVICES        PORT        TERMINATION   
+catalog     catalog-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                      catalog         8080        None
+gateway     gateway-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                      gateway         8080        None
+inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                    inventory       8080        None
 ~~~
 
-Copy the route url for API Gateway and verify the API Gateway service works using `curl`:
+> The route urls in your project would be different from the ones in this lab guide!
 
-> The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
+Click on the `Gateway Route` from the OpenShift Web Console.
+
+![Gateway Service]({% image_path gateway-service.png %}){:width="500px"}
+
+Then click on `Test it`. You should have the following output:
 
 ~~~shell
-$ curl http://{{API_GATEWAY_ROUTE_HOST}}/api/products
 
 [ {
   "itemId" : "329299",

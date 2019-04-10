@@ -1,5 +1,7 @@
 ## Microservices with Spring Boot
 
+*15 MINUTES PRACTICE*
+
 In this lab you will learn about Spring Boot and how you can build microservices 
 using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
 the Catalog service in order to provide a list of products for the CoolStore online shop.
@@ -309,24 +311,26 @@ $ oc describe svc catalog
 $ oc describe route catalog
 ~~~
 
-You can see the exposed DNS url for the Catalog service in the OpenShift Web Console or using 
-OpenShift CLI:
+You can see the expose DNS url for the `Catalog Service` in the OpenShift Web Console or using 
+OpenShift CLI.
 
 ~~~shell
 $ oc get routes
 
-NAME        HOST/PORT                                        PATH       SERVICES  PORT  TERMINATION   
-catalog     catalog-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}      catalog    8080            None
-inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}    inventory  8080            None
+NAME        HOST/PORT                                       PATH        SERVICES        PORT        TERMINATION   
+catalog     catalog-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                      catalog         8080        None
+inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                    inventory       8080        None
 ~~~
 
-Copy the route url for the Catalog service and verify the Catalog service works using `curl`:
+> The route urls in your project would be different from the ones in this lab guide!
 
-> The route urls in your project would be different from the ones in this lab guide! Use the ones from yor project.
+Click on the `Catalog Route` in the OpenShift Web Console.
+
+![Catalog Service]({% image_path catalog-service.png %}){:width="500px"}
+
+Then click on `Test it`. You should have the following output:
 
 ~~~shell
-$ curl http://{{CATALOG_ROUTE_HOST}}/api/catalog
-
 [{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ~~~
 

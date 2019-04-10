@@ -1,5 +1,7 @@
 ## Web UI with Node.js and AngularJS 
 
+*5 MINUTES PRACTICE*
+
 In this lab you will learn about Node.js and will deploy the Node.js and Angular-based 
 web frontend for the CoolStore online shop which uses the API Gateway services you deployed 
 in previous labs. 

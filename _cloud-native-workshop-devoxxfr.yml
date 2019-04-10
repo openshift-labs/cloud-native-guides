@@ -29,7 +29,7 @@ vars:
 modules:
   activate:
   - getting-started-codeready
-  - thorntail-codeready
+  - deploy-inventory
   - spring-boot-codeready
   - vertx-codeready
   - nodejs

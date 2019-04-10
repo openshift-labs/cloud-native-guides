@@ -4,34 +4,28 @@ config:
 modules:
   getting-started:
     name: Getting Started
-  getting-started-che:
-    name: Getting Started
   getting-started-codeready:
     name: Getting Started
   spring-boot:
     name: Microservices with Spring Boot
-  spring-boot-che:
-    name: Microservices with Spring Boot
   spring-boot-codeready:
     name: Microservices with Spring Boot
-  wildfly-swarm:
-    name: Enterprise Microservices with WildFly Swarm
-  wildfly-swarm-che:
-    name: Enterprise Microservices with WildFly Swarm
-  thorntail-che:
-    name: Enterprise Microservices with Thorntail
   thorntail-codeready:
     name: Enterprise Microservices with Thorntail
+  deploy-inventory:
+    name: Deploy Inventory Service
   vertx:
-    name: Reactive Microservices with Eclipse Vert.x
-  vertx-che:
     name: Reactive Microservices with Eclipse Vert.x
   vertx-codeready:
     name: Reactive Microservices with Eclipse Vert.x
+  deploy-gateway:
+    name: Deploy Gateway Service
   nodejs:
     name: Web UI with Node.js and AngularJS
   nodejs-codeready:
     name: Web UI with Node.js and AngularJS
+  deploy-webui:
+    name: Deploy Web UI
   health:
     name: Monitoring Application Health 
   fault-tolerance:
@@ -45,8 +39,6 @@ modules:
   continuous-delivery-che:
     name:  Continuous Delivery
   debug:
-    name:  Debugging Applications
-  debug-che:
     name:  Debugging Applications
   debug-codeready:
     name:  Debugging Applications
