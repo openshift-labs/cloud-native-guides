@@ -28,12 +28,14 @@ vars:
   
 modules:
   activate:
+  - introduction
   - getting-started-codeready
   - deploy-inventory
   - spring-boot-codeready
   - vertx-codeready
   - nodejs
   - service-mesh
+  - abtesting
   - continuous-delivery-che
   - debug-codeready
   - app-config

@@ -2,6 +2,8 @@ config:
     renderer: markdown
 
 modules:
+  introduction:
+    name: Introduction
   getting-started:
     name: Getting Started
   getting-started-codeready:
@@ -44,5 +46,7 @@ modules:
     name:  Debugging Applications
   service-mesh:
     name:  Microservice Tracing with Service Mesh
+  abtesting:
+    name:  "A/B Testing with Service Mesh"
   env-info:
     name: "Appendix: Lab Env Info"
