@@ -252,6 +252,9 @@ The REST API returned a JSON object representing the product list. Congratulatio
 
 Stop the Inventory service by `clicking on the stop icon` near **run spring-boot** in the **Machines** window.
 
+![Stop Icon - Spring Boot]({% image_path springboot-che-stop.png %}){:width="200px"}
+
+
 #### Deploy Spring Boot on OpenShift
 
 It’s time to build and deploy our service on OpenShift. 
