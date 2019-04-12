@@ -41,17 +41,18 @@ Use the OpenShift CLI command to create a new build and deployment for the Web c
 > Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
 > instead. To give you a hint, start by clicking on **Add to project** within the 
 > **{{COOLSTORE_PROJECT}}** project and pick **JavaScript** and then **Node.js** in the service 
-> catalog. Don't forget to click on **advanced options** and set **Context Dir** to `web-nodejs` 
+> catalog. Don't forget to click on **advanced options** and set **Context Dir** to **web-nodejs** 
 > which is the sub-folder of the Git repository where the source code for Web resides.
 
 ~~~shell
 $ oc new-app nodejs:8~{{LABS_GIT_REPO}} \
         --context-dir=web-nodejs \
-        --name=web 
+        --name=web \
+        --labels=app=web,version=1.0
 ~~~
 
-The `--context-dir` option specifies the sub-directly of the Git repository which contains 
-the source code for the application to be built and deployed. The `--labels` allows 
+The ***--context-dir*** option specifies the sub-directly of the Git repository which contains 
+the source code for the application to be built and deployed. The ***--labels*** allows 
 assigning arbitrary key-value labels to the application objects in order to make it easier to 
 find them later on when you have many applications in the same project.
 
@@ -62,7 +63,7 @@ logs using OpenShift Web Console or OpenShift CLI:
 $ oc logs -f bc/web
 ~~~
 
-The `-f` option is to follow the logs as the build progresses. After the building the Node.js Web UI 
+The ***-f*** option is to follow the logs as the build progresses. After the building the Node.js Web UI 
 completes, it gets pushed into the internal image registry in OpenShift and then deployed within 
 your project.
 
@@ -75,7 +76,7 @@ $ oc expose svc/web
 $ oc get route web
 ~~~
 
-Point your browser at the Web UI route url. You should be able to see the CoolStore with all 
+`Point your browser at the Web UI route url`. You should be able to see the CoolStore with all 
 products and their inventory status.
 
 ![CoolStore Shop]({% image_path coolstore-web.png %}){:width="840px"}

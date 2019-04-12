@@ -21,7 +21,7 @@ Follow these instructions to setup the development environment on CodeReady Work
 
 You might be familiar with the Eclipse IDE which is one of the most popular IDEs for Java and other programming languages. Built on the open [Eclipse Che](https://www.eclipse.org/che/) project, [CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview/) is the next-generation Eclipse IDE which provides developer workspaces, which include all the tools and the dependencies that are needed to code, build, test, run, and debug applications. This full-featured web-based IDE runs in an OpenShift cluster hosted on-premises or in the cloud and eliminates the need to install anything on a local machine.You have a CodeReady Workspaces instance deployed on your OpenShift cluster which you will use during these labs.
 
-Go to the [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace: {{ CODEREADY_WORKSPACES_URL }}
+`Go to the` [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace.,
 
 #### Logging in to CodeReady Workspaces
 First, you need to log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
@@ -29,12 +29,12 @@ First, you need to log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
 ![CodeReady Workspaces - Log in]({% image_path codeready-login.png %}){:width="500px"}
 
 #### Creating a Workspace
-Log into CodeReady Workspaces with your user. You can now create your workspace based on a stack. A 
-stack is a template of workspace configuration. For example, it includes the programming language and tools needed
+Once logged into CodeReady Workspaces, you can now create your workspace based on a stack. A 
+**Stack** is a template of workspace configuration. For example, it includes the programming language and tools needed
 in your workspace. Stacks make it possible to recreate identical workspaces with all the tools and needed configuration
 on-demand. 
 
-For this lab, click on the **Java Cloud-Native** stack and then on the **CREATE & OPEN** button. 
+For this lab, `select the Java Cloud-Native stack` and then `click on 'CREATE & OPEN'`. 
 
 ![CodeReady Workspaces - Workspace]({% image_path codeready-create-workspace.png %}){:width="1000px"}
 
@@ -45,17 +45,17 @@ It takes a little while for the workspace to be ready. When it's ready, you will
 #### Importing the lab project
 Now you can import the project skeletons into your workspace.
 
-In the project explorer pane, click on the **Import Project...** and enter the following:
+In the project explorer pane, `click on 'Import Project...'` and enter the following:
 
-  * Type: `ZIP`
-  * URL: `{{LABS_DOWNLOAD_URL}}`
-  * Name: `labs`
+  * Type: **ZIP**
+  * URL: **{{LABS_DOWNLOAD_URL}}**
+  * Name: **labs**
   * Check **Skip the root folder of the archive**
 
 ![CodeReady Workspaces - Import Project]({% image_path codeready-import.png %}){:width="500px"}
 
-Click on **Import**. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
-project skeletons. Click on **Save**
+`Click on 'Import'`. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
+project skeletons. `Click on 'Save'`
 
 ![CodeReady Workspaces - Import Project]({% image_path codeready-import-save.png %}){:width="500px"}
 
@@ -65,11 +65,11 @@ The projects are imported now into your workspace and is visible in the project 
 CodeReady Workspaces is a full featured IDE and provides language specific capabilities for various project types. In order to 
 enable these capabilities, let's convert the imported project skeletons to Maven projects. 
 
-In the project explorer, right-click on **catalog-spring-boot** and then click on **Convert to Project**.
+In the project explorer, `right-click on 'catalog-spring-boot'` project in the project explorer then, `click on 'Convert to Project'`.
 
 ![CodeReady Workspaces - Convert to Project]({% image_path codeready-convert.png %}){:width="500px"}
 
-Choose **Maven** from the project configurations and then click on **Save**
+Choose **Maven** from the project configurations and then `click on 'Save'`
 
 ![CodeReady Workspaces - Convert to Project]({% image_path codeready-maven.png %}){:width="500px"}
 
@@ -120,14 +120,14 @@ application services and endpoints you (or your teams) are using for your work.
 
 OpenShift ships with a web-based console that will allow users to
 perform various tasks via a browser.  To get a feel for how the web console
-works, open your browser and go to the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
+works, open your browser and `go to` [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
 
 
 The first screen you will see is the authentication screen. Enter your username and password (`{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`) and 
 then log in. After you have authenticated to the web console, you will be presented with a
 list of projects that your user has permission to work with. 
 
-Click on the **{{COOLSTORE_PROJECT}}** project to be taken to the project overview page
+`Click on '{{COOLSTORE_PROJECT}}'` project to be taken to the project overview page
 which will list all of the routes, services, deployments, and pods that you have
 running as part of your project. There's nothing there now, but that's about to
 change.

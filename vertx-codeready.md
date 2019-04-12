@@ -26,13 +26,13 @@ Vert.x is designed to be event-driven and non-blocking. Events are delivered in 
 
 #### Vert.x Maven Project 
 
-The `gateway-vertx` project has the following structure which shows the components of 
+The **gateway-vertx** project has the following structure which shows the components of 
 the Vert.x project laid out in different subdirectories according to Maven best practices:
 
 ![Gateway Project]({% image_path vertx-gateway-project.png %}){:width="340px"}
 
 This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
-other than the main class, `GatewayVerticle.java` which is there to bootstrap the Vert.x application. Verticles
+other than the main class, ***GatewayVerticle.java*** which is there to bootstrap the Vert.x application. Verticles
 are encapsulated parts of the application that can run completely independently and communicate with each other
 via the built-in event bus in Vert.x. Verticles get deployed and run by Vert.x in an event loop and therefore it 
 is important that the code in a Verticle does not block. This asynchronous architecture allows Vert.x applications 
@@ -43,7 +43,7 @@ and support this concurrency model.
 
 Although you can have multiple, there is currently only one Verticle created in the `gateway-vertx` project. 
 
-Examine `GatewayVerticle` class in the `com.redhat.cloudnative.gateway` package in the `src` directory.
+Examine ***GatewayVerticle.java*** class in the ***com.redhat.cloudnative.gateway*** package in the **src** directory.
 
 ~~~java
 package com.redhat.cloudnative.gateway;
@@ -69,21 +69,19 @@ public class GatewayVerticle extends AbstractVerticle {
 
 Here is what happens in the above code:
 
-1. A Verticle is created by extending from `AbstractVerticle` class
-2. `Router` is retrieved for mapping the REST endpoints
-3. A REST endpoint is created for `/` to return a static HTML page `assets/index.html`
-4. An HTTP Server is created which listens on port 8080
+1. A Verticle is created by extending from ***AbstractVerticle*** class
+2. ***Router*** is retrieved for mapping the REST endpoints
+3. A REST endpoint is created for **/** to return a static HTML page **assets/index.html**
+4. An HTTP Server is created which listens on port **8080**
 
-You can use Maven to make sure the skeleton project builds successfully. You should get a `BUILD SUCCESS` message 
+You can use Maven to make sure the skeleton project builds successfully. You should get a **BUILD SUCCESS** message 
 in the build logs, otherwise the build has failed.
 
-In CodeReady Workspaces, click on **gateway-vertx** project in the project explorer, 
-and then click on Commands Palette and click on **BUILD > build**.
+In CodeReady Workspaces, `right click on gateway-vertx` project in the project explorer then, `click on Commands > Build > build`
 
-![Maven Build]({% image_path eclipse-che-commands-build.png %}){:width="340px"}
+![Maven Build]({% image_path codeready-commands-build.png %}){:width="600px"}
 
-Once successfully built, the resulting `jar` is located in the `target/` directory:
-
+Once successfully built, the resulting ***jar*** is located in the **target/** directory:
 
 ~~~shell
 $ ls labs/gateway-vertx/target/*.jar
@@ -104,7 +102,7 @@ architecture.
 
 ![API Gateway Pattern]({% image_path coolstore-arch.png %}){:width="400px"}
 
-Replace the content of `src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java` class with the following:
+Replace the content of ***src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java*** class with the following:
 
 ~~~java
 package com.redhat.cloudnative.gateway;
@@ -203,9 +201,8 @@ public class GatewayVerticle extends AbstractVerticle {
 }
 ~~~
 
-Let's break down what happens in the above code. The `start` method creates an HTTP 
-server and a REST mapping to map `/api/products` to the `products` Java 
-method. 
+Let's break down what happens in the above code. The ***start()*** method creates an HTTP 
+server and a REST mapping to map **/api/products** to the ***products()*** method. 
 
 Vert.x provides [built-in service discovery](http://vertx.io/docs/vertx-service-discovery/java) 
 for finding where dependent services are deployed 
@@ -215,7 +212,7 @@ service discovery mechanisms provided by OpenShift, Kubernetes, Consul, Redis, e
 In this lab, since you will deploy the API Gateway on OpenShift, the OpenShift service discovery 
 bridge is used to automatically import OpenShift services into the Vert.x application as they 
 get deployed and undeployed. Since you also want to test the API Gateway locally, there is an 
-`onErrorReturn()` clause in the service lookup to fallback on a local service for Inventory 
+***onErrorReturn()*** method clause in the service lookup to fallback on a local service for Inventory 
 and Catalog REST APIs. 
 
 ~~~java
@@ -254,14 +251,14 @@ public void start() {
 }
 ~~~
 
-The `products` method invokes the Catalog REST endpoint and retrieves the products. It then 
+The ***products()*** method invokes the Catalog REST endpoint and retrieves the products. It then 
 iterates over the retrieved products and for each product invokes the 
 Inventory REST endpoint to get the inventory status and enrich the product data with availability 
 info. 
 
 Note that instead of making blocking calls to the Catalog and Inventory REST APIs, all calls 
 are non-blocking and handled using [RxJava](http://vertx.io/docs/vertx-rx/java). Due to its non-blocking 
-nature, the `product` method can immediately return without waiting for the Catalog and Inventory 
+nature, the ***product()*** method can immediately return without waiting for the Catalog and Inventory 
 REST invocations to complete and whenever the result of the REST calls is ready, the result 
 will be acted upon and update the response which is then sent back to the client.
 
@@ -301,38 +298,29 @@ private void products(RoutingContext rc) {
 ~~~
 
 
-Build and package the Gateway service using Maven by clicking on **BUILD > build** from the commands palette.
+Build and package the ***Gateway Service*** using Maven by `right clicking on gateway-vertx` project in the project explorer then, `click on Commands > Build > build`
 
-![Maven Build]({% image_path codeready-command-build.png %}){:width="200px"}
+![Maven Build]({% image_path codeready-commands-build.png %}){:width="600px"}
 
 #### Deploy Vert.x on OpenShift
 
 It’s time to build and deploy our service on OpenShift. 
 
-Like discussed, Vert.x service discovery integrates into OpenShift service discovery via OpenShift 
-REST API and imports available services to make them available to the Vert.x application. Security 
-in OpenShift comes first and therefore accessing the OpenShift REST API requires the user or the 
-system (Vert.x in this case) to have sufficient permissions to do so. All containers in 
-OpenShift run with a `serviceaccount` (by default, the project `default` service account) which can 
-be used to grant permissions for operations like accessing the OpenShift REST API. You can read 
-more about service accounts in the [OpenShift Documentation]({{OPENSHIFT_DOCS_BASE}}/dev_guide/service_accounts.html) and this 
-[blog post](https://blog.openshift.com/understanding-service-accounts-sccs/#_service_accounts)
-
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the [supported OpenJDK container image](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift) to build the final container 
 image of the API Gateway service by uploading the Vert.x uber-jar from 
-the `target` folder to the OpenShift platform. 
+the **target** folder to the OpenShift platform. 
 
 Maven projects can use the [Fabric8 Maven Plugin](https://maven.fabric8.io) in order to use OpenShift S2I for building 
 the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
 able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
 allowing to build a project, deploy it and finally launch a docker process as a pod.
 
-To build and deploy the Gateway service on OpenShift using the `fabric8` maven plugin, 
-which is already configured in CodeReady Workspaces, from the commands palette, click on **DEPLOY > fabric8:deploy**
+To build and deploy the **Gateway Service** on OpenShift using the *fabric8* maven plugin, 
+which is already configured in CodeReady Workspaces, `right click on gateway-vertx` project in the project explorer then, `click on Commands > Deploy > fabric8:deploy`
 
-![Fabric8 Deploy]({% image_path eclipse-che-commands-deploy.png %}){:width="340px"}
+![Fabric8 Deploy]({% image_path codeready-commands-deploy.png %}){:width="600px"}
 
 `fabric8:deploy` will cause the following to happen:
 
@@ -346,25 +334,25 @@ containers for the project.
 
 Let's take a moment and review the OpenShift resources that are created for the API Gateway:
 
-* **Build Config**: `gateway-s2i` build config is the configuration for building the Gateway 
+* **Build Config**: *gateway-s2i* build config is the configuration for building the Gateway 
 container image from the gateway source code or JAR archive
-* **Image Stream**: `gateway` image stream is the virtual view of all gateway container 
+* **Image Stream**: *gateway* image stream is the virtual view of all gateway container 
 images built and pushed to the OpenShift integrated registry.
-* **Deployment Config**: `gateway` deployment config deploys and redeploys the Gateway container 
+* **Deployment Config**: *gateway* deployment config deploys and redeploys the Gateway container 
 image whenever a new Gateway container image becomes available
-* **Service**: `gateway` service is an internal load balancer which identifies a set of 
+* **Service**: *gateway* service is an internal load balancer which identifies a set of 
 pods (containers) in order to proxy the connections it receives to them. Backing pods can be 
 added to or removed from a service arbitrarily while the service remains consistently available, 
 enabling anything that depends on the service to refer to it at a consistent address (service name 
 or IP).
-* **Route**: `gateway` route registers the service on the built-in external load-balancer 
+* **Route**: *gateway* route registers the service on the built-in external load-balancer 
 and assigns a public DNS name to it so that it can be reached from outside OpenShift cluster.
 
 You can review the above resources in the OpenShift Web Console or using `oc describe` command:
 
-> `bc` is the short-form of `buildconfig` and can be interchangeably used instead of it with the
-> OpenShift CLI. The same goes for `is` instead of `imagestream`, `dc` instead of`deploymentconfig` 
-> and `svc` instead of `service`.
+> ***bc*** is the short-form of ***buildconfig*** and can be interchangeably used instead of it with the 
+> OpenShift CLI. The same goes for ***is*** instead of ***imagestream***, ***dc*** instead of ***deploymentconfig*** 
+> and ***svc*** instead of ***service***.
 
 ~~~shell
 $ oc describe bc gateway-s2i
@@ -374,7 +362,7 @@ $ oc describe svc gateway
 $ oc describe route gateway
 ~~~
 
-You can see the expose DNS url for the Gateway service in the OpenShift Web Console or using 
+You can see the expose DNS url for the ***Gateway Service*** in the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}})or using 
 OpenShift CLI.
 
 ~~~shell
@@ -388,11 +376,11 @@ inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}            
 
 > The route urls in your project would be different from the ones in this lab guide!
 
-Click on the `Gateway Route` from the OpenShift Web Console.
+`Click on the Gateway Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
 
 ![Gateway Service]({% image_path gateway-service.png %}){:width="500px"}
 
-Then click on `Test it`. You should have the following output:
+Then `click on 'Test it'`. You should have the following output:
 
 ~~~shell
 
