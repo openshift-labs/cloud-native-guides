@@ -10,9 +10,11 @@ In this lab you will see how you can use Site Mesh to do some A/B testing using 
 
 #### Deploying the new Catalog service
 
-A new `Catalog Service` has been created, this service is developed in Go.
+A new ***Catalog Service*** has been created, this service is developed in [Golang](https://golang.org/) and available in the following repository:
 
-For the rest of the lab we will name this service the `catalog-v2`. This service use the same business logic except that all product descriptions are returned in uppercase.
+<{{CATALOG_GO_GIT_REPO}}>
+
+For the rest of the lab we will name this service ***catalog-v2***. This service use the same business logic except that all product descriptions are returned in uppercase.
 
 Let's deploy the service directly from the git repository using the `oc new-app` command.
 
