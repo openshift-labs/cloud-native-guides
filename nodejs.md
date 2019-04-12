@@ -32,7 +32,7 @@ source code on your laptop. In this lab, you will still use S2I but instead inst
 to obtain the application code directly from the source repository and build and deploy a 
 container image of it.
 
-The source code for the the Node.js Web front-end is available in this Git repository: 
+The source code for the Node.js Web front-end is available in this Git repository: 
 
 <{{WEB_NODEJS_GIT_REPO}}>
 
