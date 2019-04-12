@@ -10,9 +10,7 @@ In this lab you will see how you can use Site Mesh to do some A/B testing using 
 
 #### Deploying the new Catalog service
 
-A new Catalog service has been created, this service is developed in Go and available in the following repository:
-
-* [https://github.com/mcouliba/cloud-native-labs#devoxxfr](https://github.com/mcouliba/cloud-native-labs#devoxxfr)
+A new `Catalog Service` has been created, this service is developed in Go.
 
 For the rest of the lab we will name this service the `catalog-v2`. This service use the same business logic except that all product descriptions are returned in uppercase.
 
@@ -21,7 +19,7 @@ Let's deploy the service directly from the git repository using the `oc new-app`
 In the terminal window type the following command:
 
 ~~~shell
-$ oc new-app https://github.com/mcouliba/cloud-native-labs.git#devoxxfr \
+$ oc new-app {{LABS_GIT_REPO}} \
     --strategy=docker \
     --context-dir=catalog-go \
     --name=catalog-v2 \
