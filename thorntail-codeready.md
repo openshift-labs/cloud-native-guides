@@ -16,7 +16,7 @@ packaging them with just enough of the Java EE server runtime to be able to run 
 on the JVM using `java -jar`. For more details on various approaches to packaging Java 
 applications, read [this blog post](https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber).
 
-Thorntail is based on WildFly and it's compatible with 
+Thorntail is based on WildFly and compatible with 
 MicroProfile, which is a community effort to standardize the subset of Java EE standards 
 such as JAX-RS, CDI and JSON-P that are useful for building microservices applications.
 

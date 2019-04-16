@@ -96,7 +96,7 @@ application with `java -jar`.
 
 In the previous labs, you have created two RESTful services: Catalog and Inventory. Instead of the 
 web frontend contacting each of these backend services, you can create an API Gateway which is an entry 
-point for for the web frontend to access all backend services from a single place. This pattern is expectedly 
+point for the web frontend to access all backend services from a single place. This pattern is expectedly 
 called [API Gateway](http://microservices.io/patterns/apigateway.html) and is a common practice in Microservices 
 architecture.
 
