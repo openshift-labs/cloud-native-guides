@@ -1,5 +1,7 @@
 ## Debugging Applications
 
+*20 MINUTES PRACTICE*
+
 In this lab you will debug the CoolStore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.
 
@@ -20,40 +22,40 @@ Since the product list is provided by the API Gateway, take a look into the API 
 logs to see if there are any errors:
 
 ~~~shell
-$ oc logs dc/gateway | grep -i error
+$ oc logs dc/gateway -c vertx | grep -i "inventory error"
 
 ...
 WARNING: Inventory error for 444436: status code 204
-SEVERE: Inventory error for 444436: null
+WARNING: Inventory error for 444436: status code 204
 ...
 ~~~
 
 Oh! Something seems to be wrong with the response the API Gateway has received from the 
-Inventory API for the product id `444436`. 
+Inventory API for the product id **444436**. 
 
 Look into the Inventory pod logs to investigate further and see if you can find more  
 information about this bug:
 
 
 ~~~shell
-$ oc logs dc/inventory | grep ERROR
+$ oc logs dc/inventory -c thorntail-v2 | grep ERROR
 ~~~
 
-There doesn't seem to be anything relevant to the `invalid response` error that the 
+There doesn't seem to be anything relevant to the **invalid response** error that the 
 API Gateway received either! 
 
 Invoke the Inventory API using `curl` for the suspect product id to see what actually 
 happens when API Gateway makes this call:
 
 > You can find out the Inventory route url using `oc get route inventory`. Replace 
-> `{{INVENTORY_ROUTE_HOST}}` with the Inventory route url from your project.
+> **{{INVENTORY_ROUTE_HOST}}** with the Inventory route url from your project.
 
 ~~~shell
 $ curl http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 ~~~
 
 > You can use `curl -v` to see all the headers sent and received. You would received 
-> a `HTTP/1.1 204 No Content` response for the above request.
+> a ***HTTP/1.1 204 No Content*** response for the above request.
 
 No response came back and that seems to be the reason the inventory status is not displayed 
 on the web interface.
@@ -69,27 +71,28 @@ part of  Java SE standard debugging architecture which you can learn more about 
 
 
 The Java image on OpenShift has built-in support for remote debugging and it can be enabled 
-by setting the `JAVA_DEBUG=true` environment variables on the deployment config for the pod 
+by setting the ***JAVA_DEBUG=true*** environment variables on the deployment config for the pod 
 that you want to remotely debug.
 
 An easier approach would be to use the fabric8 maven plugin to enable remote debugging on 
 the Inventory pod. It also forwards the default remote debugging port, 5005, from the 
 Inventory pod to your workstation so simplify connectivity.
 
-Enable remote debugging on Inventory by running the following inside the `/projects/labs/inventory-thorntail` 
-directory in the CodeReady Workspaces **Terminal** window:
+Enable remote debugging on Inventory by running the following command in the CodeReady Workspaces **Terminal** window:
 
 ~~~shell
-$ mvn fabric8:deploy -Dfabric8.debug.enabled=true
-$ oc get pods -w -lapp=inventory,deploymentconfig=inventory
-NAME                READY     STATUS    RESTARTS   AGE
-inventory-3-jrk84   1/1       Running   0          15m
-~~~~
+$ oc set env dc/inventory JAVA_DEBUG=true
+$ oc get pods -lapp=inventory,deploymentconfig=inventory
+NAME                 READY     STATUS    RESTARTS   AGE
+inventory-19-k54lj   1/1       Running   0          3m
+~~~
 
-Wait until the service is `Running` with `1/1` in the `READY` column.
+Wait until the service is **Running** with **1/1** in the **READY** column.
 
-> The default port for remoting debugging is `5005` but you can change the default port 
-> via environment variables. Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
+> If **Service Mesh** is enabled for the ***Inventory Service***, wait until the service is **Running** with **2/2** in the **READY** column
+
+> The default port for remoting debugging is **5005** but you can change the default port 
+> via environment variables (JAVA_DEBUG_PORT). Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
 
 You are all set now to start debugging using the tools of you choice. 
 
@@ -121,7 +124,7 @@ Java debugger.
 Configure the remote debugger and click on the **Save** button:
 
 * Check **Connect to process on workspace machine**
-* Port: `5005`
+* Port: **5005**
 
 ![Remote Debug]({% image_path debug-che-debug-config-3.png %}){:width="700px"}
 
@@ -132,9 +135,9 @@ You should see a confirmation that the remote debugger is successfully connected
 
 ![Remote Debug]({% image_path debug-che-debug-config-4.png %}){:width="360px"}
 
-Open `com.redhat.cloudnative.inventory.InventoryResource` and click once
-on the editor sidebar on the line number of the first line of the `getAvailability()` 
-method to add a breakpoint to that line. A start appears near the line to show a breakpoint 
+Open ***com.redhat.cloudnative.inventory.InventoryResource*** and `click once
+on the editor sidebar on the line number of the first line of the getAvailability() 
+method` to add a breakpoint to that line. A start appears near the line to show a breakpoint 
 is set.
 
 ![Add Breakpoint]({% image_path debug-che-breakpoint.png %}){:width="600px"}
@@ -148,14 +151,14 @@ Note that you can use the the following icons to switch between debug and termin
 ![Icons]({% image_path debug-che-window-guide.png %}){:width="700px"}
 
 >  You can find out the Inventory route url using `oc get routes`. Replace 
-> `{{INVENTORY_ROUTE_HOST}}` with the Inventory route url from your project.
+> **{{INVENTORY_ROUTE_HOST}}** with the Inventory route url from your project.
 
 ~~~
 $ curl -v http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 ~~~
 
 Switch back to the debug panel and notice that the code execution is paused at the 
-breakpoint on `InventoryResource` class.
+breakpoint on ***InventoryResource*** class.
 
 ![Icons]({% image_path debug-che-breakpoint-stop.png %}){:width="900px"}
 
@@ -164,8 +167,8 @@ given product id from the database.
 
 ![Step Over]({% image_path debug-che-step-over.png %}){:width="340px"}
 
-Click on the the plus icon in the **Variables** panel to add the `inventory` variable 
-to the list of watch variables. This would allow you to see the value of `inventory` variable 
+Click on the the plus icon in the **Variables** panel to add the ***inventory*** variable 
+to the list of watch variables. This would allow you to see the value of ***inventory*** variable 
 during execution.
 
 ![Watch Variables]({% image_path debug-che-variables.png %}){:width="500px"}
@@ -174,27 +177,27 @@ during execution.
 
 Can you spot the bug now? 
 
-Look at the **Variables** window. The retrieved inventory object is `null`!
+Look at the **Variables** window. The retrieved inventory object is ***null***!
 
 The non-existing product id is not a problem on its own because it simply could mean 
 this product is discontinued and removed from the Inventory database but it's not 
 removed from the product catalog database yet. The bug is however caused because 
-the code returns this `null` value instead of a sensible REST response. If the product 
+the code returns this ***null*** value instead of a sensible REST response. If the product 
 id does not exist, a proper JSON response stating a zero inventory should be 
-returned instead of `null`.
+returned instead of ***null***.
 
-Click on the _Resume_ icon to continue the code execution and then on the stop icon to 
+`Click on the _Resume_ icon` to continue the code execution and then on the stop icon to 
 end the debug session.
 
 #### Fix the Inventory Bug
 
-Edit the `InventoryResource.java` and update the `getAvailability()` to make it look like the following 
+Edit the ***InventoryResource.java*** and update the ***getAvailability()*** to make it look like the following 
 code in order to return a zero inventory for products that don't exist in the inventory 
 database:
 
 ~~~java
 @GET
-@Path("/api/inventory/{itemId}")
+@Path("/{itemId}")
 @Produces(MediaType.APPLICATION_JSON)
 public Inventory getAvailability(@PathParam("itemId") String itemId) {
     Inventory inventory = em.find(Inventory.class, itemId);
@@ -209,7 +212,7 @@ public Inventory getAvailability(@PathParam("itemId") String itemId) {
 }
 ~~~
 
-Go back to the **Terminal** window where `fabric8:debug` was running. Press 
+Go back to the **Terminal** window where `oc port-forward` was running. Press 
 `Ctrl+C` to stop the debug and port-forward and then run the following commands 
 to commit the changes to the Git repository.
 
@@ -219,10 +222,10 @@ $ git commit -m "inventory returns zero for non-existing product id"
 $ git push origin master
 ~~~
 
-As soon as you commit the changes to the Git repository, the `inventory-pipeline` gets 
+As soon as you commit the changes to the Git repository, the ***inventory-pipeline*** gets 
 triggered to build and deploy a new Inventory container with the fix. Go to the 
 OpenShift Web Console and inside the **{{COOLSTORE_PROJECT}}** project. On the sidebar 
-menu, Click on **Builds >> Pipelines** to see its progress.
+menu, `click on 'Builds >> Pipelines'` to see its progress.
 
 When the pipeline completes successfully, point your browser at the Web route and verify 
 that the inventory status is visible for all products. The suspect product should show 

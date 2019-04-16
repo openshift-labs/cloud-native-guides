@@ -1,5 +1,7 @@
 ## Introduction 
 
+*2 MINUTES PRACTICE*
+
 In this workshop you will learn how to develop and deploy a microservices based application. 
 
 The overall architecture of the application that you will deploy is the following:

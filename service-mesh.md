@@ -36,7 +36,7 @@ The components that make up the data plane and the control plane are:
 
 #### Enabling Service Mesh to Catalog Service
 
-OpenShift Service Mesh automatically inject the sidecar into the Pod by specifying `sidecar.istio.io/inject:true` annotation in the DeploymentConfig.
+OpenShift Service Mesh automatically inject the sidecar into the Pod by specifying ***sidecar.istio.io/inject:true*** annotation in the DeploymentConfig.
 
 From the Terminal console, execute the following command:
 
@@ -59,8 +59,8 @@ $ oc rollout resume dc/catalog
 
 > **Other Option** 
 >
-> As an alternative way, you can use the `Commands Palette` to enable Service Mesh capability.
-> In CodeReady Workspaces, click on `Commands Palette` and click on **SERVICE MESH > Catalog Service: Inject Istio Sidecar**
+> As an alternative way, you can use the ***Commands Palette*** to enable Service Mesh capability.
+> In CodeReady Workspaces, click on ***Commands Palette*** and click on **SERVICE MESH > Catalog Service: Inject Istio Sidecar**
 > ![Inject Sidecar]({% image_path  codeready-command-inject-catalog.png %}){:width="200px"}
 
 To confirm that the application is successfully deployed, run this command:
@@ -71,8 +71,8 @@ NAME			READY	STATUS		RESTARTS	AGE
 catalog-3-ppj47  	2/2	Running		1		8m
 ~~~
 
-The status should be `Running` and there should be `2/2` pods in the `Ready` column. 
-Wait few seconds that the application restarts then click on the `Catalog Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
+The status should be **Running** and there should be **2/2** pods in the **Ready** column. 
+Wait few seconds that the application restarts then `click on the Catalog Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
 
 #### Enabling Service Mesh to Inventory Service
 
@@ -88,7 +88,7 @@ $ oc rollout resume dc/inventory
 
 > **Other Option** 
 >
-> As an alternative way, you can use the `Commands Palette` to enable Service Mesh capability.
+> As an alternative way, you can use the ***Commands Palette*** to enable Service Mesh capability.
 > Click on Commands Palette and click on **SERVICE MESH > Inventory Service: Inject Istio Sidecar**
 > ![Inject Sidecar]({% image_path  codeready-command-inject-inventory.png %}){:width="200px"}
 
@@ -100,8 +100,8 @@ NAME			READY	STATUS		RESTARTS	AGE
 inventory-2-k6ftf	2/2	Running		1		3m
 ~~~
 
-The status should be `Running` and there should be `2/2` pods in the `Ready` column.
-Wait few seconds that the application restarts then click on the `Inventory Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
+The status should be **Running** and there should be **2/2** pods in the **Ready** column.
+Wait few seconds that the application restarts then `click on the Inventory Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
 
 #### Enabling Service Mesh to Gateway Service
 
@@ -117,7 +117,7 @@ $ oc rollout resume dc/gateway
 
 > **Other Option** 
 >
-> As an alternative way, you can use the `Commands Palette` to enable Service Mesh capability.
+> As an alternative way, you can use the ***Commands Palette*** to enable Service Mesh capability.
 > Click on Commands Palette and click on **SERVICE MESH > Gateway Service: Inject Istio Sidecar**
 > ![Inject Sidecar]({% image_path  codeready-command-inject-gateway.png %}){:width="200px"}
 
@@ -129,17 +129,42 @@ NAME			READY	STATUS		RESTARTS	AGE
 gateway-2-zqsmn		2/2	Running		1		1m
 ~~~
 
-The status should be `Running` and there should be `2/2` pods in the `Ready` column.
-Wait few seconds that the application restarts then click on the `Gateway Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
+The status should be **Running** and there should be **2/2** pods in the **Ready** column.
+Wait few seconds that the application restarts then `click on the Gateway Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}) and ensure the proper functioning of the service.
 
 #### Controlling Ingress Traffic
 
-In a OpenShift environment, the OpenShift Route is used to specify services that should be exposed outside the cluster. In an Istio service mesh, a better approachis to use a different configuration model, namely `Istio Gateway`. 
+In a OpenShift environment, the OpenShift Route is used to specify services that should be exposed outside the cluster. In an Istio service mesh, a better approachis to use a different configuration model, namely ***Istio Gateway***. 
 
-* A `Gateway` describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections. The specification describes a set of ports that should be exposed, the type of protocol to use, SNI configuration for the load balancer, etc.
-Examine the configuration in the `gateway-vertx/openshift/istio-gateway.yml` file.
-* A `VirtualService` defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry.
-Edit the `gateway-vertx/openshift/virtualservice.yml` file and replace the 2 **COOLSTORE_PROJECT** variables with your respective project name. 
+* A **Gateway** describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections. The specification describes a set of ports that should be exposed, the type of protocol to use, SNI configuration for the load balancer, etc.
+* A **VirtualService** defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry.
+
+
+`Edit the gateway-vertx/openshift/virtualservice.yml` file and replace the 2 **COOLSTORE_PROJECT** variables with your respective project name. 
+
+~~~yaml
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: gateway-{{COOLSTORE_PROJECT}}
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - istio-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /{{COOLSTORE_PROJECT}}/api
+    rewrite:
+      uri: "/api"
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: gateway
+~~~
 
 In the Terminal, execute the following command to create a (Istio) `Gateway` and a `VirtualService` for the `Gateway Service`
 
@@ -191,11 +216,11 @@ You should see the Kiali console login screen.
 
 Log in to the Kiali console as `{{OPENSHIFT_USER}}`/`{{OPENSHIFT_PASWORD}}`
 
-After you log in, click on the `Graph` link in the left navigation and enter the following configuration:
+After you log in, `click on the 'Graph' link` in the left navigation and enter the following configuration:
 
- * Namespace: `{{COOLSTORE_PROJECT}}`
- * Display: check `Traffic Animation`
- * Fetching: `Last 5 min`
+ * Namespace: **{{COOLSTORE_PROJECT}}**
+ * Display: **check 'Traffic Animation'**
+ * Fetching: **Last min**
 
 ![Kiali- Graph]({% image_path kiali-graph.png %}){:width="700px"}
 
@@ -227,3 +252,5 @@ From the [Kiali Console]({{ KIALI_URL }}), click on the `Distributed Tracing` li
 Let’s click on the trace title bar.
 
 ![Kiali- Trace Detail View]({% image_path kiali-trace-detail-view.png %}){:width="700px"}
+
+That's all for this lab! You are ready to move on to the next lab.

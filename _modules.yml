@@ -38,8 +38,6 @@ modules:
     name:  Application Configuration
   continuous-delivery:
     name:  Continuous Delivery
-  continuous-delivery-che:
-    name:  Continuous Delivery
   debug:
     name:  Debugging Applications
   debug-codeready:

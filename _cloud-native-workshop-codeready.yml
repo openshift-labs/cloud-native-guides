@@ -25,6 +25,7 @@ vars:
   GIT_URL: http://gogs-lab-infra.192.168.99.100.nip.io
   NEXUS_URL: http://nexus.lab-infra.svc:8081/repository/maven-all-public
   KIALI_URL: http://kiali-infra.192.168.99.100.nip.io
+  JAEGER_URL: https://jaeger-query-istio-system.192.168.99.100.nip.io
   
 modules:
   activate:
@@ -36,7 +37,7 @@ modules:
   - app-config
   - health
   - fault-tolerance-che
-  - continuous-delivery-che
+  - continuous-delivery
   - debug-codeready
   - service-mesh
   - env-info
