@@ -51,7 +51,7 @@ happens when API Gateway makes this call:
 > **{{INVENTORY_ROUTE_HOST}}** with the Inventory route url from your project.
 
 ~~~shell
-$ curl http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
+$ curl -v http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 ~~~
 
 > You can use `curl -v` to see all the headers sent and received. You would received 
@@ -81,7 +81,10 @@ Inventory pod to your workstation so simplify connectivity.
 Enable remote debugging on Inventory by running the following command in the CodeReady Workspaces **Terminal** window:
 
 ~~~shell
+$ oc rollout pause dc/inventory
 $ oc set env dc/inventory JAVA_DEBUG=true
+$ oc set probe dc/inventory --readiness --liveness --remove
+$ oc rollout resume dc/inventory
 $ oc get pods -lapp=inventory,deploymentconfig=inventory
 NAME                 READY     STATUS    RESTARTS   AGE
 inventory-19-k54lj   1/1       Running   0          3m

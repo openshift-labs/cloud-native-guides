@@ -155,7 +155,7 @@ the liveness probe.
 $ oc set probe dc/catalog --readiness --initial-delay-seconds=30 --failure-threshold=3 --get-url=http://:8080/health 
 ~~~
 
-Viola! OpenShift automatically restarts the Catalog pod and as soon as the 
+Voilà! OpenShift automatically restarts the Catalog pod and as soon as the 
 health probes succeed, it is ready to receive traffic. 
 
 > Fabric8 Maven Plugin can also be configured to automatically set the health probes when running `fabric8:deploy` 

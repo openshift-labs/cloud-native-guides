@@ -158,7 +158,7 @@ and then verify that the config map is in fact injected into the container by ru
 a shell command inside the Inventory container:
 
 ~~~shell
-$ oc rsh dc/inventory cat /app/config/project-defaults.yml
+$ oc rsh -c thorntail-v2 dc/inventory cat /app/config/project-defaults.yml
 ~~~
 
 Also verify that the PostgreSQL database is actually used by the Inventory service. Check the 
@@ -174,7 +174,7 @@ You can also connect to Inventory PostgreSQL database and check if the seed data
 loaded into the database.
 
 ~~~shell
-$ oc rsh dc/inventory-postgresql
+$ oc rsh -c thorntail-v2 dc/inventory-postgresql
 ~~~
 
 Once connected to the PostgreSQL container, run the following:
@@ -272,7 +272,7 @@ When the Catalog container is ready, verify that the PostgreSQL database is bein
 used. Check the Catalog pod logs:
 
 ~~~shell
-$ oc logs dc/catalog | grep hibernate.dialect
+$ oc logs -c spring-boot dc/catalog | grep hibernate.dialect
 
 2017-08-10 21:07:51.670  INFO 1 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
@@ -280,7 +280,7 @@ $ oc logs dc/catalog | grep hibernate.dialect
 You can also connect to the Catalog PostgreSQL database and verify that the seed data is loaded:
 
 ~~~shell
-$ oc rsh dc/catalog-postgresql
+$ oc rsh -c spring-boot dc/catalog-postgresql
 ~~~
 
 Once connected to the PostgreSQL container, run the following:
@@ -346,11 +346,11 @@ database-password:    7 bytes
 database-user:        7 bytes
 ~~~
 
-This secret has three encrypted properties defined as `database-name`, `database-user` and `database-password` which hold 
+This secret has three encrypted properties defined as ***database-name***, ***database-user*** and ***database-password*** which hold 
 the PostgreSQL database name, username and password values. These values are injected in the PostgreSQL container as 
 environment variables and used to initialize the database.
 
-Go to the **{{COOLSTORE_PROJECT}}** in the OpenShift Web Console and click on the `catalog-postgresql` 
+Go to the **{{COOLSTORE_PROJECT}}** in the OpenShift Web Console and click on the ***catalog-postgresql*** 
 deployment (blue text under the title **Deployment**) and then on the **Environment**. Notice the values 
 from the secret are defined as env vars on the deployment:
 
