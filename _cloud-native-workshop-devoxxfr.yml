@@ -38,9 +38,8 @@ modules:
   - nodejs
   - service-mesh
   - abtesting
-  - app-config
   - health
-  - fault-tolerance-che
+  - fault-tolerance-codeready
   - continuous-delivery
   - debug-codeready
   - env-info

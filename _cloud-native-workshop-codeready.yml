@@ -36,7 +36,7 @@ modules:
   - nodejs
   - app-config
   - health
-  - fault-tolerance-che
+  - fault-tolerance-codeready
   - continuous-delivery
   - debug-codeready
   - service-mesh

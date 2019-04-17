@@ -54,11 +54,7 @@ happens when API Gateway makes this call:
 $ curl -v http://{{INVENTORY_ROUTE_HOST}}/api/inventory/444436
 ~~~
 
-> You can use `curl -v` to see all the headers sent and received. You would received 
-> a ***HTTP/1.1 204 No Content*** response for the above request.
-
-No response came back and that seems to be the reason the inventory status is not displayed 
-on the web interface.
+You received a ***HTTP/1.1 204 No Content*** response for the above request. Indeed, no response came back and that seems to be the reason the inventory status is not displayed on the web interface.
 
 Let's debug the Inventory service to get to the bottom of this!
 
@@ -91,8 +87,6 @@ inventory-19-k54lj   1/1       Running   0          3m
 ~~~
 
 Wait until the service is **Running** with **1/1** in the **READY** column.
-
-> If **Service Mesh** is enabled for the ***Inventory Service***, wait until the service is **Running** with **2/2** in the **READY** column
 
 > The default port for remoting debugging is **5005** but you can change the default port 
 > via environment variables (JAVA_DEBUG_PORT). Read more in the [Java S2I Image docs](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift/reference#configuration_environment_variables).
