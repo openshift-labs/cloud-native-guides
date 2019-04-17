@@ -161,7 +161,7 @@ installed within your CodeReady Workspaces workspace.
 Run the following command in the **Terminal** window.
 
 ~~~shell
-$ siege -c80 -d2 -t5M http://web.coolstore-XX.svc.cluster.local:8080
+$ siege -c80 -d2 -t5M http://web.coolstoreXX.svc.cluster.local:8080
 ~~~
 
 Note that you are using the internal url of the Web UI in this command. Since CodeReady Workspaces is running on 
