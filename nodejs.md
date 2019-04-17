@@ -38,6 +38,12 @@ The source code for the Node.js Web front-end is available in this Git repositor
 
 Use the OpenShift CLI command to create a new build and deployment for the Web component:
 
+  * Name: **web**
+  * Version: **Nodejs 8**
+  * Git Repository URL: **{{LABS_GIT_REPO}}**
+  * Context Dir: **web-nodejs**
+  * Labels: **app=web,version=1.0**
+
 > Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
 > instead. To give you a hint, start by clicking on **Add to project** within the 
 > **{{COOLSTORE_PROJECT}}** project and pick **JavaScript** and then **Node.js** in the service 
