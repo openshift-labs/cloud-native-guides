@@ -132,7 +132,7 @@ You likely see *'Gateway => Catalog Spring Boot (v1)'* or *'Gateway => Catalog G
 
 Go to Kiali to see the traffic distribution between Catalog v1 and v2.
 
-From the [Kiali Console]({{ KIALI_URL }}), `click on the 'Graph' link` in the left navigation and enter the following configuration:
+From the [Kiali Console]({{ KIALI_URL }}) *(please make sure to replace **infrax** with your dedicated project)*, `click on the 'Graph' link` in the left navigation and enter the following configuration:
 
  * Namespace: **{{COOLSTORE_PROJECT}}**
  * Display: **check 'Traffic Animation'**
@@ -172,7 +172,7 @@ Now, you likely see only *'Gateway => Catalog GoLang (v2)'* in the *'runGatewayS
 
 ![Terminal - RunGatewayService]({% image_path  codeready-run-gateway-100.png %}){:width="600px"}
 
-And from [Kiali Console]({{ KIALI_URL }}), you can visualize that **100%** of the traffic is switching gradually to ***Catalog Service v2***.
+And from [Kiali Console]({{ KIALI_URL }}) *(please make sure to replace **infrax** with your dedicated project)*, you can visualize that **100%** of the traffic is switching gradually to ***Catalog Service v2***.
 
 ![Kiali- Graph]({% image_path kiali-abtesting-100.png %}){:width="700px"}
 

@@ -193,7 +193,7 @@ $ oc set env dc/web COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-syst
 ~~~
 
  > Make sure to use your dedicated project {{COOLSTORE_PROJECT}}
- 
+
 #### Testing the application
 
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all products and their inventory status.
@@ -213,7 +213,7 @@ A service mesh can now provide these services on a platform level and frees the 
 Kiali provides an interactive graph view of your namespace in real time, being able to display the interactions at several levels (applications, versions, workloads), with contextual information and charts on the selected graph node or edge.
 
 First, you need to access to Kiali. 
-Launch a browser and navigate to [Kiali Console]({{ KIALI_URL }}). 
+Launch a browser and navigate to [Kiali Console]({{ KIALI_URL }}) *(please make sure to replace **infrax** with your dedicated project)*. 
 You should see the Kiali console login screen.
 
 ![Kiali- Log In]({% image_path kiali-login.png %}){:width="500px"}
@@ -245,7 +245,7 @@ Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system relea
 
 > Because of certificates issues, you need first to access the main [Jaeger Console]({{ JAEGER_URL }}) to use it through Kiali.
 
-From the [Kiali Console]({{ KIALI_URL }}), click on the `Distributed Tracing` link in the left navigation and enter the following configuration:
+From the [Kiali Console]({{ KIALI_URL }}) *(please make sure to replace **infrax** with your dedicated project)*, click on the `Distributed Tracing` link in the left navigation and enter the following configuration:
 
  * Select a Namespace: `{{COOLSTORE_PROJECT}}`
  * Select a Service: `gateway`
