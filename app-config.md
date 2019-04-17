@@ -165,7 +165,7 @@ Also verify that the PostgreSQL database is actually used by the Inventory servi
 Inventory pod logs:
 
 ~~~shell
-oc logs dc/inventory | grep hibernate.dialect
+oc logs -c thorntail-v2 dc/inventory | grep hibernate.dialect
 
 2017-08-10 16:55:44,657 INFO  [org.hibernate.dialect.Dialect] (ServerService Thread Pool -- 15) HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL94Dialect
 ~~~
@@ -174,7 +174,7 @@ You can also connect to Inventory PostgreSQL database and check if the seed data
 loaded into the database.
 
 ~~~shell
-$ oc rsh -c thorntail-v2 dc/inventory-postgresql
+$ oc rsh dc/inventory-postgresql
 ~~~
 
 Once connected to the PostgreSQL container, run the following:
@@ -193,8 +193,7 @@ $ psql -U inventory -c "select * from inventory"
  165954 |       43
  444434 |       32
  444435 |       53
- 444436 |       42
-(8 rows)
+(7 rows)
 
 $ exit
 ~~~
@@ -280,7 +279,7 @@ $ oc logs -c spring-boot dc/catalog | grep hibernate.dialect
 You can also connect to the Catalog PostgreSQL database and verify that the seed data is loaded:
 
 ~~~shell
-$ oc rsh -c spring-boot dc/catalog-postgresql
+$ oc rsh dc/catalog-postgresql
 ~~~
 
 Once connected to the PostgreSQL container, run the following:
