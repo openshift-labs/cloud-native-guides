@@ -180,6 +180,8 @@ $ curl -o /dev/null -s -w "%{http_code}\n" http://istio-ingressgateway-istio-sys
 200
 ~~~
 
+ > Make sure to use your dedicated project {{COOLSTORE_PROJECT}}
+
 The result should be `200` (Successful).
 
 #### Updating the WebUI to use the Istio Gateway
@@ -190,6 +192,8 @@ Issue the following command to configure the `WebUI Service` to use the `Istio G
 $ oc set env dc/web COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{{APPS_HOSTNAME_SUFFIX}}/{{COOLSTORE_PROJECT}}
 ~~~
 
+ > Make sure to use your dedicated project {{COOLSTORE_PROJECT}}
+ 
 #### Testing the application
 
 Point your browser at the Web UI route url. You should be able to see the CoolStore with all products and their inventory status.
