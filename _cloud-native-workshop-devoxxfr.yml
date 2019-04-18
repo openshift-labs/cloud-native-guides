@@ -41,5 +41,4 @@ modules:
   - health
   - fault-tolerance-codeready
   - continuous-delivery
-  - debug-codeready
   - env-info
