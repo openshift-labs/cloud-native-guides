@@ -32,7 +32,7 @@ modules:
     name: Monitoring Application Health 
   fault-tolerance:
     name: Service Resilience and Fault Tolerance
-  fault-tolerance-che:
+  fault-tolerance-codeready:
     name: Service Resilience and Fault Tolerance
   app-config:
     name:  Application Configuration
