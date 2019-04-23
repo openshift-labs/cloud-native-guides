@@ -1,5 +1,5 @@
 id: "cloudnative"
-name: "OpenShift Cloud-Native Workshop"
+name: "Develop and deploy cloud-native, reactive applications with Eclipse Vert.x, Eclipse Che, and Red Hat OpenShift"
 
 content:
   url: https://raw.githubusercontent.com/mcouliba/cloud-native-guides/ocp-3.11
@@ -32,13 +32,8 @@ modules:
   activate:
   - introduction
   - getting-started-codeready
-  - inventory-deployment
-  - catalog-spring-boot-codeready
+  - inventory-vertx-codeready
+  - catalog-deployment
   - gateway-vertx-codeready
   - webui-deployment
-  - service-mesh
-  - abtesting
-  - health
-  - fault-tolerance-codeready
-  - continuous-delivery
   - env-info

@@ -4,30 +4,22 @@ config:
 modules:
   introduction:
     name: Introduction
-  getting-started:
-    name: Getting Started
   getting-started-codeready:
     name: Getting Started
-  spring-boot:
-    name: Microservices with Spring Boot
-  spring-boot-codeready:
-    name: Microservices with Spring Boot
-  thorntail-codeready:
-    name: Enterprise Microservices with Thorntail
-  deploy-inventory:
+  catalog-spring-boot-codeready:
+    name: Create Catalog Service as a Microservice with Spring Boot
+  catalog-deployment:
+    name: Deploy Catalog Service
+  inventory-thorntail-codeready:
+    name: Create Inventory Service as an Enterprise Microservice with Thorntail
+  inventory-deployment:
     name: Deploy Inventory Service
-  vertx:
-    name: Reactive Microservices with Eclipse Vert.x
-  vertx-codeready:
-    name: Reactive Microservices with Eclipse Vert.x
-  deploy-gateway:
+  gateway-vertx-codeready:
+    name: Create Gateway Service as a Reactive Microservice with Eclipse Vert.x
+  gateway-deployment:
     name: Deploy Gateway Service
-  nodejs:
-    name: Web UI with Node.js and AngularJS
-  nodejs-codeready:
-    name: Web UI with Node.js and AngularJS
-  deploy-webui:
-    name: Deploy Web UI
+  webui-deployment:
+    name: Deploy Web UI as a Microservice with with Node.js and AngularJS
   health:
     name: Monitoring Application Health 
   fault-tolerance:
