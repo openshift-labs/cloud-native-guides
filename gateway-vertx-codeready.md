@@ -34,7 +34,7 @@ the Vert.x project laid out in different subdirectories according to Maven best 
 This is a minimal Vert.x project with support for RESTful services. This project currently contains no code
 other than the main class, ***GatewayVerticle.java*** which is there to bootstrap the Vert.x application. Verticles
 are encapsulated parts of the application that can run completely independently and communicate with each other
-via the built-in event bus in Vert.x. Verticles get deployed and run by Vert.x in an event loop and therefore it 
+using HTTP. Verticles get deployed and run by Vert.x in an event loop and therefore it 
 is important that the code in a Verticle does not block. This asynchronous architecture allows Vert.x applications 
 to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking 
 and support this concurrency model.
@@ -49,10 +49,10 @@ Examine ***GatewayVerticle.java*** class in the ***com.redhat.cloudnative.gatewa
 package com.redhat.cloudnative.gateway;
 
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.handler.StaticHandler;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.handler.StaticHandler;
 
 public class GatewayVerticle extends AbstractVerticle {
     @Override
@@ -61,7 +61,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
         router.get("/*").handler(StaticHandler.create("assets"));
 
-        vertx.createHttpServer().requestHandler(router::accept)
+        vertx.createHttpServer().requestHandler(router)
             .listen(Integer.getInteger("http.port", 8080));
     }
 }
@@ -108,22 +108,26 @@ Replace the content of ***src/main/java/com/redhat/cloudnative/gateway/GatewayVe
 package com.redhat.cloudnative.gateway;
 
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import io.vertx.rxjava.ext.web.codec.BodyCodec;
-import io.vertx.rxjava.ext.web.handler.CorsHandler;
-import io.vertx.rxjava.ext.web.handler.StaticHandler;
-import io.vertx.rxjava.servicediscovery.ServiceDiscovery;
-import io.vertx.rxjava.servicediscovery.types.HttpEndpoint;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import io.vertx.reactivex.ext.web.client.predicate.ResponsePredicate;
+import io.vertx.reactivex.ext.web.codec.BodyCodec;
+import io.vertx.reactivex.ext.web.handler.CorsHandler;
+import io.vertx.reactivex.ext.web.handler.StaticHandler;
+import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
+import io.vertx.reactivex.servicediscovery.types.HttpEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GatewayVerticle extends AbstractVerticle {
     private static final Logger LOG = LoggerFactory.getLogger(GatewayVerticle.class);
@@ -135,24 +139,24 @@ public class GatewayVerticle extends AbstractVerticle {
     public void start() {
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/*").handler(StaticHandler.create("assets"));
+        router.get("/").handler(StaticHandler.create("assets"));
         router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
         ServiceDiscovery.create(vertx, discovery -> {
             // Catalog lookup
             Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("catalog"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                            .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
-                            .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
+                rec -> rec.getName().equals("catalog"))
+                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                    .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
             // Inventory lookup
             Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("inventory"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                            .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
-                            .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
+                rec -> rec.getName().equals("inventory"))
+                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
+                    .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
             // Zip all 3 requests
             Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
@@ -160,7 +164,7 @@ public class GatewayVerticle extends AbstractVerticle {
                 catalog = c;
                 inventory = i;
                 return vertx.createHttpServer()
-                    .requestHandler(router::accept)
+                    .requestHandler(router)
                     .listen(Integer.getInteger("http.port", 8080));
             }).subscribe();
         });
@@ -168,35 +172,51 @@ public class GatewayVerticle extends AbstractVerticle {
 
     private void products(RoutingContext rc) {
         // Retrieve catalog
-        catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
+        catalog
+            .get("/api/catalog")
+            .as(BodyCodec.jsonArray())
+            .expect(ResponsePredicate.SC_OK)
+            .rxSend()
             .map(resp -> {
-                if (resp.statusCode() != 200) {
-                    new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
+                // Map the response to a list of JSON object
+                List<JsonObject> listOfProducts = new ArrayList<>();
+                for (Object product : resp.body()) {
+                    listOfProducts.add((JsonObject)product);
                 }
-                return resp.body();
+                return listOfProducts;
             })
-            .flatMap(products ->
+            .flatMap(products -> {
                 // For each item from the catalog, invoke the inventory service
-                Observable.from(products)
-                    .cast(JsonObject.class)
-                    .flatMapSingle(product ->
-                        inventory.get("/api/inventory/" + product.getString("itemId")).as(BodyCodec.jsonObject())
-                            .rxSend()
-                            .map(resp -> {
-                                if (resp.statusCode() != 200) {
-                                    LOG.warn("Inventory error for {}: status code {}",
-                                            product.getString("itemId"), resp.statusCode());
-                                    return product.copy();
-                                }
-                                return product.copy().put("availability", 
-                                    new JsonObject().put("quantity", resp.body().getInteger("quantity")));
-                            }))
-                    .toList().toSingle()
+                // and create a JsonArray containing all the results
+                return Observable.fromIterable(products)
+                    .flatMapSingle(this::getAvailabilityFromInventory)
+                    .collect(JsonArray::new, JsonArray::add);
+                }
             )
             .subscribe(
-                list -> rc.response().end(Json.encodePrettily(list)),
-                error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
+                list -> rc.response().end(list.encodePrettily()),
+                error -> rc.response().setStatusCode(500).end(new JsonObject().put("error", error.getMessage()).toString())
             );
+    }
+
+    private Single<JsonObject> getAvailabilityFromInventory(JsonObject product) {
+        // Retrieve the inventory for a given product
+        return inventory
+            .get("/api/inventory/" + product.getString("itemId"))
+            .as(BodyCodec.jsonObject())
+            .rxSend()
+            .map(resp -> {
+                JsonObject json = product.copy();
+                if (resp.statusCode() != 200) {
+                    LOG.warn("Inventory error for {}: status code {}",
+                        product.getString("itemId"), resp.statusCode());
+                } else {
+                    json.put("availability",
+                        new JsonObject()
+                            .put("quantity", resp.body().getInteger("quantity")));
+                }
+                return json;
+            });
     }
 }
 ~~~
@@ -226,17 +246,17 @@ public void start() {
     ServiceDiscovery.create(vertx, discovery -> {
         // Catalog lookup
         Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("catalog"))
-                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                        .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
-                        .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
+            rec -> rec.getName().equals("catalog"))
+            .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
         // Inventory lookup
         Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                rec -> rec.getName().equals("inventory"))
-                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                        .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
-                        .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
+            rec -> rec.getName().equals("inventory"))
+            .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
+                .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
         // Zip all 3 requests
         Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
@@ -244,7 +264,7 @@ public void start() {
             catalog = c;
             inventory = i;
             return vertx.createHttpServer()
-                .requestHandler(router::accept)
+                .requestHandler(router)
                 .listen(Integer.getInteger("http.port", 8080));
         }).subscribe();
     });
@@ -254,7 +274,7 @@ public void start() {
 The ***products()*** method invokes the Catalog REST endpoint and retrieves the products. It then 
 iterates over the retrieved products and for each product invokes the 
 Inventory REST endpoint to get the inventory status and enrich the product data with availability 
-info. 
+info using the **getAvailabilityFromInventory()** method.
 
 Note that instead of making blocking calls to the Catalog and Inventory REST APIs, all calls 
 are non-blocking and handled using [RxJava](http://vertx.io/docs/vertx-rx/java). Due to its non-blocking 
@@ -265,38 +285,57 @@ will be acted upon and update the response which is then sent back to the client
 ~~~java
 private void products(RoutingContext rc) {
     // Retrieve catalog
-    catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
+    catalog
+        .get("/api/catalog")
+        .as(BodyCodec.jsonArray())
+        .expect(ResponsePredicate.SC_OK)
+        .rxSend()
         .map(resp -> {
-            if (resp.statusCode() != 200) {
-                new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
+            // Map the response to a list of JSON object
+            List<JsonObject> listOfProducts = new ArrayList<>();
+            for (Object product : resp.body()) {
+                listOfProducts.add((JsonObject)product);
             }
-            return resp.body();
+            return listOfProducts;
         })
-        .flatMap(products ->
+        .flatMap(products -> {
             // For each item from the catalog, invoke the inventory service
-            Observable.from(products)
-                .cast(JsonObject.class)
-                .flatMapSingle(product ->
-                    inventory.get("/api/inventory/" + product.getString("itemId")).as(BodyCodec.jsonObject())
-                        .rxSend()
-                        .map(resp -> {
-                            if (resp.statusCode() != 200) {
-                                LOG.warn("Inventory error for {}: status code {}",
-                                        product.getString("itemId"), resp.statusCode());
-                                return product.copy();
-                            }
-                            return product.copy().put("availability", 
-                                new JsonObject().put("quantity", resp.body().getInteger("quantity")));
-                        }))
-                .toList().toSingle()
+            // and create a JsonArray containing all the results
+            return Observable.fromIterable(products)
+                .flatMapSingle(this::getAvailabilityFromInventory)
+                .collect(JsonArray::new, JsonArray::add);
+            }
         )
         .subscribe(
-            list -> rc.response().end(Json.encodePrettily(list)),
-            error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
+            list -> rc.response().end(list.encodePrettily()),
+            error -> rc.response().setStatusCode(500).end(new JsonObject().put("error", error.getMessage()).toString())
         );
 }
 ~~~
 
+The **getAvailabilityFromInventory()** method is similar to the **product()** method, it invokes the Inventory REST endpoint and retrieves the inventory.
+
+~~~java
+private Single<JsonObject> getAvailabilityFromInventory(JsonObject product) {
+    // Retrieve the inventory for a given product
+    return inventory
+        .get("/api/inventory/" + product.getString("itemId"))
+        .as(BodyCodec.jsonObject())
+        .rxSend()
+        .map(resp -> {
+            JsonObject json = product.copy();
+            if (resp.statusCode() != 200) {
+                LOG.warn("Inventory error for {}: status code {}",
+                    product.getString("itemId"), resp.statusCode());
+            } else {
+                json.put("availability",
+                    new JsonObject()
+                        .put("quantity", resp.body().getInteger("quantity")));
+            }
+            return json;
+        });
+}
+~~~
 
 Build and package the ***Gateway Service*** using Maven by `right clicking on gateway-vertx` project in the project explorer then, `click on Commands > Build > build`
 
