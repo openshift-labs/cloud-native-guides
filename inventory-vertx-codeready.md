@@ -276,7 +276,18 @@ Build and package the ***Inventory Service*** using Maven by `right clicking on 
 
 ![Maven Build]({% image_path codeready-commands-build.png %}){:width="600px"}
 
-Once the Inventory service is up and running and you can access the 
+> Make sure **inventory-vertx** project is highlighted in the project explorer
+
+Using CodeReady Workspaces, you can conveniently run the application
+directly in the IDE and test it before deploying it on OpenShift.
+
+In CodeReady Workspaces, click on the run icon and then on **run vertx**.
+
+> You can also run the inventory service in CodeReady Workspaces using the commands palette and then **run > run vertx**
+
+![Run Palette]({% image_path thorntail-inventory-codeready-run-palette.png %}){:width="800px"}
+
+Once you see `INFO: Succeeded in deploying verticle` in the logs, the Inventory service is up and running and you can access the
 inventory REST API. Let’s test it out using `curl` in the **Terminal** window:
 
 ~~~shell
