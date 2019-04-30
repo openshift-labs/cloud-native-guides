@@ -25,9 +25,7 @@ Vert.x is designed to be event-driven and non-blocking. Events are delivered in 
 The `inventory-vertx` project has the following structure which shows the components of 
 the Vert.x project laid out in different subdirectories according to Maven best practices:
 
-***TODO: REPLACE THIS SCREENSHOT WITH* `inventory-vertx` *SCREENSHOT***
-
-![Inventory Project]({% image_path thorntail-inventory-project.png %}){:width="200px"}
+![Inventory Project]({% image_path vertx-inventory-project.png %}){:width="200px"}
 
 This is a minimal Vert.x project with support for RESTful services and relational database access.
 This project currently contains no code other than the main class, ***InventoryVerticle.java*** which is there to bootstrap
