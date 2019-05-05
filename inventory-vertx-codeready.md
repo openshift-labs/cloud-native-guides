@@ -25,9 +25,7 @@ Vert.x is designed to be event-driven and non-blocking. Events are delivered in 
 The `inventory-vertx` project has the following structure which shows the components of 
 the Vert.x project laid out in different subdirectories according to Maven best practices:
 
-***TODO: REPLACE THIS SCREENSHOT WITH* `inventory-vertx` *SCREENSHOT***
-
-![Inventory Project]({% image_path thorntail-inventory-project.png %}){:width="200px"}
+![Inventory Project]({% image_path vertx-inventory-project.png %}){:width="200px"}
 
 This is a minimal Vert.x project with support for RESTful services and relational database access.
 This project currently contains no code other than the main class, ***InventoryVerticle.java*** which is there to bootstrap
@@ -276,7 +274,18 @@ Build and package the ***Inventory Service*** using Maven by `right clicking on 
 
 ![Maven Build]({% image_path codeready-commands-build.png %}){:width="600px"}
 
-Once the Inventory service is up and running and you can access the 
+> Make sure **inventory-vertx** project is highlighted in the project explorer
+
+Using CodeReady Workspaces, you can conveniently run the application
+directly in the IDE and test it before deploying it on OpenShift.
+
+In CodeReady Workspaces, click on the run icon and then on **run vertx**.
+
+> You can also run the inventory service in CodeReady Workspaces using the commands palette and then **run > run vertx**
+
+![Run Palette]({% image_path thorntail-inventory-codeready-run-palette.png %}){:width="800px"}
+
+Once you see `INFO: Succeeded in deploying verticle` in the logs, the Inventory service is up and running and you can access the
 inventory REST API. Let’s test it out using `curl` in the **Terminal** window:
 
 ~~~shell
