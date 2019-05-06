@@ -376,14 +376,19 @@ NAME        HOST/PORT                                        PATH       SERVICES
 inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}   inventory  8080            None
 ~~~
 
-Copy the route url for the Inventory service and verify the API Gateway service works using `curl`:
-
 > The route urls in your project would be different from the ones in this lab guide! Use the one from yor project.
 
-~~~shell
-$ curl http://{{INVENTORY_ROUTE_HOST}}/api/inventory/329299
+`Click on the Inventory Route` from the [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
 
-{"itemId":"329299","quantity":35}
+![Inventory Service]({% image_path inventory-service-vertx.png %}){:width="500px"}
+
+Then `click on 'Test it'`. You should have the following output:
+
+~~~shell
+{
+  "quantity" : 35,
+  "itemId" : "329299"
+}
 ~~~
 
 Well done! You are ready to move on to the next lab.
