@@ -308,23 +308,27 @@ package com.redhat.cloudnative.gateway;
 
 import io.vertx.circuitbreaker.CircuitBreakerOptions;
 import io.vertx.core.http.HttpMethod;
-import io.vertx.core.json.Json;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClientOptions;
-import io.vertx.rxjava.circuitbreaker.CircuitBreaker;
-import io.vertx.rxjava.core.AbstractVerticle;
-import io.vertx.rxjava.ext.web.Router;
-import io.vertx.rxjava.ext.web.RoutingContext;
-import io.vertx.rxjava.ext.web.client.WebClient;
-import io.vertx.rxjava.ext.web.codec.BodyCodec;
-import io.vertx.rxjava.ext.web.handler.CorsHandler;
-import io.vertx.rxjava.ext.web.handler.StaticHandler;
-import io.vertx.rxjava.servicediscovery.ServiceDiscovery;
-import io.vertx.rxjava.servicediscovery.types.HttpEndpoint;
+import io.vertx.reactivex.circuitbreaker.CircuitBreaker;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.ext.web.Router;
+import io.vertx.reactivex.ext.web.RoutingContext;
+import io.vertx.reactivex.ext.web.client.WebClient;
+import io.vertx.reactivex.ext.web.client.predicate.ResponsePredicate;
+import io.vertx.reactivex.ext.web.codec.BodyCodec;
+import io.vertx.reactivex.ext.web.handler.CorsHandler;
+import io.vertx.reactivex.ext.web.handler.StaticHandler;
+import io.vertx.reactivex.servicediscovery.ServiceDiscovery;
+import io.vertx.reactivex.servicediscovery.types.HttpEndpoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import rx.Observable;
-import rx.Single;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GatewayVerticle extends AbstractVerticle {
     private static final Logger LOG = LoggerFactory.getLogger(GatewayVerticle.class);
@@ -346,24 +350,24 @@ public class GatewayVerticle extends AbstractVerticle {
 
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/*").handler(StaticHandler.create("assets"));
+        router.get("/").handler(StaticHandler.create("assets"));
         router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
         ServiceDiscovery.create(vertx, discovery -> {
             // Catalog lookup
             Single<WebClient> catalogDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("catalog"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                            .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
-                            .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
+                rec -> rec.getName().equals("catalog"))
+                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    .setDefaultHost(System.getProperty("catalog.api.host", "localhost"))
+                    .setDefaultPort(Integer.getInteger("catalog.api.port", 9000))));
 
             // Inventory lookup
             Single<WebClient> inventoryDiscoveryRequest = HttpEndpoint.rxGetWebClient(discovery,
-                    rec -> rec.getName().equals("inventory"))
-                    .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
-                            .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
-                            .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
+                rec -> rec.getName().equals("inventory"))
+                .onErrorReturn(t -> WebClient.create(vertx, new WebClientOptions()
+                    .setDefaultHost(System.getProperty("inventory.api.host", "localhost"))
+                    .setDefaultPort(Integer.getInteger("inventory.api.port", 9001))));
 
             // Zip all 3 requests
             Single.zip(catalogDiscoveryRequest, inventoryDiscoveryRequest, (c, i) -> {
@@ -371,7 +375,7 @@ public class GatewayVerticle extends AbstractVerticle {
                 catalog = c;
                 inventory = i;
                 return vertx.createHttpServer()
-                    .requestHandler(router::accept)
+                    .requestHandler(router)
                     .listen(Integer.getInteger("http.port", 8080));
             }).subscribe();
         });
@@ -379,44 +383,52 @@ public class GatewayVerticle extends AbstractVerticle {
 
     private void products(RoutingContext rc) {
         // Retrieve catalog
-        catalog.get("/api/catalog").as(BodyCodec.jsonArray()).rxSend()
+        catalog
+            .get("/api/catalog")
+            .expect(ResponsePredicate.SC_OK)
+            .as(BodyCodec.jsonArray())
+            .rxSend()
             .map(resp -> {
-                if (resp.statusCode() != 200) {
-                    new RuntimeException("Invalid response from the catalog: " + resp.statusCode());
+                // Map the response to a list of JSON object
+                List<JsonObject> listOfProducts = new ArrayList<>();
+                for (Object product : resp.body()) {
+                    listOfProducts.add((JsonObject)product);
                 }
-                return resp.body();
+                return listOfProducts;
             })
-            .flatMap(products ->
-                // For each item from the catalog, invoke the inventory service
-                Observable.from(products)
-                    .cast(JsonObject.class)
-                    .flatMapSingle(product ->
-                        circuit.rxExecuteCommandWithFallback(
-                            future ->
-                                inventory.get("/api/inventory/" + product.getString("itemId")).as(BodyCodec.jsonObject())
-                                    .rxSend()
-                                    .map(resp -> {
-                                        if (resp.statusCode() != 200) {
-                                            LOG.warn("Inventory error for {}: status code {}",
-                                                    product.getString("itemId"), resp.statusCode());
-                                        }
-                                        return product.copy().put("availability", 
-                                            new JsonObject().put("quantity", resp.body().getInteger("quantity")));
-                                    })
-                                    .subscribe(
-                                        future::complete,
-                                        future::fail),
-                            error -> {
-                                LOG.error("Inventory error for {}: {}", product.getString("itemId"), error.getMessage());
-                                return product;
-                            }
-                        ))
-                    .toList().toSingle()
+            .flatMap(products -> {
+                    // For each item from the catalog, invoke the inventory service
+                    // and create a JsonArray containing all the results
+                    return Observable.fromIterable(products)
+                        .flatMapSingle(product ->
+                            circuit.rxExecuteCommandWithFallback(
+                                future ->
+                                    getAvailabilityFromInventory(product).subscribe(future::complete, future::fail),
+                                error -> {
+                                    LOG.warn("Inventory error for {}: status code {}", product.getString("itemId"), error);
+                                    return product.copy();
+                                })
+                        )
+                        .collect(JsonArray::new, JsonArray::add);
+                }
             )
             .subscribe(
-                list -> rc.response().end(Json.encodePrettily(list)),
-                error -> rc.response().end(new JsonObject().put("error", error.getMessage()).toString())
+                list -> rc.response().end(list.encodePrettily()),
+                error -> rc.response().setStatusCode(500).end(new JsonObject().put("error", error.getMessage()).toString())
             );
+    }
+
+    private Single<JsonObject> getAvailabilityFromInventory(JsonObject product) {
+        // Retrieve the inventory for a given product
+        return inventory
+            .get("/api/inventory/" + product.getString("itemId"))
+            .expect(ResponsePredicate.SC_OK)
+            .as(BodyCodec.jsonObject())
+            .rxSend()
+            .map(resp -> product.copy()
+                .put("availability",
+                    new JsonObject()
+                        .put("quantity", resp.body().getInteger("quantity"))));
     }
 }
 ~~~
