@@ -34,8 +34,8 @@ Click on **Register** to register a new user with the following details and then
 
 * Username: `{{OPENSHIFT_USER}}`
 * Email: *your email*  (Don't worry! Gogs won't send you any emails)
-* Password: `{{OPENSHIFT_PASWORD}}`
-* Re-Type: `{{OPENSHIFT_PASWORD}}`
+* Password: `{{OPENSHIFT_PASSWORD}}`
+* Re-Type: `{{OPENSHIFT_PASSWORD}}`
 
 ![Sign Up Gogs]({% image_path cd-gogs-signup.png %}){:width="900px"}
 

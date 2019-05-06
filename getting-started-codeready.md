@@ -24,7 +24,7 @@ You might be familiar with the Eclipse IDE which is one of the most popular IDEs
 `Go to the` [CodeReady Workspaces url]({{ CODEREADY_WORKSPACES_URL }}) in order to configure your development workspace.,
 
 #### Logging in to CodeReady Workspaces
-First, you need to log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
+First, you need to log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}`
 
 ![CodeReady Workspaces - Log in]({% image_path codeready-login.png %}){:width="500px"}
 
@@ -85,7 +85,7 @@ Choose **Maven** from the project configurations and then `click on 'Save'`
 In order to login, we will use the `oc` command and then specify the server that we
 want to authenticate to.
 
-Issue the following command in CodeReady Workspaces terminal and log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`
+Issue the following command in CodeReady Workspaces terminal and log in as `{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}`
 
 ~~~shell
 $ oc login {{OPENSHIFT_CONSOLE_URL}}
@@ -123,7 +123,7 @@ perform various tasks via a browser.  To get a feel for how the web console
 works, open your browser and `go to` [OpenShift Web Console]({{OPENSHIFT_CONSOLE_URL}}).
 
 
-The first screen you will see is the authentication screen. Enter your username and password (`{{OPENSHIFT_USER}}/{{OPENSHIFT_PASWORD}}`) and 
+The first screen you will see is the authentication screen. Enter your username and password (`{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}`) and 
 then log in. After you have authenticated to the web console, you will be presented with a
 list of projects that your user has permission to work with. 
 

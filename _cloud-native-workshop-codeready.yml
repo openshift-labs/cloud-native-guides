@@ -7,7 +7,7 @@ content:
 vars:
   OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.11"
   OPENSHIFT_USER: userX
-  OPENSHIFT_PASWORD: PASSWORD
+  OPENSHIFT_PASSWORD: PASSWORD
   COOLSTORE_PROJECT: coolstore
   INFRA_PROJECT: infra
   DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.11.16/windows/oc.zip
