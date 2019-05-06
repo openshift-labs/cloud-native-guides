@@ -1,8 +1,10 @@
 ## Enterprise Microservices with Thorntail
 
+*15 MINUTES PRACTICE*
+
 In this lab you will learn about building microservices using Thorntail.
 
-![CoolStore Architecture]({% image_path coolstore-arch-inventory.png %}){:width="200px"}
+![CoolStore Architecture]({% image_path coolstore-arch-inventory-thorntail.png %}){:width="400px"}
 
 #### What is Thorntail?
 

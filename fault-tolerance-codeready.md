@@ -1,5 +1,7 @@
 ## Service Resilience and Fault Tolerance
 
+*30 MINUTES PRACTICE*
+
 In this lab you will learn about how you can build service resilience and fault tolerance into 
 the applications both at the infrastructure level using OpenShift capabilities as well as 
 at the application level using circuit breakers to prevent cascading failures when 

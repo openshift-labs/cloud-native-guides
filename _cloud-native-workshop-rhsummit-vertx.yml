@@ -36,4 +36,5 @@ modules:
   - catalog-deployment
   - gateway-vertx-codeready
   - webui-deployment
+  - fault-tolerance-codeready
   - env-info

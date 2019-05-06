@@ -6,7 +6,7 @@ In this lab you will learn about Spring Boot and how you can build microservices
 using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
 the Catalog service in order to provide a list of products for the CoolStore online shop.
 
-![CoolStore Architecture]({% image_path coolstore-arch-catalog.png %}){:width="500px"}
+![CoolStore Architecture]({% image_path coolstore-arch-catalog-spring-boot.png %}){:width="400px"}
 
 #### What is Spring Boot?
 
@@ -262,7 +262,7 @@ It’s time to build and deploy our service on OpenShift.
 OpenShift [Source-to-Image (S2I)]({{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build) 
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the [supported OpenJDK container image](https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift) to build the final container image 
-of the Catalog service by uploading the Spring Boot uber-jar from the **target/** 
+of the **Catalog Service** by uploading the Spring Boot uber-jar from the **target/** 
 folder to the OpenShift platform. 
 
 Maven projects can use the [Fabric8 Maven Plugin](https://maven.fabric8.io) in order to use OpenShift S2I for building 

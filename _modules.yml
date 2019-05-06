@@ -9,9 +9,11 @@ modules:
   catalog-spring-boot-codeready:
     name: Create Catalog Service as a Microservice with Spring Boot
   catalog-deployment:
-    name: Deploy Catalog Service
+    name: Deploy Catalog Service as a Microservice with Spring Boot
   inventory-thorntail-codeready:
     name: Create Inventory Service as an Enterprise Microservice with Thorntail
+  inventory-vertx-codeready:
+    name: Create Inventory Service as a Reactive Microservice with Eclipse Vert.x
   inventory-deployment:
     name: Deploy Inventory Service
   gateway-vertx-codeready:

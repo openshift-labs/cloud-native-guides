@@ -4,7 +4,7 @@ As explained in the introduction at the core of the Cool Store Portal architectu
 
 As we have done previously for the sake of saving time we're going to deploy our 'Gateway' service instead of coding it. But before we actually deploy the service we're going to explain briefly some concepts.
 
-![CoolStore Architecture]({% image_path coolstore-arch-gateway.png %}){:width="400px"}
+![CoolStore Architecture]({% image_path coolstore-arch-gateway-vertx.png %}){:width="400px"}
 
 #### Technology
 

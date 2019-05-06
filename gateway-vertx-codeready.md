@@ -6,7 +6,7 @@ In this lab you will learn about Eclipse Vert.x and how you can
 build microservices using reactive principles. During this lab you will 
 create a scalable API Gateway that aggregates Catalog and Inventory APIs.
 
-![CoolStore Architecture]({% image_path coolstore-arch-gateway.png %}){:width="500px"}
+![CoolStore Architecture]({% image_path coolstore-arch-gateway-vertx.png %}){:width="400px"}
 
 #### What is Eclipse Vert.x?
 

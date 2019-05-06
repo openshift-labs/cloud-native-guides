@@ -1,8 +1,10 @@
 ## Enterprise Microservices with Eclipse Vert.x
 
+*15 MINUTES PRACTICE*
+
 In this lab you will learn about building microservices using Vert.x.
 
-![CoolStore Architecture]({% image_path coolstore-arch-inventory-vertx.png %}){:width="200px"}
+![CoolStore Architecture]({% image_path coolstore-arch-inventory-vertx.png %}){:width="400px"}
 
 #### What is Eclipse Vert.x?
 
