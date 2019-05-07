@@ -350,7 +350,7 @@ public class GatewayVerticle extends AbstractVerticle {
 
         Router router = Router.router(vertx);
         router.route().handler(CorsHandler.create("*").allowedMethod(HttpMethod.GET));
-        router.get("/").handler(StaticHandler.create("assets"));
+        router.get("/*").handler(StaticHandler.create("assets"));
         router.get("/health").handler(ctx -> ctx.response().end(new JsonObject().put("status", "UP").toString()));
         router.get("/api/products").handler(this::products);
 
@@ -422,13 +422,17 @@ public class GatewayVerticle extends AbstractVerticle {
         // Retrieve the inventory for a given product
         return inventory
             .get("/api/inventory/" + product.getString("itemId"))
-            .expect(ResponsePredicate.SC_OK)
             .as(BodyCodec.jsonObject())
             .rxSend()
-            .map(resp -> product.copy()
-                .put("availability",
-                    new JsonObject()
-                        .put("quantity", resp.body().getInteger("quantity"))));
+            .map(resp -> {
+                if (resp.statusCode() != 200) {
+                    LOG.warn("Inventory error for {}: status code {}",
+                        product.getString("itemId"), resp.statusCode());
+                    return product.copy();
+                }
+                return product.copy().put("availability",
+                    new JsonObject().put("quantity", resp.body().getInteger("quantity")));
+            });
     }
 }
 ~~~
