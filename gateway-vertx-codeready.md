@@ -203,16 +203,16 @@ public class GatewayVerticle extends AbstractVerticle {
         // Retrieve the inventory for a given product
         return inventory
             .get("/api/inventory/" + product.getString("itemId"))
-            .expect(ResponsePredicate.SC_OK)
             .as(BodyCodec.jsonObject())
             .rxSend()
-            .map(resp -> product.copy()
-                .put("availability",
-                    new JsonObject()
-                        .put("quantity", resp.body().getInteger("quantity"))))
-            .onErrorReturn(err -> {
-                LOG.warn("Inventory error for {}: status code {}", product.getString("itemId"), err);
-                return product.copy();
+            .map(resp -> {
+                if (resp.statusCode() != 200) {
+                    LOG.warn("Inventory error for {}: status code {}",
+                        product.getString("itemId"), resp.statusCode());
+                    return product.copy();
+                }
+                return product.copy().put("availability",
+                    new JsonObject().put("quantity", resp.body().getInteger("quantity")));
             });
     }
 }
@@ -320,16 +320,13 @@ private Single<JsonObject> getAvailabilityFromInventory(JsonObject product) {
         .as(BodyCodec.jsonObject())
         .rxSend()
         .map(resp -> {
-            JsonObject json = product.copy();
             if (resp.statusCode() != 200) {
                 LOG.warn("Inventory error for {}: status code {}",
                     product.getString("itemId"), resp.statusCode());
-            } else {
-                json.put("availability",
-                    new JsonObject()
-                        .put("quantity", resp.body().getInteger("quantity")));
+                return product.copy();
             }
-            return json;
+            return product.copy().put("availability",
+                new JsonObject().put("quantity", resp.body().getInteger("quantity")));
         });
 }
 ~~~
