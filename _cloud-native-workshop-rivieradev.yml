@@ -38,7 +38,7 @@ modules:
   - webui-deployment
   - service-mesh
   - abtesting
+  - continuous-delivery
   - health
   - fault-tolerance-codeready
-  - continuous-delivery
   - env-info

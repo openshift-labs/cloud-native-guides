@@ -139,38 +139,11 @@ In a OpenShift environment, the OpenShift Route is used to specify services that
 * A **Gateway** describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections. The specification describes a set of ports that should be exposed, the type of protocol to use, SNI configuration for the load balancer, etc.
 * A **VirtualService** defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry.
 
-
-`Edit the gateway-vertx/openshift/virtualservice.yml` file and replace the 2 **COOLSTORE_PROJECT** variables with your respective project name. 
-
-~~~yaml
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: gateway-{{COOLSTORE_PROJECT}}
-spec:
-  hosts:
-  - "*"
-  gateways:
-  - istio-gateway
-  http:
-  - match:
-    - uri:
-        prefix: /{{COOLSTORE_PROJECT}}/api
-    rewrite:
-      uri: "/api"
-    route:
-    - destination:
-        port:
-          number: 8080
-        host: gateway
-~~~
-
 In the Terminal, execute the following command to create a (Istio) `Gateway` and a `VirtualService` for the `Gateway Service`
 
 ~~~shell
 $ oc create -f /projects/labs/gateway-vertx/openshift/istio-gateway.yml
-$ oc create -f /projects/labs/gateway-vertx/openshift/virtualservice.yml
+$ sed s/COOLSTORE_PROJECT/{{COOLSTORE_PROJECT}}/g /projects/labs/gateway-vertx/openshift/virtualservice.yml | oc create -f -
 ~~~
 
 To confirm that the `Istio Gateway` is well configured,
