@@ -86,5 +86,13 @@ plans:
       required: true
       display_type: text
       display_group: Workshop Infra Services
+    - name: modules
+      title: Modules for privisioning in the Lab
+      description: Choose the modules(i.e. m1 ~ m4) to provision in the lab
+      type: string
+      default: "m1"
+      required: true
+      display_type: text
+      display_group: Workshop Infra Services
 
       
