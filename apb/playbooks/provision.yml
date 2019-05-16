@@ -71,6 +71,12 @@
     shell: "oc delete limitrange --all -n {{ namespace }}"
     ignore_errors: true
     tags: always
+  
+  - name: delete coolstore-monolith-binary-build template
+    shell: "oc get template coolstore-monolith-binary-build template -n openshift"
+    register: workshopper_project_result
+    ignore_errors: true
+    tags: always
    
   - name: create a coolstore-monolith-binary-build template
     shell: "oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m1-labs/master/monolith/src/main/openshift/template-binary.json -n openshift"
