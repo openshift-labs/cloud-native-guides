@@ -21,7 +21,7 @@ Goto the ansible-service-broker project, and in the configMap add the following 
   ```      
   
 
-If running via your own machine you can run the following command
+If running via your own machine you can run the following command  
 
   ```
   oc new-project labs-infra
