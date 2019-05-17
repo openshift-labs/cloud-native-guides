@@ -85,6 +85,14 @@
       - openshift_token is not none
       - openshift_token|trim() != ""
     tags: always
+  
+  - name: disable namespace ownership for router
+    shell: "oc set env dc/router --overwrite ROUTER_DISABLE_NAMESPACE_OWNERSHIP_CHECK=true -n default"
+    when:
+      - openshift_token is defined
+      - openshift_token is not none
+      - openshift_token|trim() != ""
+    tags: always
 
   - import_role:
       name: openshift_sonatype_nexus
