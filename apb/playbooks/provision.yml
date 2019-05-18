@@ -151,7 +151,7 @@
       force_basic_auth: true
     ignore_errors: true
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
-    when: infrasvcs_gogs_user_count > 0 and "{{ modules }}" is search("m1")
+    when: infrasvcs_gogs_user_count > 0 and modules is search("m1")
 
   - name: migrate moduel 2 repos for all users
     uri:
@@ -166,7 +166,7 @@
       force_basic_auth: true
     ignore_errors: true
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
-    when: infrasvcs_gogs_user_count > 0 and "{{ modules }}" is search("m2")
+    when: infrasvcs_gogs_user_count > 0 and modules is search("m2")
 
   - name: migrate moduel 3 repos for all users
     uri:
@@ -181,7 +181,7 @@
       force_basic_auth: true
     ignore_errors: true
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
-    when: infrasvcs_gogs_user_count > 0 and "{{ modules }}" is search("m3")
+    when: infrasvcs_gogs_user_count > 0 and modules is search("m3")
 
   - name: migrate moduel 4 repos for all users
     uri:
@@ -196,7 +196,7 @@
       force_basic_auth: true
     ignore_errors: true
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
-    when: infrasvcs_gogs_user_count > 0 and "{{ modules }}" is search("m4")
+    when: infrasvcs_gogs_user_count > 0 and modules is search("m4")
 
  # deploy guides-che
   - import_role:
@@ -214,9 +214,10 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    when: "{{ modules }}" is search("m1")
+    when: modules is search("m1")
     tags: guides
 
+  
   - import_role:
       name: openshift_workshopper
       allow_duplicates: true
@@ -232,7 +233,7 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    when: "{{ modules }}" is search("m2")
+    when: modules is search("m2")
     tags: guides
   
   - import_role:
@@ -250,10 +251,10 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    when: "{{ modules }}" is search("m3")
+    when: modules is search("m3")
     tags: guides
 
-- import_role:
+  - import_role:
       name: openshift_workshopper
       allow_duplicates: true
     vars:
@@ -268,7 +269,7 @@
         ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
         GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
         NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    when: "{{ modules }}" is search("m4")
+    when: modules is search("m4")
     tags: guides
 
   # install openjdk imagestream
