@@ -19,7 +19,7 @@
   name: openshift_jenkins
 
 - src: danieloh30.rhamt
-  version: 1.1.0
+  version: 1.2.0
   name: rhamt
   
 - src: ansible.kubernetes-modules
