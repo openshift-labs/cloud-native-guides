@@ -18,7 +18,10 @@
     gogs_clone_addr_m2: "https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m2-labs.git"
     gogs_clone_addr_m3: "https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs.git"
     gogs_clone_addr_m4: "https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m4-labs.git"
-    gogs_repo_name: "cloud-native-workshop-v2-labs"
+    gogs_repo_name_m1: "cloud-native-workshop-v2m1-labs"
+    gogs_repo_name_m2: "cloud-native-workshop-v2m2-labs"
+    gogs_repo_name_m3: "cloud-native-workshop-v2m3-labs"
+    gogs_repo_name_m4: "cloud-native-workshop-v2m4-labs"
     gogs_user_count: 0
     gogs_user_format: user%d
     infrasvcs_adm_user: adminuser
@@ -142,7 +145,7 @@
     uri:
       url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/repos/migrate
       method: POST
-      body: "{'clone_addr': '{{ gogs_clone_addr_m1 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name }}' }"
+      body: "{'clone_addr': '{{ gogs_clone_addr_m1 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name_m1 }}' }"
       body_format: json
       username: "user{{ item }}"
       url_username: "user{{ item }}"
@@ -157,7 +160,7 @@
     uri:
       url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/repos/migrate
       method: POST
-      body: "{'clone_addr': '{{ gogs_clone_addr_m2 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name }}' }"
+      body: "{'clone_addr': '{{ gogs_clone_addr_m2 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name_m2 }}' }"
       body_format: json
       username: "user{{ item }}"
       url_username: "user{{ item }}"
@@ -172,7 +175,7 @@
     uri:
       url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/repos/migrate
       method: POST
-      body: "{'clone_addr': '{{ gogs_clone_addr_m3 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name }}' }"
+      body: "{'clone_addr': '{{ gogs_clone_addr_m3 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name_m3 }}' }"
       body_format: json
       username: "user{{ item }}"
       url_username: "user{{ item }}"
@@ -187,7 +190,7 @@
     uri:
       url: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}/api/v1/repos/migrate
       method: POST
-      body: "{'clone_addr': '{{ gogs_clone_addr_m4 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name }}' }"
+      body: "{'clone_addr': '{{ gogs_clone_addr_m4 }}', 'uid': {{ item|int + 3 }}, 'repo_name': '{{ gogs_repo_name_m4 }}' }"
       body_format: json
       username: "user{{ item }}"
       url_username: "user{{ item }}"
