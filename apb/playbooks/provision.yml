@@ -81,8 +81,22 @@
     ignore_errors: true
     tags: always
    
-  - name: create a coolstore-monolith-binary-build template
+  - name: create coolstore-monolith-binary-build template
     shell: "oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m1-labs/master/monolith/src/main/openshift/template-binary.json -n openshift"
+    when:
+      - openshift_token is defined
+      - openshift_token is not none
+      - openshift_token|trim() != ""
+    tags: always
+
+  - name: delete template-prod template
+    shell: "oc delete template template-prod -n openshift"
+    register: workshopper_project_result
+    ignore_errors: true
+    tags: always
+
+  - name: create template-prod template
+    shell: "oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m1-labs/master/monolith/src/main/openshift/template-prod.json -n openshift"
     when:
       - openshift_token is defined
       - openshift_token is not none
