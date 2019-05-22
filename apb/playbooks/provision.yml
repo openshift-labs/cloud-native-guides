@@ -329,20 +329,20 @@
         Content-Type: "application/x-www-form-urlencoded"
     register: result_token
          
-#  - name: Update a master realm with RH-SSO theme
-#    uri: 
-#      url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/master/
-#      method: PUT
-#      body_format: json
-#      body: '{ "displayName": "rh-sso", "displayNameHtml": "<strong>Red Hat</strong><sup>®</sup> Single Sign On", "loginTheme": "rh-sso", "adminTheme": "rh-sso", "accountTheme": "rh-sso", "emailTheme": "rh-sso", "accessTokenLifespan": 6000 }'
-#      status_code: 204
-#      force_basic_auth: true
-#      validate_certs: no
-#      headers:
-#        Content-Type: "application/json"
-#        Accept: "application/json"
-#        Authorization: "Bearer {{ result_token.json.access_token }}"
-#    when: result_token.json.access_token != ""
+  - name: Update a master realm with RH-SSO theme
+    uri: 
+      url: https://secure-rhamt-web-console-{{ namespace }}.{{ apps_hostname_suffix }}/auth/admin/realms/master/
+      method: PUT
+      body_format: json
+      body: '{ "displayName": "rh-sso", "displayNameHtml": "<strong>Red Hat</strong><sup>®</sup> Single Sign On", "loginTheme": "rh-sso", "adminTheme": "rh-sso", "accountTheme": "rh-sso", "emailTheme": "rh-sso", "accessTokenLifespan": 6000 }'
+      status_code: 204
+      force_basic_auth: true
+      validate_certs: no
+      headers:
+        Content-Type: "application/json"
+        Accept: "application/json"
+        Authorization: "Bearer {{ result_token.json.access_token }}"
+    when: result_token.json.access_token != ""
 
   - name: Create RH-SSO users as many as gogs users
     uri: 
