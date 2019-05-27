@@ -448,9 +448,7 @@
                     "installers": [
                       "org.eclipse.che.exec",
                       "org.eclipse.che.terminal",
-                      "org.eclipse.che.ws-agent",
-                      "org.eclipse.che.ls.java"
-
+                      "org.eclipse.che.ws-agent"
                     ],
                     "attributes": {
                       "memoryLimitBytes": "4294967296"
@@ -512,7 +510,7 @@
                 "attributes": {
                   "goal": "Package",
                   "previewUrl": ""
-                },
+                }
               },
               {
                 "commandLine": "mvn spring-boot:run -f ${current.project.path}",
