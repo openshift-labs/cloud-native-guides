@@ -431,7 +431,10 @@
                 },
                 "machines": {
                   "dev-machine": {
-                    "env": {},
+                    "env": {
+                      "MAVEN_OPTS" : "-Xmx512m",
+                      "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
+                    },
                     "servers": {
                       "8080/tcp": {
                         "attributes": {},
@@ -442,6 +445,16 @@
                         "attributes": {},
                         "protocol": "http",
                         "port": "8000"
+                      },
+                       "9000/tcp": {
+                        "attributes": {},
+                        "protocol": "http",
+                        "port": "9000"
+                      },
+                      "9001/tcp": {
+                        "attributes": {},
+                        "protocol": "http",
+                        "port": "9001"
                       }
                     },
                     "volumes": {},
@@ -459,7 +472,7 @@
             },
             "commands": [
               {
-                "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                "commandLine": "mvn install -f ${current.project.path}",
                 "name": "build",
                 "type": "mvn",
                 "attributes": {
@@ -468,7 +481,7 @@
                 }
               },
               {
-                "commandLine": "mvn clean install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                "commandLine": "mvn clean install -f ${current.project.path}",
                 "name": "clean build",
                 "type": "mvn",
                 "attributes": {
@@ -477,7 +490,7 @@
                 }
               },
               {
-                "commandLine": "mvn verify -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                "commandLine": "mvn verify -f ${current.project.path}",
                 "name": "test",
                 "type": "mvn",
                 "attributes": {
