@@ -419,15 +419,15 @@
       install_java_oc_stack: false
       install_custom_stacks_json: |
         [{
-          "name": "Cloud Native Workshop V2",
-          "description": "Java JDK Stack on CentOS for Cloud-Native Workshop",
+          "name": "Cloud Native Workshop v2 - Java, CodeReady, odo",
+          "description": "Java JDK Stack on CentOS",
           "scope": "general",
           "workspaceConfig": {
             "environments": {
               "default": {
                 "recipe": {
                   "type": "dockerimage",
-                  "content": "siamaksade/che-centos-jdk8"
+                  "content": "quay.io/openshiftlabs/codeready--quarkus-odo:1.0"
                 },
                 "machines": {
                   "dev-machine": {
@@ -461,10 +461,12 @@
                     "installers": [
                       "org.eclipse.che.exec",
                       "org.eclipse.che.terminal",
-                      "org.eclipse.che.ws-agent"
+                      "org.eclipse.che.ws-agent",
+                      "org.eclipse.che.ls.java"
+
                     ],
                     "attributes": {
-                      "memoryLimitBytes": "2147483648"
+                      "memoryLimitBytes": "4294967296"
                     }
                   }
                 }
@@ -472,7 +474,7 @@
             },
             "commands": [
               {
-                "commandLine": "mvn package -f ${current.project.path}",
+                "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
                 "name": "build",
                 "type": "mvn",
                 "attributes": {
@@ -481,7 +483,7 @@
                 }
               },
               {
-                "commandLine": "mvn clean package -f ${current.project.path}",
+                "commandLine": "mvn clean install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
                 "name": "clean build",
                 "type": "mvn",
                 "attributes": {
@@ -490,7 +492,7 @@
                 }
               },
               {
-                "commandLine": "mvn verify -f ${current.project.path}",
+                "commandLine": "mvn verify -f ${current.project.path} -s ${current.project.path}/.settings.xml",
                 "name": "test",
                 "type": "mvn",
                 "attributes": {
@@ -499,21 +501,39 @@
                 }
               },
               {
+                "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
+                "name": "Build and Run Locally",
+                "type": "custom",
+                "attributes": {
+                  "goal": "Run",
+                  "previewUrl": "${server.8080/tcp}"
+                }
+              },
+              {
+                "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+                "name": "Build Native Quarkus App",
+                "type": "custom",
+                "attributes": {
+                  "goal": "Package",
+                  "previewUrl": ""
+                }
+              },
+              {
+                "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
+                "name": "Package for OpenShift",
+                "type": "custom",
+                "attributes": {
+                  "goal": "Package",
+                  "previewUrl": ""
+                }
+              },
+              {
                 "commandLine": "mvn spring-boot:run -f ${current.project.path}",
                 "name": "run spring-boot",
                 "type": "mvn",
                 "attributes": {
-                  "goal": "Run",
-                  "previewUrl": "${server.9000/tcp}"
-                }
-              },
-              {
-                "commandLine": "cd ${current.project.path} && mvn fabric8:deploy",
-                "name": "fabric8:deploy",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Deploy",
-                  "previewUrl": ""
+                    "goal": "Run",
+                    "previewUrl": "${server.9000/tcp}"
                 }
               }
             ],
@@ -532,7 +552,7 @@
               "name": "JDK"
             },
             {
-              "version": "3.2.2",
+              "version": "3.6.0",
               "name": "Maven"
             },
             {
@@ -540,7 +560,7 @@
               "name": "Ansible"
             },
             {
-              "version": "3.11",
+              "version": "4.0.0",
               "name": "OpenShift CLI"
             }
           ],
@@ -549,9 +569,10 @@
             "Java",
             "JDK",
             "Maven",
+            "Ansible",
             "CentOS",
             "Git"
           ],
-          "id": "java-oc-centos-cloudnative"
+          "id": "cloud-native-workshop-v2"
         }]
-    tags: eclipse-che
+    tags: codeready-workspace
