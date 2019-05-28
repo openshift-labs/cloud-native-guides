@@ -419,7 +419,7 @@
       install_java_oc_stack: false
       install_custom_stacks_json: |
         [{
-          "name": "Java Cloud-Native",
+          "name": "Cloud Native Workshop V2",
           "description": "Java JDK Stack on CentOS for Cloud-Native Workshop",
           "scope": "general",
           "workspaceConfig": {
