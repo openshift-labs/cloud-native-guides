@@ -405,174 +405,185 @@
     ignore_errors: true
     with_items: "{{ result_useridlist.json }}"
     when: item.username != "rhamt"
-     
-  # deploy eclipse che
-  - import_role:
-      name: openshift_eclipse_che
-    vars:
-      project_name: "{{ namespace }}"
-      che_version: "6.8.0"
-      multi_user: true
-      route_suffix: "{{ apps_hostname_suffix }}"
-      keycloak_admin_user: "{{ infrasvcs_adm_user }}"
-      keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
-      install_java_oc_stack: false
-      install_custom_stacks_json: |
-        [{
-          "name": "Cloud Native Workshop v2 - Java, CodeReady, odo",
-          "description": "Java JDK Stack on CentOS",
-          "scope": "general",
-          "workspaceConfig": {
-            "environments": {
-              "default": {
-                "recipe": {
-                  "type": "dockerimage",
-                  "content": "quay.io/openshiftlabs/codeready--quarkus-odo:1.0"
-                },
-                "machines": {
-                  "dev-machine": {
-                    "env": {
-                      "MAVEN_OPTS" : "-Xmx512m",
-                      "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
-                    },
-                    "servers": {
-                      "8080/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "8080"
-                      },
-                      "8000/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "8000"
-                      },
-                      "9000/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "9000"
-                      },
-                      "9001/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "9001"
-                      }
-                    },
-                    "volumes": {},
-                    "installers": [
-                      "org.eclipse.che.exec",
-                      "org.eclipse.che.terminal",
-                      "org.eclipse.che.ws-agent",
-                      "org.eclipse.che.ls.java"
+    
+  # This will be replaced with Operator on OCP 4
+  - name: Deploy CodeReady Workspace
+    command: {{ itme }}
+    with_items:
+      - git clone https://github.com/danieloh30/codeready-workspace-quarkus.git
+      - cd codeready-workspace-quarkus/
+      - tar xvf codeready-workspaces-1.1.0.GA-operator-installer.tar.gz   && cd codeready-workspaces-operator-installer
+      - ./deploy.sh --deploy
+  
+  - name: wait for che to be running
+    uri:
+      url: http://codeready-workspaces-{{ project_name }}.{{ route_suffix }}/api/system/state
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 60
+    delay: 30
 
-                    ],
-                    "attributes": {
-                      "memoryLimitBytes": "4294967296"
+  - name: Add a Cloud Native Workshop Stack
+    uri:
+      url: http://codeready-workspaces-{{ project_name }}.{{ route_suffix }}/api/stack
+      method: POST
+      body: '{
+              "name": "Cloud Native Workshop v2",
+              "description": "Cloud Native Java Stack, Quarkus, odo on CentOS",
+              "scope": "general",
+              "workspaceConfig": {
+                "environments": {
+                  "default": {
+                    "recipe": {
+                      "type": "dockerimage",
+                      "content": "quay.io/openshiftlabs/cloudnative-workspaces-quarkus:1.1"
+                    },
+                    "machines": {
+                      "dev-machine": {
+                        "env": {
+                          "MAVEN_OPTS" : "-Xmx512m",
+                          "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
+                        },
+                        "servers": {
+                          "8080/tcp": {
+                            "attributes": {},
+                            "protocol": "http",
+                            "port": "8080"
+                          },
+                          "8000/tcp": {
+                            "attributes": {},
+                            "protocol": "http",
+                            "port": "8000"
+                          },
+                          "9000/tcp": {
+                            "attributes": {},
+                            "protocol": "http",
+                            "port": "9000"
+                          },
+                          "9001/tcp": {
+                            "attributes": {},
+                            "protocol": "http",
+                            "port": "9001"
+                          }
+                        },
+                        "volumes": {},
+                        "installers": [
+                          "org.eclipse.che.exec",
+                          "org.eclipse.che.terminal",
+                          "org.eclipse.che.ws-agent",
+                          "org.eclipse.che.ls.java"
+
+                        ],
+                        "attributes": {
+                          "memoryLimitBytes": "4294967296"
+                        }
+                      }
                     }
                   }
-                }
-              }
-            },
-            "commands": [
-              {
-                "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
-                "name": "build",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Build",
-                  "previewUrl": ""
-                }
+                },
+                "commands": [
+                  {
+                    "commandLine": "mvn install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                    "name": "build",
+                    "type": "mvn",
+                    "attributes": {
+                      "goal": "Build",
+                      "previewUrl": ""
+                    }
+                  },
+                  {
+                    "commandLine": "mvn clean install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                    "name": "clean build",
+                    "type": "mvn",
+                    "attributes": {
+                      "goal": "Build",
+                      "previewUrl": ""
+                    }
+                  },
+                  {
+                    "commandLine": "mvn verify -f ${current.project.path} -s ${current.project.path}/.settings.xml",
+                    "name": "test",
+                    "type": "mvn",
+                    "attributes": {
+                      "goal": "Test",
+                      "previewUrl": ""
+                    }
+                  },
+                  {
+                    "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
+                    "name": "Build and Run Locally",
+                    "type": "custom",
+                    "attributes": {
+                      "goal": "Run",
+                      "previewUrl": "${server.8080/tcp}"
+                    }
+                  },
+                  {
+                    "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
+                    "name": "Build Native Quarkus App",
+                    "type": "custom",
+                    "attributes": {
+                      "goal": "Package",
+                      "previewUrl": ""
+                    }
+                  },
+                  {
+                    "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
+                    "name": "Package for OpenShift",
+                    "type": "custom",
+                    "attributes": {
+                      "goal": "Package",
+                      "previewUrl": ""
+                    }
+                  },
+                  {
+                    "commandLine": "mvn spring-boot:run -f ${current.project.path}",
+                    "name": "run spring-boot",
+                    "type": "mvn",
+                    "attributes": {
+                        "goal": "Run",
+                        "previewUrl": "${server.9000/tcp}"
+                    }
+                  }
+                ],
+                "projects": [],
+                "defaultEnv": "default",
+                "name": "default",
+                "links": []
               },
-              {
-                "commandLine": "mvn clean install -f ${current.project.path} -s ${current.project.path}/.settings.xml",
-                "name": "clean build",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Build",
-                  "previewUrl": ""
+              "components": [
+                {
+                  "version": "---",
+                  "name": "CentOS"
+                },
+                {
+                  "version": "1.8.0_45",
+                  "name": "JDK"
+                },
+                {
+                  "version": "3.6.0",
+                  "name": "Maven"
+                },
+                {
+                  "version": "2.4",
+                  "name": "Ansible"
+                },
+                {
+                  "version": "4.0.0",
+                  "name": "OpenShift CLI"
                 }
-              },
-              {
-                "commandLine": "mvn verify -f ${current.project.path} -s ${current.project.path}/.settings.xml",
-                "name": "test",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Test",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "mvn clean compile quarkus:dev -f ${current.project.path}",
-                "name": "Build and Run Locally",
-                "type": "custom",
-                "attributes": {
-                  "goal": "Run",
-                  "previewUrl": "${server.8080/tcp}"
-                }
-              },
-              {
-                "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -Pnative ; oc login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5 --insecure-skip-tls-verify=true",
-                "name": "Build Native Quarkus App",
-                "type": "custom",
-                "attributes": {
-                  "goal": "Package",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
-                "name": "Package for OpenShift",
-                "type": "custom",
-                "attributes": {
-                  "goal": "Package",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "mvn spring-boot:run -f ${current.project.path}",
-                "name": "run spring-boot",
-                "type": "mvn",
-                "attributes": {
-                    "goal": "Run",
-                    "previewUrl": "${server.9000/tcp}"
-                }
-              }
-            ],
-            "projects": [],
-            "defaultEnv": "default",
-            "name": "default",
-            "links": []
-          },
-          "components": [
-            {
-              "version": "---",
-              "name": "CentOS"
-            },
-            {
-              "version": "1.8.0_45",
-              "name": "JDK"
-            },
-            {
-              "version": "3.6.0",
-              "name": "Maven"
-            },
-            {
-              "version": "2.4",
-              "name": "Ansible"
-            },
-            {
-              "version": "4.0.0",
-              "name": "OpenShift CLI"
-            }
-          ],
-          "creator": "ide",
-          "tags": [
-            "Java",
-            "JDK",
-            "Maven",
-            "Ansible",
-            "CentOS",
-            "Git"
-          ],
-          "id": "cloud-native-workshop-v2"
-        }]
-    tags: codeready-workspace
+              ],
+              "creator": "ide",
+              "tags": [
+                "Java",
+                "JDK",
+                "Maven",
+                "Ansible",
+                "CentOS",
+                "Git"
+              ],
+              "id": "cloud-native-workshop-v2"
+            }'
+      body_format: json
+      status_code: 200,201
