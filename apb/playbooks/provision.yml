@@ -408,12 +408,11 @@
     
   # This will be replaced with Operator on OCP 4
   - name: Deploy CodeReady Workspace
-    command: {{ item }}
-    with_items:
-      - git clone https://github.com/danieloh30/codeready-workspace-quarkus.git
-      - cd codeready-workspace-quarkus/
-      - tar xvf codeready-workspaces-1.1.0.GA-operator-installer.tar.gz   && cd codeready-workspaces-operator-installer
-      - ./deploy.sh --deploy
+    shell: |
+      git clone https://github.com/danieloh30/codeready-workspace-quarkus.git
+      cd codeready-workspace-quarkus/
+      tar xvf codeready-workspaces-1.1.0.GA-operator-installer.tar.gz   && cd codeready-workspaces-operator-installer
+      ./deploy.sh --deploy
   
   - name: wait for che to be running
     uri:
