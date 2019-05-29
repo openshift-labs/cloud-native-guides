@@ -408,7 +408,7 @@
     
   # This will be replaced with Operator on OCP 4
   - name: Deploy CodeReady Workspace
-    command: {{ itme }}
+    command: {{ item }}
     with_items:
       - git clone https://github.com/danieloh30/codeready-workspace-quarkus.git
       - cd codeready-workspace-quarkus/
