@@ -528,7 +528,7 @@
                     }
                   },
                   {
-                    "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package ; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
+                    "commandLine": "MAVEN_OPTS=\"-Xmx1024M -Xss128M -XX:MetaspaceSize=512M -XX:MaxMetaspaceSize=1024M -XX:+CMSClassUnloadingEnabled\" mvn -f ${current.project.path} clean package -DskipTests; odo login https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT -u kubeadmin -p vPnVq-3G65B-3y9VZ-3WYk5  --insecure-skip-tls-verify=true",
                     "name": "Package for OpenShift",
                     "type": "custom",
                     "attributes": {
