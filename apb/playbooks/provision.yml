@@ -416,7 +416,7 @@
   
   - name: wait for che to be running
     uri:
-      url: http://codeready-workspaces-{{ project_name }}.{{ route_suffix }}/api/system/state
+      url: http://codeready-workspaces-{{ namespace }}.{{ apps_hostname_suffix }}/api/system/state
       status_code: 200
     register: result
     until: result.status == 200
@@ -425,7 +425,7 @@
 
   - name: Add a Cloud Native Workshop Stack
     uri:
-      url: http://codeready-workspaces-{{ project_name }}.{{ route_suffix }}/api/stack
+      url: http://codeready-workspaces-{{ namespace }}.{{ apps_hostname_suffixx }}/api/stack
       method: POST
       body: '{
               "name": "Cloud Native Workshop v2",
