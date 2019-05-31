@@ -612,7 +612,15 @@
     uri:
       url: http://che-{{ namespace }}.{{ apps_hostname_suffix }}/api/permissions
       method: POST
-      body: "{{ lookup('template','che-permissions.json.j2') }}"
+      body: '{
+              "userId": "*",
+              "domainId": "stack",
+              "instanceId": "{{ stack_id }}",
+              "actions": [
+                "read",
+                "search"
+              ]
+            }'
       body_format: json
       status_code: 204
       headers:
