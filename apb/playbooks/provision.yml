@@ -603,7 +603,7 @@
         Content-Type: "application/json"
         Accept: "application/json"
         Authorization: "Bearer {{ che_access_token.json.access_token }}"
-      register: stack_json_result
+    register: stack_json_result
 
   - set_fact:
       stack_id: "{{ stack_json_result.json|json_query('id') }}"
