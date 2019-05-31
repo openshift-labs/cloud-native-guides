@@ -610,7 +610,7 @@
   
   - name: give all users access to the stack
     uri:
-      url: http://che-{{ namespace }}.{{ apps_hostname_suffix }}/api/permissions
+      url: http://codeready-{{ namespace }}.{{ apps_hostname_suffix }}/api/permissions
       method: POST
       body: '{
               "userId": "*",
