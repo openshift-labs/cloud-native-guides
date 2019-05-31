@@ -438,7 +438,7 @@
 
   - name: Add a Cloud Native Workshop Stack
     uri:
-      url: http://codeready-{{ namespace }}.{{ apps_hostname_suffixx }}/api/stack
+      url: http://codeready-{{ namespace }}.{{ apps_hostname_suffix }}/api/stack
       method: POST
       body: '{
               "name": "Cloud Native Workshop v2",
