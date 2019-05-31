@@ -416,16 +416,29 @@
   
   - name: wait for che to be running
     uri:
-      url: http://codeready-workspaces-{{ namespace }}.{{ apps_hostname_suffix }}/api/system/state
+      url: http://codeready-{{ namespace }}.{{ apps_hostname_suffix }}/api/system/state
       status_code: 200
     register: result
     until: result.status == 200
     retries: 60
     delay: 30
+  
+  - name: get auth token from keycloak che realm
+    uri:
+      url: http://keycloak-{{ namespace }}.{{ apps_hostname_suffix }}/auth/realms/che/protocol/openid-connect/token
+      method: POST
+      body: "username=admin&password=admin&grant_type=password&client_id=admin-cli"
+      status_code: 200
+      headers:
+        Content-Type: "application/x-www-form-urlencoded"
+    register: che_access_token_result
+
+  - set_fact:
+    che_access_token_bearer: "{{ che_access_token_result.json | json_query('access_token') }}"
 
   - name: Add a Cloud Native Workshop Stack
     uri:
-      url: http://codeready-workspaces-{{ namespace }}.{{ apps_hostname_suffixx }}/api/stack
+      url: http://codeready-{{ namespace }}.{{ apps_hostname_suffixx }}/api/stack
       method: POST
       body: '{
               "name": "Cloud Native Workshop v2",
@@ -586,3 +599,6 @@
             }'
       body_format: json
       status_code: 200,201
+      headers:
+        Authorization: "Bearer {{ che_access_token_bearer }}"
+      register: stack_json_result
