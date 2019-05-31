@@ -425,7 +425,7 @@
   
   - name: get auth token from keycloak che realm
     uri:
-      url: http://keycloak-{{ namespace }}.{{ apps_hostname_suffix }}/auth/realms/master/protocol/openid-connect/token
+      url: http://keycloak-{{ namespace }}.{{ apps_hostname_suffix }}/auth/realms/codeready/protocol/openid-connect/token
       method: POST
       body: "username=admin&password=admin&grant_type=password&client_id=admin-cli"
       status_code: 200, 201
