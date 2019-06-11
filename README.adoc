@@ -38,10 +38,7 @@ as cluster admin and perform the following in the `*openshift-ansible-service-br
 You can https://docs.openshift.com/container-platform/3.11/install_config/oab_broker_configuration.html#oab-config-registry-dockerhub[read more in the docs^] 
 on how to configure the service catalog.
 
-[TIP]
-====
-If you are using the _OpenShift Workshop_ in RHPDS, this APB is already available in your service catalog.
-====
+TIP: If you are using the _OpenShift Workshop_ in RHPDS, this APB is already available in your service catalog.
 
 image:images/service-catalog.png?raw=true[^]
 
@@ -70,10 +67,7 @@ ansible-playbook -vvv playbooks/provision.yml \
 
 == Lab Instructions on OpenShift
 
-[TIP]
-====
-If you have used the above workshop installer, the lab instructions are already deployed.
-====
+TIP: If you have used the above workshop installer, the lab instructions are already deployed.
 
 [source,shell]
 ----

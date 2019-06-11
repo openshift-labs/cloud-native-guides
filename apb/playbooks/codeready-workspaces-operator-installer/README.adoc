@@ -84,10 +84,10 @@ In `link:custom-resource.yaml[custom-resource.yaml]`:
 
 ```
 auth:
-  externalKeycloak: true
-  keycloakURL: 'https://my-keycloak.com'
-  keycloakRealm: 'myrealm'
-  keycloakClientId: 'myClient'
+  externalIdentityProvider: true
+  identityProviderURL: 'https://my-keycloak.com'
+  identityProviderRealm: 'myrealm'
+  identityProviderClientId: 'myClient'
 
 ```
 
@@ -106,10 +106,10 @@ database:
 
 ....
 auth:
-  externalKeycloak: true
-  keycloakURL: 'https://my-keycloak.com'
-  keycloakRealm: 'myrealm'
-  keycloakClientId: 'myClient'
+  externalIdentityProvider: true
+  identityProviderAdminUserName: 'https://my-keycloak.com'
+  identityProviderRealm: 'myrealm'
+  identityProviderClientId: 'myClient'
 ```
 
 ### External DB and RH SSO Support

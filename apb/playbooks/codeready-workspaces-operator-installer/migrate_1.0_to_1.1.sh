@@ -5,7 +5,7 @@ CRFILE=${BASE_DIR}/custom-resource.yaml
 DEFAULT_OPENSHIFT_PROJECT="workspaces"
 HELP="
 
-How to use this script:
+How to use this script to migrate from CRW 1.0 to 1.1:
 -p=,    --project=            | project namespace to deploy CodeReady Workspaces, default: ${DEFAULT_OPENSHIFT_PROJECT}
 -c=,    --custom-resource=    | path to custom-resource.yaml file, default: ${CRFILE}
 -h,     --help                | show this help menu
