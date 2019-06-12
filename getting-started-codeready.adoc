@@ -22,10 +22,20 @@ Built on the open Eclipse Che project, https://developers.redhat.com/products/co
 
 === Logging in to CodeReady Workspaces
 
-`*Go to {{ CODEREADY_WORKSPACES_URL }}[CodeReady Workspaces^]*`
-and log in as `*{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}*`
+`*Go to {{ CODEREADY_WORKSPACES_URL }}[CodeReady Workspaces^]*` then `*click on 'Openshift v3'*` to log in through 
+https://docs.openshift.com/container-platform/3.11/architecture/additional_concepts/authentication.html#oauth[OpenShift OAuth^].
+
+image:{% image_path codeready-oauth.png %}[CodeReady Workspaces - Log in,500]
+
+Log in as `*{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}*` and `*click on 'Allow selected permissions'*`
 
 image:{% image_path codeready-login.png %}[CodeReady Workspaces - Log in,500]
+
+image:{% image_path codeready-authorize-access.png %}[CodeReady Workspaces - Log in,500]
+
+Finally, `*enter your account information*` and `*click on 'Submit'*`
+
+image:{% image_path codeready-account-information.png %}[CodeReady Workspaces - Log in,300]
 
 === Creating a Workspace
 Once logged into CodeReady Workspaces, you can now create your workspace based on a stack.
@@ -56,7 +66,7 @@ In the Project Explorer pane, `*click on 'Import Project...'*` and enter the fol
   * Name: **labs**
   * Check **Skip the root folder of the archive**
 
-image:{% image_path codeready-import.png %}[CodeReady Workspaces - Import Project,500]
+image:{% image_path codeready-import.png %}[CodeReady Workspaces - Import Project,700]
 
 `*Click on 'Import'*`. Make sure you choose the **Blank** project configuration since the zip file contains multiple 
 project skeletons. `*Click on 'Save'*`
