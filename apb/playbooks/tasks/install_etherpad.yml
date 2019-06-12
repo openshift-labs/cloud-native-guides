@@ -4,7 +4,7 @@
 #####
 - name: etherpad_text
   set_fact:
-    etherpad_text: "{{ lookup('file', '{{ playbook_dir }}/templates/etherpad/etherpad.txt') | replace('\n', '\\\\n') }}"
+    etherpad_text: "{{ lookup('file', '{{ playbook_dir }}/templates/etherpad/etherpad.txt') | replace('\n', '\\n') }}"
 
 - name: install etherpad
   shell: > 
