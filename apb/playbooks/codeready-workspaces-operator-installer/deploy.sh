@@ -468,7 +468,7 @@ waitForDeployment()
 
   CURRENT_REPLICA_COUNT=-1
   while [[ "${CURRENT_REPLICA_COUNT}" -ne "${DESIRED_REPLICA_COUNT}" ]] && [[ ${SECONDS} -lt ${end} ]]; do
-    CURRENT_REPLICA_COUNT=$(${OC_BINARY} get deployment/${deploymentName} -o=jsonpath='{.status.availableReplicas}')
+    CURRENT_REPLICA_COUNT=$(${OC_BINARY} get deployment/${deploymentName} -n="${OPENSHIFT_PROJECT}" -o=jsonpath='{.status.availableReplicas}')
     timeout_in=$((end-SECONDS))
     if [[ ${DEBUG} -eq 1 ]]; then printInfo "Deployment in progress...(Current replica count=${CURRENT_REPLICA_COUNT}, ${timeout_in} seconds remain)"; fi
     sleep ${POLLING_INTERVAL_SEC}
