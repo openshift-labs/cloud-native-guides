@@ -1,11 +1,13 @@
 == Monitoring Application Health 
 
-*15 MINUTES PRACTICE*
+_15 MINUTES PRACTICE_
 
 In this lab we will learn how to monitor application health using OpenShift 
 health probes and how you can see container resource consumption using metrics.
 
-===  Health Probes
+[sidebar]
+.Health Probes
+--
 
 When building microservices, monitoring becomes of extreme importance to make sure all services 
 are running at all times, and when they don't there are automatic actions triggered to rectify 
@@ -41,11 +43,11 @@ determined based on the return value (0 is success).
 * **TCP Socket Checks:** a socket is opened on a specified port to the container and it's considered healthy 
 only if the check can establish a connection. TCP socket check is ideal for applications that do not 
 start listening until initialization is complete.
- 
-Let's add health probes to the microservices deployed so far.
+--
 
 ===  Explore Health REST Endpoints
 
+Let's add health probes to the microservices deployed so far.
 Spring Boot, Thorntail and Vert.x all provide out-of-the-box support for creating RESTful endpoints that
 provide details on the health of the application. These endpoints by default provide basic data about the 
 service however they all provide a way to customize the health data and add more meaningful information (e.g. 
