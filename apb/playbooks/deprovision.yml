@@ -37,18 +37,19 @@
       - nexus
       - guides-codeready
       - codeready
-      - che-plugin-registry
+      - etherpad
   
-  - name: Delete configmap 'che-operator'
-    command: "oc delete cm che-operator -n {{ namespace }}"
+  - name: Delete configmap 'codeready-operator'
+    command: "oc delete cm codeready-operator -n {{ namespace }}"
     ignore_errors: true
 
   - name: Delete CodeReady Workspaces additional resources from {{ namespace }}
-    command: "oc delete {{ item }} codeready-workspaces-operator -n {{ namespace }}"
+    command: "oc delete {{ item }} codeready-operator -n {{ namespace }}"
     ignore_errors: true
     with_items:
       - serviceaccount
       - rolebinding
+      - role
 
   - name: Delete projects if exists
     command: "oc delete project {{ infra_project_name }} {{ project_name }}"

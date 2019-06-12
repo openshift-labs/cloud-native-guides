@@ -1,3 +1,4 @@
 tmp/
 ansible/roles/
 *.retry
+.DS_Store

@@ -172,7 +172,7 @@ createNewProject() {
 
 createServiceAccount() {
   printInfo "Creating operator service account"
-  ${OC_BINARY} get sa codeready-operator > /dev/null 2>&1
+  ${OC_BINARY} get sa codeready-operator -n=${OPENSHIFT_PROJECT} > /dev/null 2>&1
   OUT=$?
   if [ ${OUT} -ne 0 ]; then
     ${OC_BINARY} create sa codeready-operator -n=${OPENSHIFT_PROJECT} > /dev/null
@@ -185,6 +185,7 @@ createServiceAccount() {
   kind: Role
   metadata:
     name: codeready-operator
+    namespace: ${OPENSHIFT_PROJECT}
   rules:
     - apiGroups:
         - extensions/v1beta1
@@ -258,7 +259,7 @@ if [ ${OUT} -ne 0 ]; then
   printError "Failed to create role for operator service account"
   exit 1
 fi
-  ${OC_BINARY} get rolebinding codeready-operator > /dev/null 2>&1
+  ${OC_BINARY} get rolebinding codeready-operator -n=${OPENSHIFT_PROJECT} > /dev/null 2>&1
   OUT=$?
   if [ ${OUT} -ne 0 ]; then
     printInfo "Creating Role Binding"
@@ -403,6 +404,7 @@ objects:
   kind: Deployment
   metadata:
     name: codeready-operator
+    namespace: ${OPENSHIFT_PROJECT}
   spec:
     replicas: 1
     selector:
