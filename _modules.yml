@@ -1,40 +1,42 @@
 config:
-    renderer: markdown
+    renderer: adoc
 
 modules:
-  getting-started:
+  introduction:
+    name: Introduction
+  getting-started-codeready:
     name: Getting Started
-  getting-started-che:
-    name: Getting Started
-  spring-boot:
-    name: Microservices with Spring Boot
-  spring-boot-che:
-    name: Microservices with Spring Boot
-  wildfly-swarm:
-    name: Enterprise Microservices with WildFly Swarm
-  wildfly-swarm-che:
-    name: Enterprise Microservices with WildFly Swarm
-  vertx:
-    name: Reactive Microservices with Eclipse Vert.x
-  vertx-che:
-    name: Reactive Microservices with Eclipse Vert.x
-  nodejs:
-    name: Web UI with Node.js and AngularJS
+  catalog-spring-boot-codeready:
+    name: Create Catalog Service as a Microservice with Spring Boot
+  catalog-deployment:
+    name: Deploy Catalog Service as a Microservice with Spring Boot
+  inventory-thorntail-codeready:
+    name: Create Inventory Service as an Enterprise Microservice with Thorntail
+  inventory-vertx-codeready:
+    name: Create Inventory Service as a Reactive Microservice with Eclipse Vert.x
+  inventory-deployment:
+    name: Deploy Inventory Service
+  gateway-vertx-codeready:
+    name: Create Gateway Service as a Reactive Microservice with Eclipse Vert.x
+  gateway-deployment:
+    name: Deploy Gateway Service
+  webui-deployment:
+    name: Deploy Web UI as a Microservice with with Node.js and AngularJS
   health:
     name: Monitoring Application Health 
-  fault-tolerance:
+  fault-tolerance-codeready:
     name: Service Resilience and Fault Tolerance
-  fault-tolerance-che:
-    name: Service Resilience and Fault Tolerance
-  app-config:
+  app-config-thorntail:
+    name:  Application Configuration
+  app-config-vertx:
     name:  Application Configuration
   continuous-delivery:
     name:  Continuous Delivery
-  continuous-delivery-che:
-    name:  Continuous Delivery
-  debug:
+  debug-codeready:
     name:  Debugging Applications
-  debug-che:
-    name:  Debugging Applications
+  service-mesh:
+    name:  Microservice Tracing with Service Mesh
+  abtesting:
+    name:  "A/B Testing with Service Mesh"
   env-info:
     name: "Appendix: Lab Env Info"

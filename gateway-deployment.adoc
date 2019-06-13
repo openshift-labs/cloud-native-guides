@@ -1,0 +1,111 @@
+== Deploying the API Gateway
+
+_10 MINUTE EXERCISE_
+
+As explained in the introduction at the core of the Cool Store Portal architecture there is a Gateway component.
+
+As we have done previously for the sake of saving time we're going to deploy our 'Gateway' service instead of coding it. But before we actually deploy the service we're going to explain briefly some concepts.
+
+image:{% image_path coolstore-arch-gateway-vertx.png %}[CoolStore Architecture,400]
+
+=== Technology
+
+Our **'API Gateway'** service needed to be easy to scale, light and responsive, these are some of the reasons why we have implemented it as a Vert.x verticle.
+
+=== What is Eclipse Vert.x?
+
+[sidebar]
+--
+image:{% image_path vertx-logo.png %}[Vertx, 400]
+
+http://vertx.io/[Eclipse Vert.x^] is a toolkit for building reactive applications on the Java Virtual Machine (JVM). Vert.x does not 
+impose a specific framework or packaging model and can be used within your existing applications and frameworks 
+in order to add reactive functionality by just adding the Vert.x jar files to the application classpath.
+
+http://vertx.io/[Eclipse Vert.x^] enables building reactive systems as defined by http://www.reactivemanifesto.org[The Reactive Manifesto^] and build 
+services that are:
+
+* *Responsive*: to handle requests in a reasonable time
+* *Resilient*: to stay responsive in the face of failures
+* *Elastic*: to stay responsive under various loads and be able to scale up and down
+* *Message driven*: components interact using asynchronous message-passing
+
+http://vertx.io/[Eclipse Vert.x^] is designed to be event-driven and non-blocking. Events are delivered in an event loop that must never be blocked. Unlike traditional applications, Vert.x uses a very small number of threads responsible for dispatching the events to event handlers. If the event loop is blocked, the events won’t be delivered anymore and therefore the code needs to be mindful of this execution model.
+--
+
+=== Vert.x Maven Project 
+
+The `*gateway-vertx*` project has the following structure which shows the components of the Vert.x project laid out in different subdirectories according to Maven best practices:
+
+image:{% image_path vertx-gateway-project.png %}[Gateway Project,340]
+
+This is a minimal Vert.x project with support for RESTful services. This project currently contains no code other than the main class, `*GatewayVerticle.java*` which is there to bootstrap the Vert.x application. Verticles are encapsulated parts of the application that can run completely independently and communicate with each other via the built-in event bus in Vert.x. Verticles get deployed and run by Vert.x in an event loop and therefore it  is important that the code in a Verticle does not block. This asynchronous architecture allows Vert.x applications to easily scale and handle large amounts of throughput with few threads.All API calls in Vert.x by default are non-blocking and support this concurrency model.
+
+image:{% image_path vertx-event-loop.png %}[Vert.x Event Loop,600]
+
+Although you can have multiple, there is currently only one Verticle created in the `*gateway-vertx*` project. 
+
+=== Deploying our API Gateway on OpenShift
+
+It’s time to deploy our service on OpenShift. 
+
+The API Gateway is using http://vertx.io/docs/vertx-service-discovery/java[Vert.x service discovery^] for finding where dependent services are deployed 
+and accessing their endpoints. This service discovery can seamlessly integrated with external 
+service discovery mechanisms provided by OpenShift, Kubernetes, Consul, Redis, etc.
+
+http://vertx.io/docs/vertx-service-discovery/java[Vert.x service discovery^] integrates into OpenShift service discovery via OpenShift 
+REST API and imports available services to make them available to the Vert.x application.
+
+Next commands are going to deploy our API Gateway service.
+
+* **Name:** gateway
+* **S2I runtime:** redhat-openjdk18-openshift
+* **Image tag:** 1.4
+* **Repository:** {{LABS_GIT_REPO}}
+* **Context Directory:** gateway-vertx
+
+----
+$ oc new-app redhat-openjdk18-openshift:1.4~{{LABS_GIT_REPO}} \
+        --context-dir=gateway-vertx \
+        --name=gateway
+
+$ oc expose svc/gateway
+----
+
+Once this completes, your project should be up and running. You can see the expose DNS url for the Gateway service in the OpenShift Web Console or using OpenShift CLI.
+
+----
+$ oc get routes
+
+NAME        HOST/PORT                                                  PATH      SERVICES    PORT       TERMINATION   
+catalog     catalog-{{COOLSTORE_PROJECT}}-{{OPENSHIFT_USER}}.roadshow.openshiftapps.com               catalog     8080                     None
+inventory   inventory-{{COOLSTORE_PROJECT}}-{{OPENSHIFT_USER}}.roadshow.openshiftapps.com             inventory   8080                     None
+gateway     gateway-{{COOLSTORE_PROJECT}}-{{OPENSHIFT_USER}}.roadshow.openshiftapps.com               gateway     8080                     None
+----
+
+
+`*Click on the OpenShift Route of _'Gateway Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^].
+
+image:{% image_path gateway-service.png %}[Gateway Service,500]
+
+Then `*click on 'Test it'*`. You should have the following output:
+
+[source,json]
+----
+[ {
+  "itemId" : "329299",
+  "name" : "Red Fedora",
+  "desc" : "Official Red Hat Fedora",
+  "price" : 34.99,
+  "availability" : {
+    "quantity" : 35
+  }
+},
+...
+]
+----
+
+As mentioned earlier, Vert.x built-in service discovery is integrated with OpenShift service 
+discovery to lookup the Catalog and Inventory APIs.
+
+Well done! You are ready to move on to the next lab.

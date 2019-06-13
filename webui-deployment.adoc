@@ -1,0 +1,95 @@
+== Web UI with Node.js and AngularJS 
+
+_10 MINUTE EXERCISE_
+
+In this lab you will learn about Node.js and will deploy the Node.js and Angular-based 
+web frontend for the CoolStore online shop which uses the API Gateway services you deployed 
+in previous labs. 
+
+image:{% image_path coolstore-arch-webui-nodejs.png %}[API Gateway Pattern,400]
+
+=== What is Node.js?
+
+[sidebar]
+--
+image:{% image_path nodejs-logo.png %}[Node.js, 400]
+
+https://nodejs.org/[Node.js^] is an open source, cross-platform runtime environment for developing server-side 
+applications using JavaScript. https://nodejs.org/[Node.js^] has an event-driven architecture capable of 
+non-blocking I/O. These design choices aim to optimize throughput and scalability in 
+Web applications with many input/output operations, as well as for real-time web applications.
+
+https://nodejs.org/[Node.js^] non-blocking architecture allows applications to process large number of 
+requests (tens of thousands) using a single thread which makes it desirable choice for building 
+scalable web applications.
+--
+
+=== Deploy Web UI on OpenShift
+
+The Web UI is built using Node.js for server-side JavaScript and AngularJS for client-side 
+JavaScript. Let's deploy it on OpenShift using the certified Node.js container image available 
+in OpenShift. 
+
+In the previous labs, you used the OpenShift 
+{{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)^] 
+feature via the https://maven.fabric8.io[Fabric8 Maven Plugin^] to build a container image from the 
+source code on your laptop. In this lab, you will still use S2I but instead instruct OpenShift 
+to obtain the application code directly from the source repository and build and deploy a 
+container image of it.
+
+The source code for the Node.js Web front-end is available in this Git repository: 
+
+<{{WEB_NODEJS_GIT_REPO}}>
+
+Use the OpenShift CLI command to create a new build and deployment for the Web component:
+
+  * Name: **web**
+  * Version: **Nodejs 8**
+  * Git Repository URL: **{{LABS_GIT_REPO}}**
+  * Context Dir: **web-nodejs**
+  * Labels: **app=web,version=1.0**
+
+TIP: Feeling adventurous? Build and deploy the Web front-end via the OpenShift Web Console 
+instead. To give you a hint, start by clicking on **Add to project** within the 
+**{{COOLSTORE_PROJECT}}** project and pick **JavaScript** and then **Node.js** in the service 
+catalog. Don't forget to click on **advanced options** and set **Context Dir** to **web-nodejs** 
+which is the sub-folder of the Git repository where the source code for Web resides.
+
+----
+$ oc new-app nodejs:8~{{LABS_GIT_REPO}} \
+        --context-dir=web-nodejs \
+        --name=web \
+        --labels=app=web,version=1.0
+----
+
+The ***--context-dir*** option specifies the sub-directly of the Git repository which contains 
+the source code for the application to be built and deployed. The ***--labels*** allows 
+assigning arbitrary key-value labels to the application objects in order to make it easier to 
+find them later on when you have many applications in the same project.
+
+A build gets created and starts building the Node.js Web UI container image. You can see the build 
+logs using OpenShift Web Console or OpenShift CLI:
+
+----
+$ oc logs -f bc/web
+----
+
+The ***-f*** option is to follow the logs as the build progresses. After the building the Node.js Web UI 
+completes, it gets pushed into the internal image registry in OpenShift and then deployed within 
+your project.
+
+In order to access the Web UI from outside (e.g. from a browser), it needs to get added to the load 
+balancer. Run the following command to add the Web UI service to the built-in HAProxy load balancer 
+in OpenShift.
+
+----
+$ oc expose svc/web
+$ oc get route web
+----
+
+`*Click on the OpenShift Route of _'Web Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^].
+You should be able to see the CoolStore with all products and their inventory status.
+
+image:{% image_path coolstore-web.png %}[CoolStore Shop,840]
+
+Well done! You are ready to move on to the next lab.

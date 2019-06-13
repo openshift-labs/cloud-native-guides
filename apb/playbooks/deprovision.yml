@@ -1,4 +1,4 @@
-- name: cloudnative-workshop-apb playbook to deprovision the application
+- name: cloud-native-development-apb playbook to deprovision the application
   hosts: localhost
   gather_facts: false
   connection: local
@@ -33,9 +33,29 @@
     command: "oc delete all,cm,secret,pvc,sa -l app={{ item }} -n {{ namespace }}"
     ignore_errors: true
     with_items:
-      - che
       - gogs
       - nexus
-      - guides
-      - guides-che
-      - jenkins
+      - guides-codeready
+      - codeready
+      - etherpad
+  
+  - name: Delete configmap 'codeready-operator'
+    command: "oc delete cm codeready-operator -n {{ namespace }}"
+    ignore_errors: true
+
+  - name: Delete CodeReady Workspaces additional resources from {{ namespace }}
+    command: "oc delete {{ item }} codeready-operator -n {{ namespace }}"
+    ignore_errors: true
+    with_items:
+      - serviceaccount
+      - rolebinding
+      - role
+
+  - name: Delete projects if exists
+    command: "oc delete project {{ infra_project_name }} {{ project_name }}"
+    register: project_result
+    ignore_errors: true
+    vars:
+      infra_project_name: "{{ 'infra%d' | format(item) }}"
+      project_name: "{{ 'coolstore%d' | format(item) }}"
+    loop: "{{ range(1, 100 )|list }}"

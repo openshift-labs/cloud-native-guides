@@ -1,0 +1,248 @@
+== Microservice Tracing with Service Mesh
+
+_20 MINUTE EXERCISE_
+
+In this lab you will enable tracing and monitoring of your backend services using Service Mesh.
+
+[sidebar]
+.OpenShift Service Mesh
+--
+The term **Service Mesh** describes the network of microservices that make up applications in a distributed microservice architecture and the interactions between those microservices. As a service mesh grows in size and complexity, it can become harder to understand and manage.
+
+**Red Hat OpenShift Service Mesh** is a platform that provides behavioral insight and operational control over the **Service Mesh**, providing a uniform way to connect, secure, and monitor microservice applications.
+
+Based on the open source https://istio.io/[Istio^] project, **Red Hat OpenShift Service Mesh** adds a transparent layer on existing distributed applications without requiring any changes to the service code. You add Red Hat OpenShift Service Mesh support to services by deploying a special sidecar proxy throughout your environment that intercepts all network communication between microservices. You configure and manage the service mesh using the control plane features.
+
+Red Hat OpenShift Service Mesh provides an easy way to create a network of deployed services that provides discovery, load balancing, service-to-service authentication, failure recovery, metrics, and monitoring. A service mesh also provides more complex operational functionality, including A/B testing, canary releases, rate limiting, access control, and end-to-end authentication.
+
+Red Hat OpenShift Service Mesh is logically split into a data plane and a control plane:
+
+* The **data plane** is composed of a set of intelligent proxies deployed as sidecars. These proxies intercept and control all inbound and outbound network communication between microservices in the service mesh; sidecar proxies also communicate with Mixer, the general-purpose policy and telemetry hub.
+
+* The **control plane** is responsible for managing and configuring proxies to route traffic, and configuring Mixers to enforce policies and collect telemetry.
+
+image:{% image_path servicemesh-architecture.png %}[Service Mesh Architecture,400]
+
+The components that make up the data plane and the control plane are:
+
+* **Envoy proxy** - is the data plane component that intercepts all inbound and outbound traffic for all services in the service mesh. Envoy is deployed as a sidecar to the relevant service in the same pod.
+* **Mixer** - is the control plane component responsible responsible for enforcing access control and usage policies (such as authorization, rate limits, quotas, authentication, request tracing) and collecting telemetry data from the Envoy proxy and other services.
+* **Pilot** - is the control plane component responsible for configuring the proxies at runtime. Pilot provides service discovery for the Envoy sidecars, traffic management capabilities for intelligent routing (for example, A/B tests or canary deployments), and resiliency (timeouts, retries, and circuit breakers).
+* **Citadel** - is the control plane component responsible for certificate issuance and rotation. Citadel provides strong service-to-service and end-user authentication with built-in identity and credential management. You can use Citadel to upgrade unencrypted traffic in the service mesh. Using Citadel, operators can enforce policies based on service identity rather than on network controls.
+
+--
+
+=== Enabling Service Mesh to Catalog Service
+
+OpenShift Service Mesh automatically injects the sidecar into the Pod by specifying *_sidecar.istio.io/inject:true_* annotation in the DeploymentConfig.
+
+From the Terminal console, `*execute the following commands*`:
+
+----
+oc rollout pause dc/catalog # <1>
+oc set probe dc/catalog --readiness --liveness --remove # <2>
+oc patch dc/catalog --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}' # <3>
+oc patch dc/catalog --patch '{"spec": {"template": {"spec": {"containers": [{"name": "spring-boot", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://localhost:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}' # <4>
+oc rollout resume dc/catalog # <5>
+----
+<1> Pause the deployment
+<2> Remove all existing probes
+<3> Define the annotation to automatically inject an Istio sidecar
+<4> Wait for the proxy to be up and running before starting the application
+<5> Resume the deployment
+
+[TIP]
+.Other Option
+====
+As an alternative way, you can use the *_Commands Palette_* to enable Service Mesh capability. 
+In CodeReady Workspaces, click on *_'Commands Palette'_* and click on **'SERVICE MESH > Catalog Service: Inject Istio Sidecar'**
+
+image:{% image_path  codeready-command-inject-catalog.png %}[Inject Sidecar^,200]
+====
+
+To confirm that the application is successfully deployed, `*run this following command*`:
+
+----
+$ oc get pods -lapp=catalog,deploymentconfig=catalog
+NAME			READY	STATUS		RESTARTS	AGE
+catalog-3-ppj47  	2/2	Running		1		8m
+----
+
+The status should be **Running** and there should be **2/2** pods in the **Ready** column. 
+Wait few seconds that the application restarts then `*Click on the OpenShift Route of _'Catalog Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^]
+and ensure the proper functioning of the service.
+
+=== Enabling Service Mesh to Inventory Service
+
+Repeat the above step to enable Service Mesh to Inventory Service.
+
+----
+oc rollout pause dc/inventory
+oc set probe dc/inventory --readiness --liveness --remove
+oc patch dc/inventory --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}'
+oc patch dc/inventory --patch '{"spec": {"template": {"spec": {"containers": [{"name": "thorntail-v2", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://localhost:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}'
+oc rollout resume dc/inventory
+----
+
+[TIP]
+.Other Option
+====
+As an alternative way, you can use the *_Commands Palette_* to enable Service Mesh capability. 
+In CodeReady Workspaces, click on *_'Commands Palette'_* and click on **'SERVICE MESH > Inventory Service: Inject Istio Sidecar'**
+
+image:{% image_path  codeready-command-inject-inventory.png %}[Inject Sidecar^,200]
+====
+
+To confirm that the application is successfully deployed, `*run this following command*`:
+
+----
+$ oc get pods -lapp=inventory,deploymentconfig=inventory
+NAME			READY	STATUS		RESTARTS	AGE
+inventory-2-k6ftf	2/2	Running		1		3m
+----
+
+The status should be **Running** and there should be **2/2** pods in the **Ready** column.
+Wait few seconds that the application restarts then `*Click on the OpenShift Route of _'Inventory Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^] 
+and ensure the proper functioning of the service.
+
+=== Enabling Service Mesh to Gateway Service
+
+Repeat the above step to enable Service Mesh to Gateway Service.
+
+----
+oc rollout pause dc/gateway
+oc set probe dc/gateway --readiness --liveness --remove
+oc patch dc/gateway --patch '{"spec": {"template": {"metadata": {"annotations": {"sidecar.istio.io/inject": "true"}}}}}'
+oc patch dc/gateway --patch '{"spec": {"template": {"spec": {"containers": [{"name": "vertx", "command" : ["/bin/bash"], "args": ["-c", "until $(curl -o /dev/null -s -I -f http://localhost:15000); do echo \"Waiting for Istio Sidecar...\"; sleep 1; done; sleep 10; /usr/local/s2i/run"]}]}}}}'
+oc rollout resume dc/gateway
+----
+
+[TIP]
+.Other Option
+====
+As an alternative way, you can use the *_Commands Palette_* to enable Service Mesh capability. 
+In CodeReady Workspaces, click on *_'Commands Palette'_* and click on **'SERVICE MESH > Gateway Service: Inject Istio Sidecar'**
+
+image:{% image_path  codeready-command-inject-gateway.png %}[Inject Sidecar^,200]
+====
+
+To confirm that the application is successfully deployed, `*run this following command*`:
+
+----
+$ oc get pods -lapp=gateway,deploymentconfig=gateway
+NAME			READY	STATUS		RESTARTS	AGE
+gateway-2-zqsmn		2/2	Running		1		1m
+----
+
+The status should be **Running** and there should be **2/2** pods in the **Ready** column.
+Wait few seconds that the application restarts then `*Click on the OpenShift Route of _'Gateway Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^]
+and ensure the proper functioning of the service.
+
+=== Controlling Ingress Traffic
+
+In a OpenShift environment, the OpenShift Route is used to specify services that should be exposed outside the cluster. In an Istio service mesh, a better approachis to use a different configuration model, namely *_Istio Gateway_*. 
+
+* A **Gateway** describes a load balancer operating at the edge of the mesh receiving incoming or outgoing HTTP/TCP connections. The specification describes a set of ports that should be exposed, the type of protocol to use, SNI configuration for the load balancer, etc.
+* A **VirtualService** defines a set of traffic routing rules to apply when a host is addressed. Each routing rule defines matching criteria for traffic of a specific protocol. If the traffic is matched, then it is sent to a named destination service (or subset/version of it) defined in the registry.
+
+In the Terminal, `*execute the following command*` to create an *_Istio Gateway_* and a *_VirtualService_* for the *_Gateway Service_*
+
+----
+oc create -f /projects/labs/gateway-vertx/openshift/istio-gateway.yml
+sed s/COOLSTORE_PROJECT/{{COOLSTORE_PROJECT}}/g /projects/labs/gateway-vertx/openshift/virtualservice.yml | oc create -f -
+----
+
+To confirm that the *_Istio Gateway_* is properly configured,
+
+----
+$ curl -o /dev/null -s -w "%{http_code}\n" http://istio-ingressgateway-istio-system.{{APPS_HOSTNAME_SUFFIX}}/{{COOLSTORE_PROJECT}}/api/products
+200
+----
+
+The result should be *_200_* (Successful).
+
+=== Updating the WebUI to use the Istio Gateway
+
+`*Issue the following command*` to configure the *_WebUI Service_* to use the *_Istio Gateway_* instead of the *_OpenShift Route_*:
+
+----
+$ oc set env dc/web COOLSTORE_GW_ENDPOINT=http://istio-ingressgateway-istio-system.{{APPS_HOSTNAME_SUFFIX}}/{{COOLSTORE_PROJECT}}
+----
+
+=== Testing the application
+
+Point your browser at the Web UI route url. You should be able to see the CoolStore with all products and their inventory status.
+
+IMPORTANT: Refresh your browser several times to generate traffic.
+
+[sidebar]
+--
+image:{% image_path kiali-logo.png %}[Kiali,400]
+
+A Microservice Architecture breaks up the monolith into many smaller pieces that are composed together. Patterns to secure the communication between services like fault tolerance (via timeout, retry, circuit breaking, etc.) have come up as well as distributed tracing to be able to see where calls are going.
+
+A service mesh can now provide these services on a platform level and frees the application writers from those tasks. Routing decisions are done at the mesh level.
+
+https://www.kiali.io[Kiali^] works with Istio, in OpenShift or Kubernetes, to visualize the service mesh topology, to provide visibility into features like circuit breakers, request rates and more. It offers insights about the mesh components at different levels, from abstract Applications to Services and Workloads.
+--
+
+=== Observability with Kiali
+
+Kiali provides an interactive graph view of your namespace in real time, being able to display the interactions at several levels (applications, versions, workloads), with contextual information and charts on the selected graph node or edge.
+
+First, you need to access to Kiali. 
+`*Launch a browser and navigate to {{ KIALI_URL }}[Kiali Console^]*`. 
+You should see the Kiali console login screen.
+
+image:{% image_path kiali-login.png %}[Kiali- Log In,500]
+
+Log in to the Kiali console as `*{{OPENSHIFT_USER}}/{{OPENSHIFT_PASSWORD}}*`
+
+After you log in, `*click on the 'Graph' link*` in the left navigation and enter the following configuration in the drop down menus:
+
+ * Namespace: **{{COOLSTORE_PROJECT}}**
+ * Display: **'Traffic Animation'** check
+
+image:{% image_path kiali-graph-param.png %}[Kiali- Graph,300]
+
+The outcome is a graph with all the microservices, connected by the requests going through them. You can see how the services interact with each other. 
+
+image:{% image_path kiali-graph.png %}[Kiali- Graph,700]
+
+WARNING: Please ignore the error for the *_Gateway Service_*. 
+It is because the *_Cart Service_* is missing and its deployment is not a part of this lab.
+
+=== Tracing with Kiali and Jaeger
+
+[sidebar]
+.Jaeger, Distributed Tracing
+--
+Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system released as open source by Uber Technologies. It is used for monitoring and troubleshooting microservices-based distributed systems, including:
+
+* Distributed context propagation
+* Distributed transaction monitoring
+* Root cause analysis
+* Service dependency analysis
+* Performance / latency optimization
+
+https://www.kiali.io/[Kiali^] includes https://www.jaegertracing.io/[Jaeger Tracing^] to provide distributed tracing out of the box.
+--
+
+IMPORTANT: Because of certificates issues, you need first to access the main {{ JAEGER_URL }}[Jaeger Console^] to use it through Kiali.
+
+From the {{ KIALI_URL }}[Kiali Console^], `*click on the _Distributed Tracing_ link*` in the left navigation and enter the following configuration in the drop down menus:
+
+ * Select a Namespace: *_{{COOLSTORE_PROJECT}}_*
+ * Select a Service: *_gateway_*
+ 
+image:{% image_path kiali-traces-param.png %}[Kiali- Traces View,500]
+
+Then `*click on the 'Search' button*` on the right corner.
+
+image:{% image_path kiali-traces-view.png %}[Kiali- Traces View,700]
+
+Let’s `*click on one of trace title bar*`.
+
+image:{% image_path kiali-trace-detail-view.png %}[Kiali- Trace Detail View,700]
+
+That's all for this lab! You are ready to move on to the next lab.

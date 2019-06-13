@@ -1,0 +1,87 @@
+== Deploying the Inventory Service
+
+_10 MINUTE EXERCISE_
+
+In this lab you will learn about building and deploying a microservice based on Java/Maven on OpenShift. 
+The **Inventory Service** is part of the Cool Store architecture to provide the quantity (hence the availability too) of a given product by ID.
+
+image:{% image_path coolstore-arch-inventory-thorntail.png %}[CoolStore Architecture,400]
+
+=== What is Thorntail?
+
+[sidebar]
+--
+image:{% image_path thorntail-logo.png %}[Thorntail, 300]
+image:{% image_path microprofile-logo.png %}[Microprofile, 400]
+
+Java EE applications are traditionally created as an *ear* or *war* archive including all 
+dependencies and deployed in an application server. Multiple Java EE applications can and 
+were typically deployed in the same application server. This model is well understood in 
+development teams and has been used over the past several years.
+
+https://thorntail.io/[Thorntail^] offers an innovative approach to packaging and running Java EE applications by 
+packaging them with just enough of the Java EE server runtime to be able to run them directly 
+on the JVM using `*java -jar`. For more details on various approaches to packaging Java 
+applications, read https://developers.redhat.com/blog/2017/08/24/the-skinny-on-fat-thin-hollow-and-uber[this blog post^].
+
+https://thorntail.io/[Thorntail^] is based on WildFly and it's compatible with 
+https://microprofile.io/[MicroProfile^], which is a community effort to standardize the subset of Java EE standards 
+such as JAX-RS, CDI and JSON-P that are useful for building microservices applications.
+
+Since https://thorntail.io/[Thorntail^] is based on Java EE standards, it significantly simplifies refactoring 
+existing Java EE applications to microservices and allows much of the existing code-base to be 
+reused in the new services.
+--
+
+=== Thorntail Maven Project 
+
+The **inventory-thorntail** project has the following structure which shows the components of 
+the Thorntail project laid out in different subdirectories according to Maven best practices:
+
+image:{% image_path thorntail-inventory-project.png %}[Inventory Project,300]
+
+=== Deploy Inventory Service on OpenShift
+
+Now it’s time to build and deploy our service on OpenShift. 
+
+OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_streams.html#source-build[Source-to-Image (S2I)^] 
+feature can be used to build a container image from a git repository. OpenShift S2I uses the https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift[supported OpenJDK container image^] to build the final container image of the 
+**Inventory Service** by building the Thorntail uber-jar from source code (build strategy **'Source'**), using Maven, to the OpenShift platform.
+
+To build and deploy the **Inventory Service** on OpenShift using the *fabric8* maven plugin, 
+which is already configured in CodeReady Workspaces, `*right click on 'inventory-thorntail'*` project in the project explorer 
+then, `*click on 'Commands > Deploy > fabric8:deploy'*`
+
+image:{% image_path codeready-commands-deploy.png %}[Fabric8 Deploy,600]
+
+[TIP]
+.fabric8:deploy
+====
+It will cause the following to happen:
+
+* The Inventory uber-jar is built using Thorntail
+* A container image is built on OpenShift containing the Inventory uber-jar and JDK
+* All necessary objects are created within the OpenShift project to deploy the Inventory service
+====
+
+Once this completes, your project should be up and running. You can see the expose DNS url for the **Inventory Service** in the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^] or using OpenShift CLI.
+
+----
+$ oc get routes
+
+NAME        HOST/PORT                                       PATH        SERVICES        PORT        TERMINATION   
+inventory   inventory-{{COOLSTORE_PROJECT}}.{{APPS_HOSTNAME_SUFFIX}}                    inventory       8080        None
+----
+
+`*Click on the OpenShift Route of _'Inventory Service'_*` from the {{OPENSHIFT_CONSOLE_URL}}[OpenShift Web Console^].
+
+image:{% image_path inventory-service.png %}[Inventory Service,500]
+
+Then `*click on 'Test it'*`. You should have the following output:
+
+[source,json]
+----
+{"itemId":"329299","quantity":35}
+----
+
+Well done! You are ready to move on to the next lab.

@@ -1,0 +1,13 @@
+---
+#####
+# Etherpad
+#####
+- name: etherpad_text
+  set_fact:
+    etherpad_text: "{{ lookup('file', '{{ playbook_dir }}/templates/etherpad/etherpad.txt') | replace('\n', '\\n') }}"
+
+- name: install etherpad
+  shell: > 
+    echo {{ lookup('template', '{{ playbook_dir }}/templates/etherpad/etherpad.yaml.j2') | quote }} | \
+    oc process -f - | \
+    oc create -n {{ namespace }} -f -

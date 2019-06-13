@@ -1,4 +1,4 @@
-- name: cloudnative-workshop-apb playbook to provision the application
+- name: cloud-native-workshop-apb playbook to provision the application
   hosts: localhost
   gather_facts: false
   connection: local
@@ -7,15 +7,21 @@
     openshift_password: 
     openshift_token:
     openshift_master_url: 
-    openshift_user_password:
-    project_suffix: "-XX"
-    github_account: openshift-labs
-    github_ref: ocp-3.11
+    openshift_user_password: openshift
+    git_repository_lab_path: openshift-labs/cloud-native-labs
+    git_repository_lab_reference: ocp-3.11
+    git_repository_guide_path: openshift-labs/cloud-native-guides
+    git_repository_guide_reference: ocp-3.11
+    git_repository_guide_context:
+    guide_name: codeready
     gogs_dev_user: developer
     gogs_pwd: openshift
     infrasvcs_adm_user: adminuser
     infrasvcs_adm_pwd: adminpwd
-    master_url: "kubernetes.default"
+    user_count: 5
+    openshift_service_mesh_installation: true
+    preconfigure_service_mesh_projects: true
+    preconfigure_squash: false
 
   roles:
   - role: ansible.kubernetes-modules
@@ -24,7 +30,7 @@
 
   tasks:    
   - name: login as super user with token
-    shell: "oc login {{ master_url }} --token={{ openshift_token }} --insecure-skip-tls-verify=true"
+    shell: "oc login --token={{ openshift_token }} --insecure-skip-tls-verify=true"
     when:
       - openshift_token is defined
       - openshift_token is not none
@@ -32,49 +38,30 @@
     tags: always
 
   - name: login as super user with pwd
-    shell: "oc login {{ master_url }} -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
+    shell: "oc login -u {{ openshift_user }} -p {{ openshift_password }} --insecure-skip-tls-verify=true"
     when: >
       openshift_token is not defined or
       openshift_token is none or
       openshift_token|trim() == ""
-    tags: always  
+    tags: always
 
-  - name: Get apps route suffix
+  - name: extract app route suffix from openshift-console
     block:
-      - k8s:
-          state: present
-          definition:
-            apiVersion: "route.openshift.io/v1"
-            kind: Route
-            metadata:
-              name: dummy
-              namespace: "{{ namespace }}"
-            spec:
-              to:
-                kind: Service
-                name: dummy
-              ports:
-              - targetPort: 8080
-      - k8s_facts:
-          api_version: "route.openshift.io/v1"
-          kind: Route
-          name: dummy
-          namespace: "{{ namespace }}"
-        register: dummy_route
+      - shell: "oc get route console -n openshift-console -o 'jsonpath={.spec.host}'"
+        register: console_route
       - set_fact:
-          apps_hostname_suffix: "{{ dummy_route.resources[0].spec.host|regex_replace('^dummy-' + namespace + '\\.(.*)$', '\\1') }}"
-      - k8s:
-          state: absent
-          api_version: "route.openshift.io/v1"
-          kind: Route
-          name: dummy
-          namespace: "{{ namespace }}"
+          apps_hostname_suffix: "{{ console_route.stdout |regex_replace('^console\\.(.*)$', '\\1') }}"
     tags: always
 
   - name: delete project quota
     shell: "oc delete limitrange --all -n {{ namespace }}"
     ignore_errors: true
     tags: always
+
+  # Etherpad
+  - name: install etherpad
+    include: "{{ playbook_dir }}/tasks/install_etherpad.yml"
+    tags: etherpad
 
   - import_role:
       name: openshift_sonatype_nexus
@@ -96,41 +83,6 @@
       gogs_password: "{{ gogs_pwd }}"
     tags: gogs
 
-  # deploy guides
-  - import_role:
-      name: openshift_workshopper
-      allow_duplicates: true
-    vars:
-      workshopper_name: guides
-      project_name: "{{ namespace }}"
-      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}"
-      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}/_cloud-native-workshop.yml"
-      workshopper_env_vars:
-        PROJECT_SUFFIX: "{{ project_suffix }}"
-        COOLSTORE_PROJECT: coolstore{{ project_suffix }}
-        OPENSHIFT_CONSOLE_URL: "{{ openshift_master_url }}"
-        ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
-        GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
-        NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    tags: guides
-
-  - import_role:
-      name: openshift_workshopper
-      allow_duplicates: true
-    vars:
-      workshopper_name: guides-che
-      project_name: "{{ namespace }}"
-      workshopper_content_url_prefix: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}"
-      workshopper_workshop_urls: "https://raw.githubusercontent.com/{{ github_account }}/cloud-native-guides/{{ github_ref }}/_cloud-native-workshop-che.yml"
-      workshopper_env_vars:
-        PROJECT_SUFFIX: "{{ project_suffix }}"
-        COOLSTORE_PROJECT: coolstore{{ project_suffix }}
-        OPENSHIFT_CONSOLE_URL: "{{ openshift_master_url }}"
-        ECLIPSE_CHE_URL: http://che-{{ namespace }}.{{ apps_hostname_suffix }}
-        GIT_URL: http://gogs-{{ namespace }}.{{ apps_hostname_suffix }}
-        NEXUS_URL: http://nexus-{{ namespace }}.{{ apps_hostname_suffix }}
-    tags: guides
-
   # install openjdk imagestream
   - name: get openjdk image stream
     shell: "oc get is java -n openshift"
@@ -139,7 +91,7 @@
     tags: jdk
 
   - name: install java image stream
-    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/openshift/library/master/official/java/imagestreams/java-rhel7.json"
+    shell: "oc apply -n openshift -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/openjdk/openjdk18-image-stream.json"
     when: java_imagestream_result is failed
     tags: jdk
 
@@ -153,177 +105,126 @@
       jenkins_max_cpu: 2
       jenkins_max_mem: 2Gi
 
-  # deploy eclipse che
-  - import_role:
-      name: openshift_eclipse_che
-    vars:
-      project_name: "{{ namespace }}"
-      che_version: "6.8.0"
-      multi_user: true
-      route_suffix: "{{ apps_hostname_suffix }}"
-      keycloak_admin_user: "{{ infrasvcs_adm_user }}"
-      keycloak_admin_pwd: "{{ infrasvcs_adm_pwd }}"
-      install_java_oc_stack: false
-      install_custom_stacks_json: |
-        [{
-          "name": "Java Cloud-Native",
-          "description": "Java JDK Stack on CentOS for Cloud-Native Workshop",
-          "scope": "general",
-          "workspaceConfig": {
-            "environments": {
-              "default": {
-                "recipe": {
-                  "type": "dockerimage",
-                  "content": "siamaksade/che-centos-jdk8"
-                },
-                "machines": {
-                  "dev-machine": {
-                    "env": {
-                      "MAVEN_OPTS" : "-Xmx512m",
-                      "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
-                    },
-                    "servers": {
-                      "8080/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "8080"
-                      },
-                      "8000/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "8000"
-                      },
-                      "9000/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "9000"
-                      },
-                      "9001/tcp": {
-                        "attributes": {},
-                        "protocol": "http",
-                        "port": "9001"
-                      }
-                    },
-                    "volumes": {},
-                    "installers": [
-                      "org.eclipse.che.exec",
-                      "org.eclipse.che.terminal",
-                      "org.eclipse.che.ws-agent"
-                    ],
-                    "attributes": {
-                      "memoryLimitBytes": "2147483648"
-                    }
-                  }
-                }
-              }
-            },
-            "commands": [
-              {
-                "commandLine": "mvn package -f ${current.project.path}",
-                "name": "build",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Build",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "mvn clean package -f ${current.project.path}",
-                "name": "clean build",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Build",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "mvn verify -f ${current.project.path}",
-                "name": "test",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Test",
-                  "previewUrl": ""
-                }
-              },
-              {
-                "commandLine": "mvn spring-boot:run -f ${current.project.path}",
-                "name": "run spring-boot",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Run",
-                  "previewUrl": "${server.9000/tcp}"
-                }
-              },
-              {
-                "commandLine": "cd ${current.project.path} && java -Dswarm.http.port=9001 -jar target/*-swarm.jar ",
-                "name": "run wildfly-swarm",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Run",
-                  "previewUrl": "${server.9001/tcp}"
-                }
-              },
-              {
-                "commandLine": "mvn vertx:run -f ${current.project.path}",
-                "name": "run vertx",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Run",
-                  "previewUrl": "${server.8080/tcp}"
-                }
-              },
-              {
-                "commandLine": "cd ${current.project.path} && mvn fabric8:deploy",
-                "name": "fabric8:deploy",
-                "type": "mvn",
-                "attributes": {
-                  "goal": "Deploy",
-                  "previewUrl": ""
-                }
-              }
-            ],
-            "projects": [],
-            "defaultEnv": "default",
-            "name": "default",
-            "links": []
-          },
-          "components": [
-            {
-              "version": "---",
-              "name": "CentOS"
-            },
-            {
-              "version": "1.8.0_45",
-              "name": "JDK"
-            },
-            {
-              "version": "3.2.2",
-              "name": "Maven"
-            },
-            {
-              "version": "2.4",
-              "name": "Ansible"
-            },
-            {
-              "version": "3.11",
-              "name": "OpenShift CLI"
-            }
-          ],
-          "creator": "ide",
-          "tags": [
-            "Java",
-            "JDK",
-            "Maven",
-            "CentOS",
-            "Git"
-          ],
-          "id": "java-oc-centos-cloudnative"
-        }]
-    tags: eclipse-che
+  # install CodeReady Workspaces
+  - name: Deploy CodeReady Workspaces
+    command: "{{ playbook_dir }}/codeready-workspaces-operator-installer/deploy.sh --deploy --oauth --project={{ namespace }}" 
+    register: cmd_result
+    changed_when: true
+    
+  - name: get CodeReady Workspaces URL
+    command: "oc get routes codeready --template={% raw %}'{{ .spec.host }}'{% endraw %} -n {{ namespace }}"
+    register: cmd_result
+    changed_when: true
 
-  # track workshop deployment
-  - import_role:
-      name: workshop_deployment_tracker
+  - name: init 'codeready_url' variable
+    set_fact:
+      codeready_url: "{{ cmd_result.stdout }}"
+
+  - name: get RHSSO URL
+    command: "oc get routes keycloak --template={% raw %}'{{ .spec.host }}'{% endraw %} -n {{ namespace }}"
+    register: cmd_result
+    changed_when: true
+
+  - name: init 'rhsso_url' variable
+    set_fact:
+      rhsso_url: "{{ cmd_result.stdout }}"
+
+  - name: wait for CodeReady Workspaces to be running
+    uri:
+      url: "http://{{ codeready_url }}/api/system/state"
+      status_code: 200
+    register: result
+    until: result.status == 200
+    retries: 60
+    delay: 30
+
+  # Import custom stacks
+  - name: Create Cloud-Native stack
+    command: >
+      oc import-image che-cloud-native:latest
+       -n openshift
+       --from=quay.io/mcouliba/che-cloud-native --confirm
+       
+  - name: Import custom stacks
+    include: "{{ playbook_dir }}/tasks/add_custom_stack.yml"
     vars:
-      apps_hostname_suffix: "{{ apps_hostname_suffix }}"
-      workshop_type: cloud-native
+      stack_template: "{{ item }}"
+    with_fileglob:
+    - "{{ playbook_dir }}/templates/stacks/*-stack.json.j2"
+
+  # Install Service Mesh
+  - name: check if istio-system project exists
+    command: "oc get project istio-system"
+    register: istio_system_project_result
+    ignore_errors: true
+    changed_when: false
+  - name: Openshift Service Mesh Installation
+    block:
+      - name: create istio-operator project
+        command: "oc new-project istio-operator"
+      - name: deploy istio operator
+        command: >
+          oc apply -n istio-operator 
+          -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.10/deploy/servicemesh-operator.yaml
+      - name: create istio-system project
+        command: "oc new-project istio-system"
+      - name: delete project quota
+        shell: "oc delete limitrange --all -n istio-system"
+        ignore_errors: true
+      - name: deploy istio
+        command: >
+          oc create -n istio-system 
+          -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.10/deploy/examples/istio_v1alpha3_controlplane_cr_basic.yaml
+    when: 
+      - istio_system_project_result is failed
+      - openshift_service_mesh_installation or preconfigure_service_mesh_projects
+
+  # Get Jaeger and Grafana URL
+  - name: get Jaeger URL
+    command: "oc get route jaeger-query -o 'jsonpath={.spec.host}' -n istio-system"
+    register: jaeger_host
+    until: jaeger_host.rc == 0
+    retries: 60
+    delay: 30
+  - name: init 'jaeger_url' variable
+    set_fact:
+      jaeger_url: "https://{{ jaeger_host.stdout }}"
+  - name: get Grafana URL
+    command: "oc get route grafana -o 'jsonpath={.spec.host}' -n istio-system"
+    register: grafana_host
+    until: grafana_host.rc == 0
+    retries: 60
+    delay: 30
+  - name: init 'grafana_url' variable
+    set_fact:
+      grafana_url: "http://{{ grafana_host.stdout }}"
+
+  # Preconfigure Projects for Service Mesh usage
+  - name: preconfigure projects for service mesh
+    include: "{{ playbook_dir }}/tasks/create_project_service_mesh.yml"
+    vars:
+      username: "{{ 'user%d' | format(item) }}"
+      project_name: "{{ 'coolstore%d' | format(item) }}"
+      infra_project_name: "{{ 'infra%d' | format(item) }}"
+    loop: "{{ range(1, user_count|int + 1) | list }}"
+    when: 
+      - preconfigure_service_mesh_projects
+  
+  # Preconfigure cluster for Squash
+  - name: preconfigure cluster for Squash
+    command: >
+      oc create clusterrolebinding cluster-admin-binding-debug-1 \ 
+      --clusterrole=cluster-admin \
+      --user=system:serviceaccount:lab-infra:che-workspace
+    when: 
+      - preconfigure_squash
+  - name: preconfigure infra project for Squash
+    command: >
+      oc create clusterrolebinding cluster-admin-squash-plank-{{ infra_project_name }} \ 
+      --clusterrole=cluster-admin \
+      --user=system:serviceaccount:{{ infra_project_name }}:squash-plank
+    vars:
+      infra_project_name: "{{ 'infra%d' | format(item) }}"
+    loop: "{{ range(1, user_count|int + 1) | list }}"
+    when: 
+      - preconfigure_squash
