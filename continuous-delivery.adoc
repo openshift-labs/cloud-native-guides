@@ -1,11 +1,13 @@
 ==  Automating Deployments Using Pipelines
 
-*20 MINUTES PRACTICE*
+_20 MINUTE EXERCISE_
 
 In this lab you will learn about deployment pipelines and you will create a pipeline to 
 automate build and deployment of the Inventory service.
 
-==== Continuous Delivery
+[sidebar]
+.Continuous Delivery
+--
 So far you have been building and deploying each service manually to OpenShift. Although 
 it's convenient for local development, it's an error-prone way of delivering software if 
 extended to test and production environments.
@@ -18,13 +20,12 @@ to go through in order to reach upper environments and eventually to production.
 OpenShift simplifies building CI/CD Pipelines by integrating
 the popular https://jenkins.io/doc/book/pipeline/overview/[Jenkins Pipelines^] into
 the platform and enables defining truly complex workflows directly from within OpenShift.
-
-The first step for any deployment pipeline is to store all code and configurations in 
-a source code repository.
+--
 
 ==== Create a Git Repository for Inventory
 
-You can use any Git server (e.g. GitHub, BitBucket, etc) for this lab but we have prepared a 
+The first step for any deployment pipeline is to store all code and configurations in 
+a source code repository. You can use any Git server (e.g. GitHub, BitBucket, etc) for this lab but we have prepared a 
 Gogs git server which you can access here: 
 
 {{ GIT_URL }}[{{ GIT_URL }}^]

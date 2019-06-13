@@ -1,6 +1,6 @@
 == Deploying the API Gateway
 
-_10 MINUTES PRACTICE_
+_10 MINUTE EXERCISE_
 
 As explained in the introduction at the core of the Cool Store Portal architecture there is a Gateway component.
 

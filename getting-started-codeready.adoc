@@ -1,6 +1,6 @@
 == Getting Started with OpenShift
 
-_5 MINUTES PRACTICE_
+_5 MINUTE EXERCISE_
 
 In this lab you will learn about providing your Developer Workspace with a Kubernetes-native development platform 
 and getting familiar with the OpenShift CLI and OpenShift Web Console.
@@ -38,10 +38,14 @@ Finally, `*enter your account information*` and `*click on 'Submit'*`
 image:{% image_path codeready-account-information.png %}[CodeReady Workspaces - Log in,300]
 
 === Creating a Workspace
-Once logged into CodeReady Workspaces, you can now create your workspace based on a stack.
+Once logged into CodeReady Workspaces, you can now create your workspace based on the **Cloud-Native Stack**.
+
+[TIP]
+====
 A **Stack** is a template for workspace configuration.
 It includes the programming language and tools needed in your workspace to create applications.
 Stacks make it possible to deploy identical workspaces for all users on demand.
+====
 
 `*Select the stack called 'Cloud-Native'*` and then `*click on 'CREATE & OPEN'*`. 
 

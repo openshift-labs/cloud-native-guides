@@ -1,6 +1,6 @@
 == Enterprise Microservices with Eclipse Vert.x
 
-*30 MINUTES PRACTICE*
+*30 MINUTE EXERCISE*
 
 In this lab you will learn about building microservices using Vert.x.
 

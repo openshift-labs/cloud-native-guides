@@ -1,6 +1,6 @@
 == Deploying the Inventory Service
 
-_10 MINUTES PRACTICE_
+_10 MINUTE EXERCISE_
 
 In this lab you will learn about building and deploying a microservice based on Java/Maven on OpenShift. 
 The **Inventory Service** is part of the Cool Store architecture to provide the quantity (hence the availability too) of a given product by ID.

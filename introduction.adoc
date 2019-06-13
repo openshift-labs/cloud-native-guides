@@ -1,6 +1,6 @@
 == Introduction 
 
-_2 MINUTES PRACTICE_
+_2 MINUTE EXERCISE_
 
 In this workshop you will learn how to develop and deploy a microservices based application. 
 

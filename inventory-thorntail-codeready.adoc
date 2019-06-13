@@ -1,6 +1,6 @@
 == Enterprise Microservices with Thorntail
 
-_45 MINUTES PRACTICE_
+_45 MINUTE EXERCISE_
 
 In this lab you will learn about building microservices using Thorntail.
 
@@ -40,12 +40,14 @@ the Thorntail project laid out in different subdirectories according to Maven be
 image:{% image_path thorntail-inventory-project.png %}[Inventory Project,200]
 
 This is a minimal Java EE project with support for JAX-RS for building RESTful services and JPA for connecting
-to a database. https://docs.oracle.com/javaee/7/tutorial/partpersist.htm[JAX-RS](https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm) is one of Java EE standards that uses Java annotations to simplify the development of RESTful web services. [Java Persistence API (JPA)^] is another Java EE standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
+to a database. https://docs.oracle.com/javaee/7/tutorial/jaxrs.htm[JAX-RS^] is one of Java EE standards that uses Java annotations to simplify 
+the development of RESTful web services. https://docs.oracle.com/javaee/7/tutorial/partpersist.htm[Java Persistence API (JPA)^] is another Java EE 
+standard that provides Java developers with an object/relational mapping facility for managing relational data in Java applications.
 
 This project currently contains no code other than the main class for exposing a single 
 RESTful application defined in **InventoryApplication**. 
 
-`*Examine 'com.redhat.cloudnative.inventory.InventoryApplication' class*` in the **inventory-thorntail/src/main** directory:
+`*Examine 'com.redhat.cloudnative.inventory.InventoryApplication' class*` in the **/projects/labs/inventory-thorntail/src/main/java** directory:
 
 [source,java]
 .InventoryApplication.java
@@ -70,8 +72,8 @@ image:{% image_path codeready-commands-build.png %}[Maven Build,600]
 Once built successfully, the resulting *jar* is located in the **target/** directory:
 
 ----
-$ ls labs/inventory-thorntail/target/*-thorntail.jar
-labs/inventory-thorntail/target/inventory-1.0-SNAPSHOT-thorntail.jar
+$ ls /projects/labs/inventory-thorntail/target/*-thorntail.jar
+/projects/labs/inventory-thorntail/target/inventory-1.0-SNAPSHOT-thorntail.jar
 ----
 
 This is an uber-jar with all the dependencies required packaged in the *jar* to enable running the 
@@ -85,7 +87,7 @@ image:{% image_path wfswarm-inventory-arch.png %}[Inventory RESTful Service,500]
 === Creating a Domain Model
 
 Create a new Java class named **Inventory** in **com.redhat.cloudnative.inventory** package with the below code and 
-following fields: **itemId** and **quantity`
+following fields: **itemId** and **quantity**
 
 In the project explorer in CodeReady Workspaces, `*right-click on 'inventory-thorntail > src > main > java > com.redhat.cloudnative.inventory'*` 
 and then `*click on 'New > Java Class'*`. `*Enter 'Inventory'*` as the Java class name.
@@ -151,9 +153,9 @@ get out of the way and developers can be productive with their code rather than 
 configuration snippets. As an example, configuration database access with JPA is composed of 
 the following steps:
 
-1. Adding the **io.thorntail:jpa** dependency to **pom.xml** 
-2. Adding the database driver (e.g. **org.postgresql:postgresql`) to **pom.xml`
-3. Adding database connection details in **src/main/resources/project-default.yml`
+1. The **io.thorntail:jpa** dependency to **pom.xml** 
+2. The database driver (e.g. **org.postgresql:postgresql**) to **pom.xml**
+3. The database connection details in **/projects/labs/inventory-thorntail/src/main/resources/project-default.yml**
 
 `*Edit the 'pom.xml' file*` and add the **io.thorntail:jpa** dependency to enable JPA:
 
@@ -167,6 +169,15 @@ the following steps:
         <groupId>io.thorntail</groupId>
         <artifactId>jpa</artifactId>
     </dependency>
+    <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>jaxrs-jsonp</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>io.thorntail</groupId>
+        <artifactId>cdi</artifactId>
+    </dependency>
+    [...]
 </dependencies>
 <build>
 [...]
@@ -227,7 +238,7 @@ directly in the IDE and test it before deploying it on OpenShift.
 
 In CodeReady Workspaces, `*click on the run icon and then on 'thorntail:run'*`. 
 
-image:{% image_path run-icon-thorntail.png %}[Run Icon - Spring Boot,200]
+image:{% image_path run-icon-thorntail.png %}[Run Icon - Thorntail,200]
 
 TIP: You can also run the ***Inventory Service*** in CodeReady Workspaces using the *_Commands Palette_* and then **RUN > thorntail:run**
 
@@ -241,9 +252,9 @@ $ curl http://localhost:9001/api/inventory/329299
 {"itemId":"329299","quantity":35}
 ----
 
-You can also use the preview url that CodeReady Workspaces has generated for you to be able to test service 
-directly in the browser. Append the path **/api/inventory/329299** at the end of the preview url and try 
-it in your browser in a new tab.
+You can also use the preview url that CodeReady Workspaces has generated for you to be able to test the service 
+that is now running in the workspace directly in the browser. 
+Append the path **/api/inventory/329299** at the end of the preview url and try it in your browser in a new tab.
 
 image:{% image_path thorntail-inventory-codeready-preview-url.png %}[Preview URL,900]
 
@@ -264,13 +275,11 @@ OpenShift {{OPENSHIFT_DOCS_BASE}}/architecture/core_concepts/builds_and_image_st
 feature can be used to build a container image from your project. OpenShift 
 S2I uses the https://access.redhat.com/documentation/en-us/red_hat_jboss_middleware_for_openshift/3/html/red_hat_java_s2i_for_openshift[supported OpenJDK container image^] to build the final container image of the 
 Inventory service by uploading the Thorntail uber-jar from the **target** folder to 
-the OpenShift platform. 
+the OpenShift platform.
 
-Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] in order 
-to use OpenShift S2I for building 
-the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
-able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
-allowing to build a project, deploy it and finally launch a docker process as a pod.
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] to access the OpenShift S2I for building the application container image. 
+This maven plugin is a Kubernetes/OpenShift client and uses the REST API to communicate with OpenShift and issue commands to build, 
+deploy and launch the application as a pod.
 
 To build and deploy the **Inventory Service** on OpenShift using the *fabric8* maven plugin, 
 which is already configured in CodeReady Workspaces, `*right click on 'inventory-thorntail'*` project in the project explorer 

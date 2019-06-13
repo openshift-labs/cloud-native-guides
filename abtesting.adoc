@@ -1,24 +1,24 @@
 == A/B Testing with Service Mesh
 
-*10 MINUTES PRACTICE*
+_10 MINUTE EXERCISE_
 
-https://en.wikipedia.org/wiki/A/B_testing[A/B testing^] allows running multiple versions of a functionality in parallel; and using analytics of the user behavior it is possible to determine which version is the best. 
+In this lab you will see how you can use *OpenShift Service Mesh* to do some A/B testing using and route traffic between 2 versions of the Catalog service.
+
+[sidebar]
+.A/B Testing
+--
+https://en.wikipedia.org/wiki/A/B_testing[A/B testing^] allows running multiple versions of a functionality in parallel and using analytics of the user behavior it is possible to determine which version is the best. 
 It is also possible to launch the new features only for a small set of users, to prepare the general avalability of a new feature. 
+--
 
-In this lab you will see how you can use Site Mesh to do some A/B testing using and route traffic between 2 versions of the Catalog service.
+=== Deploying the new Catalog Service
 
-=== Deploying the new Catalog service
-
-A new *_Catalog Service v2_* has been created, this service is developed in https://golang.org/[Golang^] and available in the following repository:
-
-<{{CATALOG_GO_GIT_REPO}}>
-
-This service use the same business logic except that all product descriptions are returned in uppercase.
+A new *_Catalog Service v2_* has been implemented in https://golang.org/[Golang^] which uses the same business logic than *_Catalog Service v1_* 
+except that all product descriptions are returned in **UPPERCASE**.
 
 Let's deploy the service directly from the git repository using the `*oc new-app*` command.
 
 In the terminal window type the following command:
-
 ----
 $ oc new-app {{LABS_GIT_REPO}} \
     --strategy=docker \
@@ -29,7 +29,7 @@ $ oc new-app {{LABS_GIT_REPO}} \
 
 TIP: To simplify the lab, we use the same labels for *_catalog_* and *_catalog-v2_* since they are used for the service routing.
 
-Service Mesh will be used to route the traffic between the catalog service v1 and v2, so you have to add the Istio sidecar to the *_Catalog Service v2_* using the following command:
+**OpenShift Service Mesh** will be used to route the traffic between the catalog service v1 and v2, so you have to add the Istio sidecar to the *_Catalog Service v2_* using the following command:
 
 ----
 $ oc patch dc/catalog-v2 --patch \
@@ -50,11 +50,10 @@ Wait few seconds that the application restarts.
 
 === Enabling A/B Testing
 
-https://en.wikipedia.org/wiki/[A/B_testing^] allows to run in parallel two versions of an application with one single variant (usually visual) and to collect metrics in order to determine the variant with the best effect of the user behavior.
+The implementation of such procedure like **A/B Testing** is one are the advantages coming with OpenShift Service Mesh.
+For this lab, you want to answer the following question: 
 
-The implementation of such procedure is one are the advantages coming with OpenShift Service Mesh.
-
-For this lab, you want to answer the following question: **Do the product descriptions written in uppercase increase sales rate?**
+**Do the product descriptions written in uppercase increase sales rate?**
 
 Let's now create the *_Destination Rule_* resource.
 
@@ -131,10 +130,10 @@ TIP: You can also go to the Web interface and refresh the page to see that produ
 
 Go to Kiali to see the traffic distribution between Catalog v1 and v2.
 
-From the {{ KIALI_URL }}[Kiali Console^], `*click on the 'Graph' link*` in the left navigation and enter the following configuration:
+From the {{ KIALI_URL }}[Kiali Console^], `*click on the 'Graph' link*` in the left navigation and enter the following configuration in the drop down menus:
 
  * Namespace: **{{COOLSTORE_PROJECT}}**
- * Display: **check 'Traffic Animation'**
+ * Display: **'Traffic Animation'** check
  * Edge Label: **Requests percent of total**
  * Fetching: **Last 5 min**
 

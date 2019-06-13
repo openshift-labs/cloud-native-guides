@@ -1,6 +1,6 @@
 ## Service Resilience and Fault Tolerance
 
-*30 MINUTES PRACTICE*
+_30 MINUTE EXERCISE_
 
 In this lab you will learn about how you can build service resilience and fault tolerance into 
 the applications both at the infrastructure level using OpenShift capabilities as well as 
@@ -266,6 +266,9 @@ user load and recovers from failures. However failures also happen in the downst
 is dependent on. It's not uncommon that the whole application fails or slows down because one of the downstream 
 services consumed by the application is not responsive or responds slowly.
 
+[sidebar]
+.Circuit Breaker
+--
 https://martinfowler.com/bliki/CircuitBreaker.html[Circuit Breaker^] is a pattern to address this issue and while 
 it became popular with microservice architecture, it's a useful pattern for all applications that depend on other 
 services.
@@ -282,6 +285,7 @@ image:{% image_path fault-circuit-breaker.png %}[Circuit Breaker,300]
 Spring Boot and Thorntail provide convenient integration with https://github.com/Netflix/Hystrix[Hystrix^] 
 which is a framework that provides circuit breaker functionality. Eclipse Vert.x, in addition to integration 
 with Hystrix, provides built-in support for circuit breakers.
+--
 
 Let's take the Inventory service down and see what happens to the CoolStore online shop.
 
@@ -303,7 +307,7 @@ The CoolStore online shop cannot function without the products list, however the
 crucial bit in the shopping experience. Let's add a circuit breaker for calls to the Inventory service and 
 provide a default inventory status when the Inventory service is not responsive.
 
-In the `*gateway-vertx*` project, open `*src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java*` and 
+In the `*gateway-vertx*` project, `*open /projects/labs/gateway-vertx/src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java*` and 
 replace its code it with the following code:
 
 [source,java]
@@ -458,8 +462,8 @@ image:{% image_path eclipse-che-commands-build.png %}[Maven Build,340]
 Although you can use the **DEPLOY > fabric8:deploy** from the commands palette, you 
 can also trigger a new container image build on OpenShift using 
 the `*oc start-build*` command which allows you to build container images directly from the application 
-archives (`jar`, `*war`, etc) without the need to have access to the source code for example by downloading 
-the `*jar*` file form the Maven repository (e.g. Nexus or Artifactory).
+archives (`jar`, `war`, etc) without the need to have access to the source code for example by downloading 
+the `jar` file form the Maven repository (e.g. Nexus or Artifactory).
 
 ----
 $ oc start-build gateway-s2i --from-file=labs/gateway-vertx/target/gateway-1.0-SNAPSHOT.jar

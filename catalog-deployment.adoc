@@ -1,6 +1,6 @@
 == Deploying the Catalog Service
 
-_10 MINUTES PRACTICE_
+_10 MINUTE EXERCISE_
 
 In this lab you will learn about building and deploying a microservice based on Java/Maven on OpenShift. 
 The **Catalog Service** is part of the Cool Store architecture to provide a list of products for the CoolStore online shop.

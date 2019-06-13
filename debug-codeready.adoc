@@ -1,6 +1,6 @@
 ## Debugging Applications
 
-*20 MINUTES PRACTICE*
+*20 MINUTE EXERCISE*
 
 In this lab you will debug the CoolStore application using Java remote debugging and 
 look into line-by-line code execution as the code runs inside a container on OpenShift.

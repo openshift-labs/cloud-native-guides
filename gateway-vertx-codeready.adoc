@@ -1,6 +1,6 @@
 == Reactive Microservices with Eclipse Vert.x
 
-_45 MINUTES PRACTICE_
+_45 MINUTE EXERCISE_
 
 In this lab you will learn about Eclipse Vert.x and how you can 
 build microservices using reactive principles. During this lab you will 
@@ -48,7 +48,7 @@ image:{% image_path vertx-event-loop.png %}[Vert.x Event Loop,600]
 
 Although you can have multiple, there is currently only one Verticle created in the *_gateway-vertx_* project. 
 
-`*Examine 'GatewayVerticle' class*` in the *_com.redhat.cloudnative.gateway_* package in the **src** directory.
+`*Examine 'GatewayVerticle' class*` in the **com.redhat.cloudnative.gateway** package in the **/projects/labs/gateway-vertx/src** directory.
 
 [source,java]
 .GatewayVerticle.java
@@ -89,9 +89,9 @@ image:{% image_path codeready-commands-build.png %}[Maven Build,600]
 Once successfully built, the resulting *_jar_* is located in the **target/** directory:
 
 ----
-$ ls labs/gateway-vertx/target/*.jar
+$ ls /projects/labs/gateway-vertx/target/*.jar
 
-labs/gateway-vertx/target/gateway-1.0-SNAPSHOT.jar
+/projects/labs/gateway-vertx/target/gateway-1.0-SNAPSHOT.jar
 ----
 
 This is an uber-jar with all the dependencies required packaged in the *jar* to enable running the 
@@ -107,7 +107,7 @@ architecture.
 
 image:{% image_path coolstore-arch.png %}[API Gateway Pattern,400]
 
-Replace the content of *_src/main/java/com/redhat/cloudnative/gateway/GatewayVerticle.java_* class with the following:
+`*Replace the content of '/projects/labs/gateway-vertx/src/main/java/com.redhat.cloudnative.gateway/GatewayVerticle.java'*` class with the following:
 
 [source,java]
 .GatewayVerticle.java
@@ -260,10 +260,9 @@ S2I uses the https://access.redhat.com/documentation/en-us/red_hat_jboss_middlew
 image of the API Gateway service by uploading the Vert.x uber-jar from 
 the **target** folder to the OpenShift platform. 
 
-Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] in order to use OpenShift S2I for building 
-the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
-able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
-allowing to build a project, deploy it and finally launch a docker process as a pod.
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] to access the OpenShift S2I for building the application container image. 
+This maven plugin is a Kubernetes/OpenShift client and uses the REST API to communicate with OpenShift and issue commands to build, 
+deploy and launch the application as a pod.
 
 To build and deploy the **Gateway Service** on OpenShift using the *fabric8* maven plugin, 
 which is already configured in CodeReady Workspaces, `*right click on 'gateway-vertx'*` project in the project explorer then, `*click on 'Commands > Deploy > fabric8:deploy'*`

@@ -1,6 +1,6 @@
 == Microservices with Spring Boot
 
-_45 MINUTES PRACTICE_
+_45 MINUTE EXERCISE_
 
 In this lab you will learn about Spring Boot and how you can build microservices 
 using Spring Boot and JBoss technologies. During this lab, you will create a REST API for 
@@ -37,7 +37,7 @@ This is a minimal Spring Boot project with support for RESTful services and Spri
 to a database. This project currently contains no code other than the main class, ***CatalogApplication***
 which is there to bootstrap the Spring Boot application.
 
-Examine ***com/redhat/cloudnative/catalog/CatalogApplication.java*** in the **src/main** directory:
+`*Examine 'com.redhat.cloudnative.catalog.CatalogApplication' class*` in the **/projects/labs/catalog-spring-boot/src/main** directory:
 
 [source,java]
 .CatalogApplication.java
@@ -57,7 +57,7 @@ public class CatalogApplication {
 ----
 
 The database is configured using the Spring application configuration file which is located at 
-**src/main/resources/application.properties**. Examine this file to see the database connection details 
+**/projects/labs/catalog-spring-boot/src/main/resources/application.properties**. Examine this file to see the database connection details 
 and note that an in-memory H2 database is used in this lab for local development and will be replaced
 with a PostgreSQL database in the following labs. Be patient! More on that later.
 
@@ -74,9 +74,9 @@ image:{% image_path codeready-commands-build.png %}[Maven Build,600]
 Once successfully built, the resulting ***jar*** is located in the **target/** directory:
 
 ----
-$ ls labs/catalog-spring-boot/target/*.jar
+$ ls /projects/labs/catalog-spring-boot/target/*.jar
 
-labs/catalog-spring-boot/target/catalog-1.0-SNAPSHOT.jar
+/projects/labs/catalog-spring-boot/target/catalog-1.0-SNAPSHOT.jar
 ----
 
 This is an uber-jar with all the dependencies required packaged in the ***jar*** to enable running the 
@@ -255,9 +255,9 @@ $ curl http://localhost:9000/api/catalog
 [{"itemId":"329299","name":"Red Fedora","desc":"Official Red Hat Fedora","price":34.99},...]
 ----
 
-You can also use the preview url that CodeReady Workspaces has generated for you to be able to test service 
-directly in the browser. Append the path **/api/catalog** at the end of the preview url and try 
-it in your browser in a new tab.
+You can also use the preview url that CodeReady Workspaces has generated for you to be able to test the service 
+that is now running in the workspace directly in the browser. 
+Append the path **/api/catalog** at the end of the preview url and try it in your browser in a new tab.
 
 image:{% image_path springboot-che-preview-browser.png %}[Preview URL,900]
 
@@ -278,10 +278,9 @@ S2I uses the https://access.redhat.com/documentation/en-us/red_hat_jboss_middlew
 of the **Catalog Service** by uploading the Spring Boot uber-jar from the **target/** 
 folder to the OpenShift platform. 
 
-Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] in order to use OpenShift S2I for building 
-the container image of the application from within the project. This maven plugin is a Kubernetes/OpenShift client 
-able to communicate with the OpenShift platform using the REST endpoints in order to issue the commands 
-allowing to build a project, deploy it and finally launch a docker process as a pod.
+Maven projects can use the https://maven.fabric8.io[Fabric8 Maven Plugin^] to access the OpenShift S2I for building the application container image. 
+This maven plugin is a Kubernetes/OpenShift client and uses the REST API to communicate with OpenShift and issue commands to build, 
+deploy and launch the application as a pod.
 
 To build and deploy the **Catalog Service** on OpenShift using the *fabric8* maven plugin, 
 which is already configured in CodeReady Workspaces, `*right click on catalog-spring-boot*` project in the project explorer then, `*click on Commands > Deploy > fabric8:deploy*`
