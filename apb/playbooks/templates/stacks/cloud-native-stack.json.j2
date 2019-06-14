@@ -14,7 +14,7 @@
           "dev-machine": {
             "env": {
               "MAVEN_OPTS" : "-Xmx512m",
-              "MAVEN_MIRROR_URL": "http://nexus:8081/repository/maven-all-public"
+              "MAVEN_MIRROR_URL": "http://nexus.{{ namespace }}.svc:8081/repository/maven-all-public"
             },
             "servers": {
               "8080/tcp": {
