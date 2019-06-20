@@ -216,28 +216,32 @@
     when: infrasvcs_gogs_user_count > 0 and modules is search("m4")
 
 # Istio Service Mesh for Module 3
-  - name: clean up istio-operator, istio-system project 
-    shell: |
-      oc delete smcp -n istio-system basic-install
-      oc delete project istio-system
-      oc delete -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.11/deploy/maistra-operator.yaml
-      oc delete project istio-operator
-    when: modules is search("m3")
+  - name: check if istio-operator project exists
+    shell: oc get project istio-operator
+    register: istio_operator_project_result
     ignore_errors: true
+    changed_when: false
     tags: istio
 
   - name: installing the Istio Operator
     shell: |
       oc new-project istio-operator
       oc apply -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.11/deploy/maistra-operator.yaml
-    when: modules is search("m3")
+    when: modules is search("m3") and istio_operator_project_result is failed
+    tags: istio
+
+  - name: check if istio-system project exists
+    shell: oc get project istio-system
+    register: istio_system_project_result
+    ignore_errors: true
+    changed_when: false
     tags: istio
 
   - name: deploying the Istio Control Plane with Single-Tenant
     shell: |
       oc new-project istio-system
       oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/install-single-tenant.yml
-    when: modules is search("m3")
+    when: modules is search("m3") and istio_system_project_result is failed
     tags: istio
   
   - name: Create bookinfo project for each user
