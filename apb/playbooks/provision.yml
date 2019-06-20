@@ -215,6 +215,42 @@
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }}
     when: infrasvcs_gogs_user_count > 0 and modules is search("m4")
 
+# Istio Service Mesh for Module 3
+  - name: clean up istio-operator, istio-system project 
+    shell: |
+      oc delete smcp -n istio-system basic-install
+      oc delete project istio-system
+      oc delete -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.11/deploy/maistra-operator.yaml
+      oc delete project istio-operator
+    when: modules is search("m3")
+    ignore_errors: true
+    tags: istio
+
+  - name: installing the Istio Operator
+    shell: |
+      oc new-project istio-operator
+      oc apply -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.11/deploy/maistra-operator.yaml
+    when: modules is search("m3")
+    tags: istio
+
+  - name: deploying the Istio Control Plane with Single-Tenant
+    shell: |
+      oc new-project istio-system
+      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/install-single-tenant.yml
+    when: modules is search("m3")
+    tags: istio
+  
+  - name: Create bookinfo project for each user
+    shell: |
+      oc new-project {{ item }}-bookinfo --display-name='{{ item }} BookInfo Service Mesh'
+      oc adm policy add-scc-to-user anyuid -z default -n {{ item }}-bookinfo 
+      oc adm policy add-scc-to-user privileged -z default -n {{ item }}-bookinfo 
+      oc adm policy add-role-to-user admin {{ item }} -n {{ item }}-bookinfo 
+    ignore_errors: true
+    with_sequence: start=0 end={{ infrasvcs_gogs_user_count }} format="{{ gogs_user_format }}"
+    when: infrasvcs_gogs_user_count > 0
+    tags: istio
+
  # deploy guides-che
   - import_role:
       name: openshift_workshopper
