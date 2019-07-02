@@ -226,7 +226,7 @@
   - name: installing the Istio Operator
     shell: |
       oc new-project istio-operator
-      oc apply -n istio-operator -f https://raw.githubusercontent.com/Maistra/istio-operator/maistra-0.11/deploy/maistra-operator.yaml
+      oc apply -n istio-operator -f https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/blob/master/servicemesh-operator.yaml
     when: modules is search("m3") and istio_operator_project_result is failed
     tags: istio
 
@@ -240,7 +240,7 @@
   - name: deploying the Istio Control Plane with Single-Tenant
     shell: |
       oc new-project istio-system
-      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/install-single-tenant.yml
+      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/servicemeshcontrolplane.yaml
     when: modules is search("m3") and istio_system_project_result is failed
     tags: istio
   
@@ -250,6 +250,7 @@
       oc adm policy add-scc-to-user anyuid -z default -n {{ item }}-bookinfo 
       oc adm policy add-scc-to-user privileged -z default -n {{ item }}-bookinfo 
       oc adm policy add-role-to-user admin {{ item }} -n {{ item }}-bookinfo 
+      oc adm policy add-role-to-user view {{ item }} -n istio-system 
     ignore_errors: true
     with_sequence: start=0 end={{ infrasvcs_gogs_user_count }} format="{{ gogs_user_format }}"
     when: infrasvcs_gogs_user_count > 0
