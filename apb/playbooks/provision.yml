@@ -226,7 +226,7 @@
   - name: installing the Istio Operator
     shell: |
       oc new-project istio-operator
-      oc apply -n istio-operator -f https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/blob/master/servicemesh-operator.yaml
+      oc apply -n istio-operator -f https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/blob/master/istio/servicemesh-operator.yaml
     when: modules is search("m3") and istio_operator_project_result is failed
     tags: istio
 
@@ -240,7 +240,7 @@
   - name: deploying the Istio Control Plane with Single-Tenant
     shell: |
       oc new-project istio-system
-      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/servicemeshcontrolplane.yaml
+      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/istio/master/servicemeshcontrolplane.yaml
     when: modules is search("m3") and istio_system_project_result is failed
     tags: istio
   
