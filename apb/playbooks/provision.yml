@@ -240,13 +240,21 @@
   - name: deploying the Istio Control Plane with Single-Tenant
     shell: |
       oc new-project istio-system
-      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/istio/master/servicemeshcontrolplane.yaml
+      oc create -n istio-system -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/istio/servicemeshcontrolplane.yaml
     when: modules is search("m3") and istio_system_project_result is failed
     tags: istio
   
-  - name: Create bookinfo project for each user
+  - name: Create coolstore & bookinfo projects for each user
     shell: |
-      oc new-project {{ item }}-bookinfo --display-name='{{ item }} BookInfo Service Mesh'
+      oc new-project {{ item }}-inventory --display-name='{{ item|upper }} CoolStore Inventory Microservice Application'
+      oc adm policy add-scc-to-user anyuid -z default -n {{ item }}-inventory 
+      oc adm policy add-scc-to-user privileged -z default -n {{ item }}-inventory 
+      oc adm policy add-role-to-user admin {{ item }} -n {{ item }}-inventory
+      oc new-project {{ item }}-catalog --display-name='{{ item|upper }} CoolStore Catalog Microservice Application'
+      oc adm policy add-scc-to-user anyuid -z default -n {{ item }}-catalog 
+      oc adm policy add-scc-to-user privileged -z default -n {{ item }}-catalog 
+      oc adm policy add-role-to-user admin {{ item }} -n {{ item }}-catalog 
+      oc new-project {{ item }}-bookinfo --display-name='{{ item|upper }} BookInfo Service Mesh'
       oc adm policy add-scc-to-user anyuid -z default -n {{ item }}-bookinfo 
       oc adm policy add-scc-to-user privileged -z default -n {{ item }}-bookinfo 
       oc adm policy add-role-to-user admin {{ item }} -n {{ item }}-bookinfo 
