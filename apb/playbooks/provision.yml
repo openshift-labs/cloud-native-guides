@@ -537,7 +537,7 @@
 
                         ],
                         "attributes": {
-                          "memoryLimitBytes": "4294967296"
+                          "memoryLimitBytes": "2147483648"
                         }
                       }
                     }
