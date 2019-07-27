@@ -77,7 +77,6 @@
   
   - name: delete coolstore-monolith-binary-build template
     shell: "oc delete template coolstore-monolith-binary-build -n openshift"
-    register: workshopper_project_result
     ignore_errors: true
     tags: always
    
@@ -91,12 +90,24 @@
 
   - name: delete coolstore-monolith-pipeline-build template
     shell: "oc delete template coolstore-monolith-pipeline-build -n openshift"
-    register: workshopper_project_result
     ignore_errors: true
     tags: always
 
   - name: create coolstore-monolith-pipeline-build template
     shell: "oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m1-labs/master/monolith/src/main/openshift/template-prod.json -n openshift"
+    when:
+      - openshift_token is defined
+      - openshift_token is not none
+      - openshift_token|trim() != ""
+    tags: always
+  
+  - name: delete ccn-sso template
+    shell: "oc delete template ccn-sso72 -n openshift"
+    ignore_errors: true
+    tags: always
+   
+  - name: create ccn-sso template
+    shell: "oc create -f https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m3-labs/master/istio/template/ccn-sso72-template.json -n openshift"
     when:
       - openshift_token is defined
       - openshift_token is not none
