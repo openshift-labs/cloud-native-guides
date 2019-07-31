@@ -1,4 +1,4 @@
-- name: cloudnative-workshopv2-apb playbook to provision the application
+- name: containers-cloudnative-roadshow-2019-apb playbook to provision the application
   hosts: localhost
   gather_facts: false
   connection: local
@@ -72,6 +72,11 @@
 
   - name: delete project quota
     shell: "oc delete limitrange --all -n {{ namespace }}"
+    ignore_errors: true
+    tags: always
+
+  - name: adjust limits for admin
+    shell: "oc delete userquota/default"
     ignore_errors: true
     tags: always
   
@@ -275,7 +280,7 @@
     when: infrasvcs_gogs_user_count > 0
     tags: istio
 
- # deploy guides-che
+ # deploy guides
   - import_role:
       name: openshift_workshopper
       allow_duplicates: true
@@ -501,8 +506,8 @@
       url: http://codeready-{{ namespace }}.{{ apps_hostname_suffix }}/api/stack
       method: POST
       body: '{
-              "name": "Cloud Native Workshop v2",
-              "description": "Cloud Native Java Stack, Quarkus, odo on CentOS",
+              "name": "Cloud Native Roadshow - Dev Track",
+              "description": "Cloud Native Java Stack, Quarkus, ODO on CentOS",
               "scope": "general",
               "workspaceConfig": {
                 "environments": {
