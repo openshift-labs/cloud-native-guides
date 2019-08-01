@@ -50,6 +50,9 @@ if [ ! "$(oc get clusterrolebindings)" ] ; then
   exit 1
 fi
 
+# Make the admin as cluster admin
+oc adm policy add-cluster-role-to-user cluster-admin opentlc-mgr
+
 # create labs-infra project
 oc new-project labs-infra
 
@@ -87,7 +90,7 @@ oc process -f $MYDIR/../files/web-template-empty-dir-executor.json \
     -p WEB_CONSOLE_REQUESTED_CPU=$REQUESTED_CPU \
     -p WEB_CONSOLE_REQUESTED_MEMORY=$REQUESTED_MEMORY \
     -p EXECUTOR_REQUESTED_CPU=$REQUESTED_CPU \
-    -p EXECUTOR_REQUESTED_MEMORY=$REQUESTED_MEMORY | oc create -f -
+    -p EXECUTOR_REQUESTED_MEMORY=2Gi | oc create -f -
 
 # deploy gogs
 oc new-app -f $MYDIR/../files/gogs-template.yaml \
@@ -107,6 +110,16 @@ while [ 1 ]; do
   echo -n .
   sleep 10
 done
+
+# Create gogs admin user
+STAT=$(curl -s -w '%{http_code}' -o /dev/null -X POST http://gogs-labs-infra.$HOSTNAME_SUFFIX/user/sign_up \
+      -H "Content-Type: application/x-www-form-urlencoded" \
+      -d "user_name=adminuser&password=adminpwd&&retype=adminpwd&&email=adminuser@gogs.com")
+if [ "$STAT" = 302 ] || [ "$STAT" = 200 ] ; then
+  echo "adminuser is created successfully..."
+else
+  echo "Failure to create adminuser with $STAT"
+fi
 
 # Create gogs users
 echo -e "Creating $USERCOUNT gogs users.... \n"
@@ -129,7 +142,7 @@ for MODULE in $(echo $MODULE_TYPE | sed "s/,/ /g") ; do
   CLONE_ADDR=https://github.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2m$MODULE_NO-labs.git
   REPO_NAME=cloud-native-workshop-v2m$MODULE_NO-labs
   for i in $(eval echo "{0..$USERCOUNT}") ; do
-    USER_ID=$(($i + 3))
+    USER_ID=$(($i + 2))
     STAT=$(curl -s -w '%{http_code}' -o /dev/null -X POST http://gogs-labs-infra.$HOSTNAME_SUFFIX/api/v1/repos/migrate \
         -H "Content-Type: application/json" \
         -d '{"clone_addr": "'"$CLONE_ADDR"'", "uid": '"$USER_ID"', "repo_name": "'"$REPO_NAME"'" }' \
@@ -184,19 +197,18 @@ for i in $(eval echo "{0..$USERCOUNT}") ; do
 done
 
 # deploy guides
-for MODULE in $(echo $MODULE_TYPE | sed "s/,/ /g") ; 
-do
+for MODULE in $(echo $MODULE_TYPE | sed "s/,/ /g") ; do
   MODULE_NO=$(echo $MODULE | cut -c 2)
   oc new-app quay.io/osevg/workshopper --name=guides-$MODULE \
-      -e MASTER_URL=${MASTER_URL} \
-      -e CONSOLE_URL=${CONSOLE_URL} \
-      -e CHE_URL=http://codeready-che.$HOSTNAME_SUFFIX \
-      -e KEYCLOAK_URL=http://keycloak-che.$HOSTNAME_SUFFIX \
+      -e MASTER_URL=$MASTER_URL \
+      -e CONSOLE_URL=$CONSOLE_URL \
+      -e CHE_URL=http://codeready-labs-infra.$HOSTNAME_SUFFIX \
+      -e KEYCLOAK_URL=http://keycloak-labs-infra.$HOSTNAME_SUFFIX \
       -e ROUTE_SUBDOMAIN=$HOSTNAME_SUFFIX \
       -e CONTENT_URL_PREFIX="https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2$MODULE-guides/master" \
       -e WORKSHOPS_URLS="https://raw.githubusercontent.com/RedHat-Middleware-Workshops/cloud-native-workshop-v2$MODULE-guides/master/_cloud-native-workshop-module$MODULE_NO.yml" \
       -e LOG_TO_STDOUT=true -n labs-infra
-  oc expose svc/guides-$MODULE
+  oc expose svc/guides-$MODULE -n labs-infra
 done
 
 # Update Jenkins templates
@@ -223,32 +235,37 @@ RESULT_TOKEN=$(curl -k -X POST https://secure-rhamt-web-console-labs-infra.$HOST
  -d 'grant_type=password' \
  -d 'client_id=admin-cli' | jq -r '.access_token')
 
-echo -e "RESULT_TOKEN: $RESULT_TOKEN \n"
-
 echo -e "Updating a master realm with RH-SSO theme \n"
-RES=$(curl -k -X PUT https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/master/ \
+RES=$(curl -s -w '%{http_code}' -o /dev/null  -k -X PUT https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/master/ \
  -H "Content-Type: application/json" \
  -H "Accept: application/json" \
  -H "Authorization: Bearer $RESULT_TOKEN" \
  -d '{ "displayName": "rh-sso", "displayNameHtml": "<strong>Red Hat</strong><sup>®</sup> Single Sign On", "loginTheme": "rh-sso", "adminTheme": "rh-sso", "accountTheme": "rh-sso", "emailTheme": "rh-sso", "accessTokenLifespan": 6000 }')
 
-echo -e "\RES: $RES \n"
+if [ "$RES" = 204 ] ; then
+  echo -e "Updated a master realm with RH-SSO theme successfully...\n"
+else
+  echo -e "Failure to update a master realm with RH-SSO theme with $RES\n"
+fi
 
 echo -e "Creating RH-SSO users as many as gogs users \n"
 for i in $(eval echo "{0..$USERCOUNT}") ; do
-  RES=$(curl -k -X POST https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/rhamt/users \
+  RES=$(curl -s -w '%{http_code}' -o /dev/null  -k -X POST https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/rhamt/users \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer $RESULT_TOKEN" \
   -d '{ "username": "user'"$i"'", "enabled": true, "disableableCredentialTypes": [ "password" ] }')
-  echo -e "$i)RES: $RES"
+  if [ "$RES" = 200 ] || [ "$RES" = 201 ] || [ "$RES" = 409 ] ; then
+    echo -e "Created RH-SSO user$i successfully...\n"
+  else
+    echo -e "Failure to create RH-SSO user$i with $RES\n"
+  fi
 done
 
 echo -e "Retrieving RH-SSO user's ID list \n"
 USER_ID_LIST=$(curl -k -X GET https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/rhamt/users/ \
 -H "Accept: application/json" \
 -H "Authorization: Bearer $RESULT_TOKEN")
-
 echo -e "USER_ID_LIST: $USER_ID_LIST \n"
 
 echo -e "Getting access token to reset passwords \n"
@@ -258,19 +275,18 @@ export RESULT_TOKEN=$(curl -k -X POST https://secure-rhamt-web-console-labs-infr
  -d 'password=password' \
  -d 'grant_type=password' \
  -d 'client_id=admin-cli' | jq -r '.access_token')
-
 echo -e "RESULT_TOKEN: $RESULT_TOKEN \n"
 
 echo -e "Reset passwords for each RH-SSO user \n"
 for i in $(jq '. | keys | .[]' <<< "$USER_ID_LIST"); do
-  USER_ID=$(jq -r ".[$i].id" <<< "$USER_ID_LIST");
-  USER_NAME=$(jq -r ".[$i].username" <<< "$USER_ID_LIST");
+  USER_ID=$(jq -r ".[$i].id" <<< "$USER_ID_LIST")
+  USER_NAME=$(jq -r ".[$i].username" <<< "$USER_ID_LIST")
   if [ "$USER_NAME" != "rhamt" ] ; then 
-     RES=$(curl -k -X PUT https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/rhamt/users/$USER_ID/reset-password \
+     RES=$(curl -s -w '%{http_code}' -o /dev/null -k -X PUT https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/rhamt/users/$USER_ID/reset-password \
       -H "Content-Type: application/json" \
       -H "Accept: application/json" \
       -H "Authorization: Bearer $RESULT_TOKEN" \
-      -d '{ "type": "password", "value": "'"$GOGS_PWD"'"", "temporary": true}')
+      -d '{ "type": "password", "value": "'"$GOGS_PWD"'", "temporary": true}')
     if [ "$RES" = 204 ] ; then
       echo -e "user$i password is reset successfully...\n"
     else
@@ -279,13 +295,8 @@ for i in $(jq '. | keys | .[]' <<< "$USER_ID_LIST"); do
   fi
 done
 
-end_time=$SECONDS
-elapsed_time_sec=$(( end_time - start_time ))
-elapsed_time_min=$(printf '%dh:%dm:%ds\n' $(($elapsed_time_sec/3600)) $(($elapsed_time_sec%3600/60)) $(($elapsed_time_sec%60)))
-echo "Total of $elapsed_time_min seconds elapsed Before CDR installation \n"
-
 # Install Che
-oc project labs-infra
+echo -e "Installing CodeReady Workspace...\n"
 cat <<EOF | oc apply -n openshift-marketplace -f -
 apiVersion: operators.coreos.com/v1
 kind: CatalogSourceConfig
@@ -378,7 +389,7 @@ EOF
 # Wait for che to be up
 echo "Waiting for Che to come up..."
 while [ 1 ]; do
-  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.$HOSTNAME_SUFFIX/dashboard/)
+  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-labs-infra.$HOSTNAME_SUFFIX/dashboard/)
   if [ "$STAT" = 200 ] ; then
     break
   fi
@@ -394,7 +405,7 @@ oc scale -n labs-infra deployment/codeready --replicas=1
 # Wait for che to be back up
 echo "Waiting for Che to come back up..."
 while [ 1 ]; do
-  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-che.$HOSTNAME_SUFFIX/dashboard/)
+  STAT=$(curl -s -w '%{http_code}' -o /dev/null http://codeready-labs-infra.$HOSTNAME_SUFFIX/dashboard/)
   if [ "$STAT" = 200 ] ; then
     break
   fi
@@ -403,19 +414,19 @@ while [ 1 ]; do
 done
 
 # get keycloak admin password
-KEYCLOAK_USER="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_USERNAME | cut -d= -f2)"
-KEYCLOAK_PASSWORD="$(oc set env deployment/keycloak --list |grep SSO_ADMIN_PASSWORD | cut -d= -f2)"
+KEYCLOAK_USER="$(oc set env deployment/keycloak --list -n labs-infra|grep SSO_ADMIN_USERNAME | cut -d= -f2)"
+KEYCLOAK_PASSWORD="$(oc set env deployment/keycloak --list -n labs-infra|grep SSO_ADMIN_PASSWORD | cut -d= -f2)"
 SSO_TOKEN=$(curl -s -d "username=${KEYCLOAK_USER}&password=${KEYCLOAK_PASSWORD}&grant_type=password&client_id=admin-cli" \
-  -X POST http://keycloak-che.$HOSTNAME_SUFFIX/auth/realms/master/protocol/openid-connect/token | \
+  -X POST http://keycloak-labs-infra.$HOSTNAME_SUFFIX/auth/realms/master/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
 # Import realm 
 curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d @../files/ccnrd-realm.json \
-  -X POST "http://keycloak-che.$HOSTNAME_SUFFIX/auth/admin/realms"
+  -X POST "http://keycloak-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms"
 
 ## MANUALLY add ProtocolMapper to map User Roles to "groups" prefix for JWT claims
 echo "Keycloak credentials: $KEYCLOAK_USER / $KEYCLOAK_PASSWORD"
-echo "URL: http://keycloak-che.${HOTSNAME_SUFFIX}"
+echo "URL: http://keycloak-labs-infra.${HOTSNAME_SUFFIX}"
 
 # import stack image
 oc create -n openshift -f $MYDIR/../files/stack.imagestream.yaml
@@ -423,12 +434,12 @@ oc import-image --all quarkus-stack -n openshift
 
 # Import stack definition
 SSO_CHE_TOKEN=$(curl -s -d "username=admin&password=admin&grant_type=password&client_id=admin-cli" \
-  -X POST http://keycloak-che.$HOSTNAME_SUFFIX/auth/realms/codeready/protocol/openid-connect/token | \
+  -X POST http://keycloak-labs-infra.$HOSTNAME_SUFFIX/auth/realms/codeready/protocol/openid-connect/token | \
   jq  -r '.access_token')
 
 curl -X POST --header 'Content-Type: application/json' --header 'Accept: application/json' \
     --header "Authorization: Bearer ${SSO_CHE_TOKEN}" -d @${MYDIR}/../files/stack-ccn.json \
-    "http://codeready-che.$HOSTNAME_SUFFIX/api/stack"
+    "http://codeready-labs-infra.$HOSTNAME_SUFFIX/api/stack"
 
 # MANUALLY set permissions according to
 # https://access.redhat.com/documentation/en-us/red_hat_codeready_workspaces/1.2/html/administration_guide/administering_workspaces#stacks
@@ -444,6 +455,6 @@ if [ "$WORKERCOUNT" -lt 10 ] ; then
 fi
 
 end_time=$SECONDS
-elapsed_time_sec=$(( end - start ))
+elapsed_time_sec=$(( end_time - start_time ))
 elapsed_time_min=$(printf '%dh:%dm:%ds\n' $(($elapsed_time_sec/3600)) $(($elapsed_time_sec%3600/60)) $(($elapsed_time_sec%60)))
 echo "Total of $elapsed_time_min seconds elapsed for CCNRD Dev Track Environment Deployment"

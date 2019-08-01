@@ -14,6 +14,7 @@ fi
 
 oc delete project labs-infra
 oc delete template coolstore-monolith-binary-build coolstore-monolith-pipeline-build ccn-sso72 -n openshift
+oc delete CatalogSourceConfig/installed-redhat-che -n openshift-marketplace
 
 # delete user projects
 for proj in $(oc get projects -o name | grep 'user*' | cut -d/ -f2) ; do
