@@ -228,3 +228,10 @@
     loop: "{{ range(1, user_count|int + 1) | list }}"
     when: 
       - preconfigure_squash
+
+  # track workshop deployment
+  - import_role:
+      name: workshop_deployment_tracker
+    vars:
+      apps_hostname_suffix: "{{ apps_hostname_suffix }}"
+      workshop_type: cloud-native
