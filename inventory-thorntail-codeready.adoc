@@ -92,7 +92,7 @@ following fields: **itemId** and **quantity**
 In the project explorer in CodeReady Workspaces, `*right-click on 'inventory-thorntail > src > main > java > com.redhat.cloudnative.inventory'*` 
 and then `*click on 'New > Java Class'*`. `*Enter 'Inventory'*` as the Java class name.
 
-image:{% image_path wfswarm-inventory-che-new-class.png %}[CodeReady Workspaces - Create Java Class,700]
+image:{% image_path inventory-thorntail-new-class.png %}[CodeReady Workspaces - Create Java Class,700]
 
 [source,java]
 .Inventory.java
