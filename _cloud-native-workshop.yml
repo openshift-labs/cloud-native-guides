@@ -2,7 +2,7 @@ id: "cloudnative"
 name: "OpenShift Cloud-Native Workshop"
 
 content:
-  url: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.11
+  url: https://raw.githubusercontent.com/openshift-labs/cloud-native-guides/ocp-3.11-v1
 
 vars:
   OPENSHIFT_DOCS_BASE: "https://docs.openshift.com/container-platform/3.11"
@@ -10,9 +10,9 @@ vars:
   DOWNLOAD_CLIENT_WINDOWS: https://mirror.openshift.com/pub/openshift-v3/clients/3.11.16/windows/oc.zip
   DOWNLOAD_CLIENT_MAC: https://mirror.openshift.com/pub/openshift-v3/clients/3.11.16/macosx/oc.tar.gz
   DOWNLOAD_CLIENT_LIN64: https://mirror.openshift.com/pub/openshift-v3/clients/3.11.16/linux/oc.tar.gz
-  LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git#ocp-3.11
-  LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/ocp-3.11.zip
-  WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/ocp-3.11/web-nodejs
+  LABS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs.git#ocp-3.11-v1
+  LABS_DOWNLOAD_URL: https://github.com/openshift-labs/cloud-native-labs/archive/ocp-3.11-v1.zip
+  WEB_NODEJS_GIT_REPO: https://github.com/openshift-labs/cloud-native-labs/tree/ocp-3.11-v1/web-nodejs
   REMOTE_DEBUGGER_JDB: true
   REMOTE_DEBUGGER_JBDS: true
   REMOTE_DEBUGGER_IDEA: true
